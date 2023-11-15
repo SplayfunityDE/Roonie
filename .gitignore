@@ -1,0 +1,6 @@
+RoonieData/
+media/
+*.MF
+out/
+.idea/
+target/
