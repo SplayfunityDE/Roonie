@@ -1,6 +1,5 @@
 package de.splayfer.roonie.minigames;
 
-import de.splayfer.roonie.MySQLDatabase;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.Member;
 

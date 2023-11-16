@@ -1,10 +1,11 @@
 package de.splayfer.roonie.giveaway;
 
-import de.splayfer.roonie.MySQLDatabase;
+import de.splayfer.roonie.MongoDBDatabase;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,8 +14,7 @@ import java.util.Objects;
 
 public class Giveaway {
 
-    @Getter
-    private static MySQLDatabase database = new MySQLDatabase("splayfunity");
+    static MongoDBDatabase mongoDB = new MongoDBDatabase();
 
     private static HashMap<Member, Giveaway> giveaways = new HashMap<>();
 
@@ -204,13 +204,12 @@ public class Giveaway {
         String val = requirement.get(req);
 
         getDatabase().insert("GiveawayStats", new String[]{"channel", "prize", "duration", "timeFormat", "requirement", "value", "amount", "picture", "message"}, channel.getId(), prize, duration, timeFormat, req, val, amount, picture, message.getId());
-
     }
 
     public void removeFromMySQl() {
 
-        getDatabase().update("DELETE FROM GiveawayStats WHERE message = ?", message.getId());
-        getDatabase().update("DELETE FROM GiveawayEntrys WHERE message = ?", message.getId());
+        mongoDB.drop("giveaway", "message", message.getIdLong());
+        mongoDB.drop("giveawayEntrys", "message", message.getIdLong());
 
         for (Member m : giveaways.keySet()) {
             if (giveaways.get(m).equals(Giveaway.getFromMessage(message))) {
@@ -221,9 +220,7 @@ public class Giveaway {
     }
 
     public static boolean isGiveaway(Message message) {
-
-        return getDatabase().existsEntry("GiveawayStats", "message = ?", message.getId());
-
+        return mongoDB.exists("giveaway", "message", message.getIdLong());
     }
 
     public static Giveaway getFromMessage(Message message) {
@@ -245,13 +242,12 @@ public class Giveaway {
     }
 
     public static void addEntry(Message message, Member member) {
-
-        getDatabase().insert("GiveawayEntrys", new String[]{"message", "guildMember"}, message.getId(), member.getId());
+        mongoDB.insert("giveawayEntrys", new Document().append("message", message.getIdLong()).append("guildMember", member.getIdLong()));
 
     }
 
     public static void removeEntry(Message message, Member member) {
-
+        mongoDB.drop("giveawayEntrys", );
         getDatabase().update("DELETE FROM GiveawayEntrys WHERE message = ? AND guildMember = ?", message.getId(), member.getId());
     }
 

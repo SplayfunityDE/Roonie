@@ -1,6 +1,5 @@
 package de.splayfer.roonie.tempchannel;
 
-import de.splayfer.roonie.MySQLDatabase;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.VoiceChannel;
