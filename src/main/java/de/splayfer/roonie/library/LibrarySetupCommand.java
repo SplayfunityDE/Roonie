@@ -4,7 +4,6 @@ import de.splayfer.roonie.Roonie;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -33,7 +32,7 @@ public class LibrarySetupCommand extends ListenerAdapter {
 
                         TextChannel channel = event.getChannel().asTextChannel();
 
-                        switch (args[2].toString()) {
+                        switch (args[2]) {
 
                             case "1":
 
@@ -103,8 +102,7 @@ public class LibrarySetupCommand extends ListenerAdapter {
                                 serverbanner.setColor(0xd99f83);
                                 serverbanner.setThumbnail("https://cdn.discordapp.com/attachments/883278317753626655/892449913932234795/template.PNG");
                                 serverbanner.setTitle("\uD83C\uDFA8 Server Banner zum Benutzen");
-                                serverbanner.setDescription("Hier erhältst du Zugriff auf zahlreiche Server Banner. Wähle dazu einfach die passende Kategorie im Menü unter dieser Nachricht aus!\n" +
-                                        "");
+                                serverbanner.setDescription("Hier erhältst du Zugriff auf zahlreiche Server Banner. Wähle dazu einfach die passende Kategorie im Menü unter dieser Nachricht aus!\n");
                                 serverbanner.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
 
                                 serverbanner.addField(":question: Wie funktionieren die Kategorien?", "Das System ist ganz einfach! Wir unterteilen alle Desgins in Kategorien. Du musst einfach nur im Menü unter dieser Nachricht das passende Menü auswählen und bekommst alle Server, die unter diese Kategorie fallen per Direktnachricht zugeschickt!", false);

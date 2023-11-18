@@ -1,12 +1,10 @@
 package de.splayfer.roonie.poll;
 
-import de.splayfer.roonie.giveaway.Giveaway;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
-import java.lang.reflect.Field;
 import java.util.*;
 
 public class Poll {
@@ -119,7 +117,7 @@ public class Poll {
 
     public <T> List<T> keySet() {
 
-        List<T> list = new ArrayList<>(){{
+        return new ArrayList<>(){{
 
             add((T) channel);
             add((T) topic);
@@ -130,8 +128,6 @@ public class Poll {
             add((T) buttons);
 
         }};
-
-        return list;
 
     }
 
@@ -184,11 +180,7 @@ public class Poll {
 
     public static boolean existsPoll(Member member) {
 
-        boolean check = false;
-
-        if (polls.containsKey(member)) check = true;
-
-        return check;
+        return polls.containsKey(member);
 
     }
 

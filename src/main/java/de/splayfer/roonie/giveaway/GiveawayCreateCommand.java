@@ -43,11 +43,9 @@ public class GiveawayCreateCommand extends ListenerAdapter {
 
     public void onSlashCommandInteraction (SlashCommandInteractionEvent event) {
 
-        if (event.getName().equals("giveaway") && event.getSubcommandName().equals("create")) {
+        if (event.getName().equals("giveaway") && Objects.requireNonNull(event.getSubcommandName()).equals("create")) {
 
             if (!Giveaway.existsGiveaway(event.getMember())) {
-
-                Giveaway giveaway = Giveaway.create(event.getMember());
 
                 EmbedBuilder banner = new EmbedBuilder();
                 banner.setColor(0xeed147);
@@ -157,7 +155,7 @@ public class GiveawayCreateCommand extends ListenerAdapter {
 
                                 for (GuildChannel searchChannel : event.getGuild().getChannels()) {
 
-                                    if (searchChannel.getId().equals(d)) {
+                                    if (searchChannel.getId().equals(String.valueOf(d))) {
 
                                         if (searchChannel.getType().isMessage()) {
 
@@ -169,7 +167,7 @@ public class GiveawayCreateCommand extends ListenerAdapter {
 
                                 }
 
-                                if (checkID == true) {
+                                if (checkID) {
 
                                     MessageChannel channel = (MessageChannel) event.getGuild().getGuildChannelById(String.valueOf(d));
 
@@ -220,11 +218,11 @@ public class GiveawayCreateCommand extends ListenerAdapter {
 
                             try {
 
-                                Double d = Double.parseDouble(args[0]);
+                                double d = Double.parseDouble(args[0]);
 
                                 //wenn Zahl genannt
 
-                                Giveaway.getFromMember(event.getMember()).setAmount(d.intValue());
+                                Giveaway.getFromMember(event.getMember()).setAmount((int) d);
                                 checkTimeout(event.getMember());
 
                                 main = new EmbedBuilder();
@@ -357,8 +355,6 @@ public class GiveawayCreateCommand extends ListenerAdapter {
 
                             try {
 
-                                Double d = Double.parseDouble(args[0]);
-
                                 main = new EmbedBuilder();
                                 main.setColor(0xeed147);
                                 main.setTitle("\uD83D\uDC65 Wieviele Gewinner soll es geben?");
@@ -368,7 +364,9 @@ public class GiveawayCreateCommand extends ListenerAdapter {
                                 interactionList.get(event.getMember()).sendMessageEmbeds(main.build()).setEphemeral(true).queue();
 
                                 reqList.remove(event.getMember());
-                                giveaway.setRequirement(new HashMap<String, String>(){{put(giveaway.getRequirement().keySet().toArray()[0].toString(), args[0]);}});
+                                giveaway.setRequirement(new HashMap<>() {{
+                                    put(giveaway.getRequirement().keySet().toArray()[0].toString(), args[0]);
+                                }});
                                 checkTimeout(event.getMember());
 
                             } catch (Exception exception) {
@@ -393,8 +391,6 @@ public class GiveawayCreateCommand extends ListenerAdapter {
 
                             try {
 
-                                Double d = Double.parseDouble(args[0]);
-
                                 main = new EmbedBuilder();
                                 main.setColor(0xeed147);
                                 main.setTitle("\uD83D\uDC65 Wieviele Gewinner soll es geben?");
@@ -404,7 +400,9 @@ public class GiveawayCreateCommand extends ListenerAdapter {
                                 interactionList.get(event.getMember()).sendMessageEmbeds(main.build()).setEphemeral(true).queue();
 
                                 reqList.remove(event.getMember());
-                                giveaway.setRequirement(new HashMap<String, String>(){{put(giveaway.getRequirement().keySet().toArray()[0].toString(), args[0]);}});
+                                giveaway.setRequirement(new HashMap<>() {{
+                                    put(giveaway.getRequirement().keySet().toArray()[0].toString(), args[0]);
+                                }});
                                 checkTimeout(event.getMember());
 
                             } catch (Exception exception) {
@@ -429,8 +427,6 @@ public class GiveawayCreateCommand extends ListenerAdapter {
 
                             try {
 
-                                Double d = Double.parseDouble(args[0]);
-
                                 main = new EmbedBuilder();
                                 main.setColor(0xeed147);
                                 main.setTitle("\uD83D\uDC65 Wieviele Gewinner soll es geben?");
@@ -440,7 +436,9 @@ public class GiveawayCreateCommand extends ListenerAdapter {
                                 interactionList.get(event.getMember()).sendMessageEmbeds(main.build()).setEphemeral(true).queue();
 
                                 reqList.remove(event.getMember());
-                                giveaway.setRequirement(new HashMap<String, String>(){{put(giveaway.getRequirement().keySet().toArray()[0].toString(), args[0]);}});
+                                giveaway.setRequirement(new HashMap<>() {{
+                                    put(giveaway.getRequirement().keySet().toArray()[0].toString(), args[0]);
+                                }});
                                 checkTimeout(event.getMember());
 
                             } catch (Exception exception) {
@@ -478,7 +476,9 @@ public class GiveawayCreateCommand extends ListenerAdapter {
                                     interactionList.get(event.getMember()).sendMessageEmbeds(main.build()).setEphemeral(true).queue();
 
                                     reqList.remove(event.getMember());
-                                    giveaway.setRequirement(new HashMap<String, String>(){{put(giveaway.getRequirement().keySet().toArray()[0].toString(), event.getMessage().getMentions().getRoles().get(0).getId());}});
+                                    giveaway.setRequirement(new HashMap<>() {{
+                                        put(giveaway.getRequirement().keySet().toArray()[0].toString(), event.getMessage().getMentions().getRoles().get(0).getId());
+                                    }});
                                     checkTimeout(event.getMember());
 
                                 } else {
@@ -504,7 +504,7 @@ public class GiveawayCreateCommand extends ListenerAdapter {
 
                                 }
 
-                                if (checkRole = true) {
+                                if (checkRole) {
 
                                     main = new EmbedBuilder();
                                     main.setColor(0xeed147);
@@ -515,7 +515,9 @@ public class GiveawayCreateCommand extends ListenerAdapter {
                                     interactionList.get(event.getMember()).sendMessageEmbeds(main.build()).setEphemeral(true).queue();
 
                                     reqList.remove(event.getMember());
-                                    giveaway.setRequirement(new HashMap<String, String>(){{put(giveaway.getRequirement().keySet().toArray()[0].toString(), args[0]);}});
+                                    giveaway.setRequirement(new HashMap<>() {{
+                                        put(giveaway.getRequirement().keySet().toArray()[0].toString(), args[0]);
+                                    }});
                                     checkTimeout(event.getMember());
 
                                 } else {
@@ -547,7 +549,7 @@ public class GiveawayCreateCommand extends ListenerAdapter {
 
     public void onSelectMenuInteraction (SelectMenuInteractionEvent event) {
 
-        if (event.getSelectMenu().getId().equals("giveaway.setup.selectFormat")) {
+        if (Objects.requireNonNull(event.getSelectMenu().getId()).equals("giveaway.setup.selectFormat")) {
 
             if (Giveaway.existsGiveaway(event.getMember())) {
 
@@ -798,7 +800,7 @@ public class GiveawayCreateCommand extends ListenerAdapter {
                     event.getChannel().sendTyping().queue();
                     event.replyEmbeds(main.build()).addActionRow(buttons).setEphemeral(true).queue();
 
-                    Giveaway.getFromMember(event.getMember()).setPrize(event.getValue("prize").getAsString());
+                    Giveaway.getFromMember(event.getMember()).setPrize(Objects.requireNonNull(event.getValue("prize")).getAsString());
                     checkTimeout(event.getMember());
                     interactionList.put(event.getMember(), event.getHook());
 
@@ -808,7 +810,7 @@ public class GiveawayCreateCommand extends ListenerAdapter {
 
                     time = LocalDateTime.now();
 
-                    for (String s : event.getValue("duration").getAsString().toLowerCase(Locale.ROOT).split(" ")) {
+                    for (String s : Objects.requireNonNull(event.getValue("duration")).getAsString().toLowerCase(Locale.ROOT).split(" ")) {
 
                         if (s.contains("d") || s.contains("h") || s.contains("m")) {
 

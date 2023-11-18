@@ -57,7 +57,7 @@ public enum Embeds {
             .setColor(0x43b480)
             .setImage("https://cdn.discordapp.com/attachments/880725442481520660/914518380088819742/banner_erfolg.png"));
 
-    private EmbedBuilder eb = null;
+    private EmbedBuilder eb;
 
     private Embeds(EmbedBuilder embedBuilder) {
 

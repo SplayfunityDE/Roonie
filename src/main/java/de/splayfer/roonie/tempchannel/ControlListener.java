@@ -17,10 +17,12 @@ import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
 import net.dv8tion.jda.api.interactions.components.selections.SelectOption;
 import net.dv8tion.jda.api.interactions.components.text.TextInput;
 import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
-import org.bspfsystems.yamlconfiguration.file.YamlConfiguration;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
@@ -30,7 +32,7 @@ public class ControlListener extends ListenerAdapter {
     protected Role modrole;
     protected Role suprole;
 
-    public static HashMap<String, Tempchannel> tempChannels = new HashMap<String, Tempchannel>();
+    public static HashMap<String, Tempchannel> tempChannels = new HashMap<>();
 
     public static boolean isTempchannel(VoiceChannel voiceChannel) {
 
@@ -203,9 +205,8 @@ public class ControlListener extends ListenerAdapter {
             switch(args[1]) {
 
                 case "setname":
-                    String newName = event.getValue("tc_field_name").getAsString();
 
-                    channel.name = newName;
+                    channel.name = event.getValue("tc_field_name").getAsString();
                     channel.nameUpdated = true;
                     channel.getVoiceChannel().getManager().setName(channel.getName()).queue();
 
@@ -252,7 +253,7 @@ public class ControlListener extends ListenerAdapter {
                     }
 
                     channel.ephList.put(event.reply(channel.getMemberView(member, event.getMember())).setEphemeral(true).complete(), "editmember_" + member.getId());
-                    channel.updateMessages("menu_roles"); return;
+                    channel.updateMessages("menu_roles");
 
             }
         }
@@ -341,7 +342,7 @@ public class ControlListener extends ListenerAdapter {
 
                         SelectMenu.Builder list = SelectMenu.create("tc_controlmod");
                         list.setPlaceholder("Wähle Moderatoren aus");
-                        List<String> selected = new ArrayList<String>();
+                        List<String> selected = new ArrayList<>();
 
                         for(Member member : channel.modList) {
                             list.addOption(member.getEffectiveName(), "tc_selectmod_" + member.getId(), member.getUser().getAsTag() + " (" + member.getId() + ")", Emoji.fromUnicode(member.getRoles().get(0).getIcon().getEmoji()));
@@ -419,7 +420,6 @@ public class ControlListener extends ListenerAdapter {
 
             }else {
                event.reply("Du hast keine Berechtigung, um Einstellungen an diesem Kanal vorzunehmen!").setEphemeral(true).queue();
-               return;
             }
 
         }
@@ -429,15 +429,15 @@ public class ControlListener extends ListenerAdapter {
     public String generateId() {
 
         String charSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        String random = "";
+        StringBuilder random = new StringBuilder();
 
         for(int i = 0; i < 15; i++) {
 
-            random = random + charSet.charAt((int) (Math.random() * (charSet.length()-1)));
+            random.append(charSet.charAt((int) (Math.random() * (charSet.length() - 1))));
 
         }
 
-        return random;
+        return random.toString();
 
     }
 

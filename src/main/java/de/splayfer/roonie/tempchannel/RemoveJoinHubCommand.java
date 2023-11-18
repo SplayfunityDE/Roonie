@@ -30,11 +30,11 @@ public class RemoveJoinHubCommand extends ListenerAdapter {
 
                         try {
 
-                            Double d = Double.parseDouble(args[2]);
+                            Double.parseDouble(args[2]);
 
                             VoiceChannel c = event.getGuild().getVoiceChannelById(args[2]);
 
-                            if (JoinHubManager.existesJoinHub(c.getId())) {
+                            if (JoinHubManager.existesJoinHub(c.getIdLong())) {
                                 JoinHubManager.removeJoinHub(c);
                             }
 

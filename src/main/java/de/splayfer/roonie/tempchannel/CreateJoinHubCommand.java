@@ -30,14 +30,14 @@ public class CreateJoinHubCommand extends ListenerAdapter {
 
                         try {
 
-                            Double d = Double.parseDouble(args[2]);
+                            Double.parseDouble(args[2]);
                             VoiceChannel c = event.getGuild().getVoiceChannelById(args[2]);
 
                             System.out.println(c.getName());
 
                             //save to yml
 
-                            if (!JoinHubManager.existesJoinHub(c.getId())) {
+                            if (!JoinHubManager.existesJoinHub(c.getIdLong())) {
                                 JoinHubManager.createJoinHub(c, event.getMember());
                             }
 

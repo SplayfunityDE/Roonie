@@ -1,10 +1,11 @@
 package de.splayfer.roonie.giveaway;
 
 import de.splayfer.roonie.MongoDBDatabase;
-import lombok.Getter;
+import de.splayfer.roonie.Roonie;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.TextChannel;
 import org.bson.Document;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import java.util.Objects;
 
 public class Giveaway {
 
-    static MongoDBDatabase mongoDB = new MongoDBDatabase();
+    static MongoDBDatabase mongoDB = new MongoDBDatabase("splayfunity");
 
     private static HashMap<Member, Giveaway> giveaways = new HashMap<>();
 
@@ -141,9 +142,9 @@ public class Giveaway {
 
     }
 
-    public <T> List<?> keySet() {
+    public List<?> keySet() {
 
-        List<?> list = new ArrayList<>(){{
+        return new ArrayList<>(){{
 
             add(channel);
             add(prize);
@@ -155,8 +156,6 @@ public class Giveaway {
             add(message);
 
         }};
-
-        return list;
 
     }
 
@@ -190,11 +189,7 @@ public class Giveaway {
 
     public static boolean existsGiveaway(Member member) {
 
-        boolean check = false;
-
-        if (giveaways.containsKey(member)) check = true;
-
-        return check;
+        return giveaways.containsKey(member);
 
     }
 
@@ -203,7 +198,16 @@ public class Giveaway {
         String req = (String) requirement.keySet().toArray()[0];
         String val = requirement.get(req);
 
-        getDatabase().insert("GiveawayStats", new String[]{"channel", "prize", "duration", "timeFormat", "requirement", "value", "amount", "picture", "message"}, channel.getId(), prize, duration, timeFormat, req, val, amount, picture, message.getId());
+        mongoDB.insert("giveaway", new Document()
+                .append("channel", channel.getIdLong())
+                .append("prize", prize)
+                .append("duration", duration)
+                .append("timeFormat", timeFormat)
+                .append("requirement", req)
+                .append("value", val)
+                .append("amount", amount)
+                .append("picture", picture)
+                .append("message", message.getIdLong()));
     }
 
     public void removeFromMySQl() {
@@ -224,21 +228,21 @@ public class Giveaway {
     }
 
     public static Giveaway getFromMessage(Message message) {
-
-        return getDatabase().selectGiveaway("SELECT channel, prize, duration, timeFormat, requirement, value, amount, picture, message FROM GiveawayStats WHERE message = ?", message.getId());
-
+        return selectGiveaway(Objects.requireNonNull(mongoDB.find("giveaway", "message", message.getIdLong()).first()));
     }
 
     public static List<String> getEntrys(Message message) {
-
-        return getDatabase().getGiveawayEntrys( "SELECT guildMember FROM GiveawayEntrys WHERE message = ?", message.getId());
+        List<String> list = new ArrayList<>();
+        mongoDB.find("giveawayEntrs", "message", message.getIdLong()).forEach(document -> list.add(String.valueOf(document.getLong("message"))));
+        return list;
 
     }
 
     public List<String> getEntrys() {
-
-        return getDatabase().getGiveawayEntrys( "SELECT guildMember FROM GiveawayEntrys WHERE message = ?", message.getId());
-
+        List<String> list = new ArrayList<>();
+        for (Document doc : mongoDB.find("giveaway", new Document("message", message.getIdLong())))
+            list.add(doc.getLong("guildMember").toString());
+        return list;
     }
 
     public static void addEntry(Message message, Member member) {
@@ -247,18 +251,26 @@ public class Giveaway {
     }
 
     public static void removeEntry(Message message, Member member) {
-        mongoDB.drop("giveawayEntrys", );
-        getDatabase().update("DELETE FROM GiveawayEntrys WHERE message = ? AND guildMember = ?", message.getId(), member.getId());
+        mongoDB.drop("giveawayEntrys",new Document().append("message", message.getId()).append("guildMember", member.getId()));
     }
 
     public static List<Giveaway> getAllGiveaways() {
-
-        return getDatabase().selectAllGiveaways("SELECT channel, prize, duration, timeFormat, requirement, value, amount, picture, message FROM GiveawayStats");
+        List<Document> list = new ArrayList<>();
+        List<Giveaway> gwList = new ArrayList<>();
+        mongoDB.findAll("giveaway").forEach(list::add);
+        list.forEach(document -> gwList.add(selectGiveaway(document)));
+        return gwList;
     }
 
     public void delete(Member member) {
 
         giveaways.remove(member);
+    }
+
+    public static Giveaway selectGiveaway(Document document) {
+        TextChannel channel = Roonie.mainGuild.getTextChannelById(document.getLong("channel"));
+        assert channel != null;
+        return new Giveaway(channel, document.getString("prize"), document.getLong("duration"), document.getString("timeFormat"), new HashMap<>(){{put(document.getString("requirement"), document.getString("value"));}}, document.getInteger("amount"), document.getString("picture"), channel.getHistory().getMessageById(document.getLong("message")));
     }
 
 }

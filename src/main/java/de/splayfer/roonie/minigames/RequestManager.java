@@ -156,9 +156,7 @@ public class RequestManager extends ListenerAdapter {
                     try {
                         yml.save(FileSystem.GameLog);
                     } catch (IOException exception) {
-
                     }
-
 
                     EmbedBuilder bannerEmbed = new EmbedBuilder();
                     bannerEmbed.setColor(0x43b480);

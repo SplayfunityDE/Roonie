@@ -38,17 +38,15 @@ public class CoinBomb extends ListenerAdapter {
             }, 10 * 1000);
 
             int authorcount = 0;
-            String mentions = "";
+            StringBuilder mentions = new StringBuilder();
 
             for (Message m : channel.getHistory().retrievePast(100).complete()) {
 
                 if (authorcount <= 7) {
-                    if (!mentions.contains(m.getAuthor().getId())) {
+                    if (!mentions.toString().contains(m.getAuthor().getId())) {
                         authorcount++;
-                        mentions += m.getAuthor().getAsMention();
+                        mentions.append(m.getAuthor().getAsMention());
 
-                    } else {
-                        continue;
                     }
 
                 } else {
@@ -86,15 +84,7 @@ public class CoinBomb extends ListenerAdapter {
 
     private static boolean isCoinBomb() {
 
-        boolean check;
-
-        if (coinbomb) {
-            check = true;
-        } else {
-            check = false;
-        }
-
-        return check;
+        return coinbomb;
 
     }
 
@@ -103,11 +93,7 @@ public class CoinBomb extends ListenerAdapter {
         boolean check;
 
         if (coinBombchannel != null) {
-            if (channel.getId().equals(coinBombchannel.getId())) {
-                check = true;
-            } else {
-                check = false;
-            }
+            check = channel.getId().equals(coinBombchannel.getId());
         } else {
             check = false;
         }
@@ -123,11 +109,7 @@ public class CoinBomb extends ListenerAdapter {
 
             List<Emoji> emojis = List.of(Emoji.fromCustom("coin1", 1002493266903695360L, false), Emoji.fromCustom("coin2", 1002493284117135410L, false), Emoji.fromCustom("coin3", 1002493321450631220L, false));
 
-            if (emojis.contains(event.getEmoji())) {
-                check = true;
-            } else {
-                check = false;
-            }
+            check = emojis.contains(event.getEmoji());
         } else {
             check = false;
         }

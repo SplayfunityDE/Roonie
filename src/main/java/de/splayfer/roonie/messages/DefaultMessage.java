@@ -2,17 +2,13 @@ package de.splayfer.roonie.messages;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
-
-import java.util.Arrays;
-import java.util.HashMap;
 
 public class DefaultMessage {
 
-    private static int errorColor = 0xc01c34;
-    private static int successColor = 0x3aa65b;
-    private static String errorEmoji = "❗";
-    private static String successEmoji = "✅";
+    private static final int errorColor = 0xc01c34;
+    private static final int successColor = 0x3aa65b;
+    private static final String errorEmoji = "❗";
+    private static final String successEmoji = "✅";
 
     private String type;
     private String title;

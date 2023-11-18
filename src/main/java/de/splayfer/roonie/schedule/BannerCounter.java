@@ -98,7 +98,7 @@ public class BannerCounter {
 
                     case 4:
 
-                        member = new AttributedString(membercount.substring(0, 1) + "." + membercount.substring(1, 3) + " K");
+                        member = new AttributedString(membercount.charAt(0) + "." + membercount.substring(1, 3) + " K");
                         member.addAttribute(TextAttribute.SIZE, 30);
                         member.addAttribute(TextAttribute.FONT, doctorGlitch.deriveFont(120f));
 
@@ -106,7 +106,7 @@ public class BannerCounter {
 
                     case 5:
 
-                        member = new AttributedString(membercount.substring(0, 2) + "." + membercount.substring(2, 3) + " K");
+                        member = new AttributedString(membercount.substring(0, 2) + "." + membercount.charAt(2) + " K");
                         member.addAttribute(TextAttribute.SIZE, 30);
                         member.addAttribute(TextAttribute.FONT, doctorGlitch.deriveFont(120f));
 
@@ -148,7 +148,7 @@ public class BannerCounter {
 
                     case 5:
 
-                        online = new AttributedString(onlinecount.substring(0, 2) + "." + onlinecount.substring(2, 3) + " K");
+                        online = new AttributedString(onlinecount.substring(0, 2) + "." + onlinecount.charAt(2) + " K");
                         online.addAttribute(TextAttribute.SIZE, 30);
                         online.addAttribute(TextAttribute.FONT, doctorGlitch.deriveFont(120f));
 

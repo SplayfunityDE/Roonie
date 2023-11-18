@@ -118,7 +118,7 @@ public class TempchannelPageSystem {
 
         SelectMenu.Builder list = SelectMenu.create("tc_controlmod").setMinValues(0);
         list.setPlaceholder("Wähle Moderatoren aus");
-        List<String> selected = new ArrayList<String>();
+        List<String> selected = new ArrayList<>();
 
         if(channel.owner.equals(m)) {
             for(Member member : channel.modList) {
@@ -258,12 +258,12 @@ public class TempchannelPageSystem {
 
         List<Button> buttonTemp = new ArrayList<>();
 
-        for(int i = 0; i < buttons.length; i++) {
+        for (Button button : buttons) {
 
-            if(buttons[i].getId().equals(selfMenu)) {
-                buttonTemp.add(buttons[i].asDisabled().withStyle(ButtonStyle.PRIMARY).withId(buttons[i].getId()));
-            }else {
-                buttonTemp.add(buttons[i].withId(buttons[i].getId()));
+            if (button.getId().equals(selfMenu)) {
+                buttonTemp.add(button.asDisabled().withStyle(ButtonStyle.PRIMARY).withId(button.getId()));
+            } else {
+                buttonTemp.add(button.withId(button.getId()));
             }
 
         }
@@ -274,36 +274,35 @@ public class TempchannelPageSystem {
 
     public static String parseRegion(Region region) {
 
-        switch(region.getName()) {
-            case "automatic": return "Automatisch";
-            case "rotterdam": return "Europa";
-            case "brazil": return "Brasilien";
-            case "hongkong": return "Hong Kong";
-            case "india": return "Indien";
-            case "japan": return "Japan";
-            case "russia": return "Russland";
-            case "singapore": return "Singapur";
-            case "southafrica": return "Südafrika";
-            case "sydney": return "Sydney";
-            case "usa-central": return "USA";
-        }
-
-        return "Automatisch";
+        return switch (region.getName()) {
+            case "automatic" -> "Automatisch";
+            case "rotterdam" -> "Europa";
+            case "brazil" -> "Brasilien";
+            case "hongkong" -> "Hong Kong";
+            case "india" -> "Indien";
+            case "japan" -> "Japan";
+            case "russia" -> "Russland";
+            case "singapore" -> "Singapur";
+            case "southafrica" -> "Südafrika";
+            case "sydney" -> "Sydney";
+            case "usa-central" -> "USA";
+            default -> "Automatisch";
+        };
 
     }
 
     public static String getArray(Collection<Member> members) {
 
-        String array = "";
+        StringBuilder array = new StringBuilder();
 
         for(Member member : members) {
-            array = array + " " + member.getAsMention();
+            array.append(" ").append(member.getAsMention());
         }
-        if(array.equals("")) {
-            array = "Keine";
+        if(array.toString().isEmpty()) {
+            array = new StringBuilder("Keine");
         }
 
-        return array;
+        return array.toString();
 
     }
 

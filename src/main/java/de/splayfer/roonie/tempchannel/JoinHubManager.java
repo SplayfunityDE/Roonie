@@ -1,27 +1,25 @@
 package de.splayfer.roonie.tempchannel;
 
+import de.splayfer.roonie.MongoDBDatabase;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.VoiceChannel;
+import org.bson.Document;
 
 public class JoinHubManager {
 
-    @Getter
-    private static MySQLDatabase database = new MySQLDatabase("splayfunity");
+    static MongoDBDatabase mongoDB = new MongoDBDatabase("splayfunity");
 
     public static void createJoinHub(VoiceChannel channel, Member creator) {
-
-        getDatabase().insert("JoinHubs", new String[]{"channel", "creator"}, channel.getId(), creator.getId());
+        mongoDB.insert("voicehubs", new Document().append("channel", channel.getIdLong()).append("creator", creator.getIdLong()));
     }
 
     public static void removeJoinHub(VoiceChannel channel) {
-
-        getDatabase().update("DELETE FROM JoinHubs WHERE channel = ?", channel.getId());
+        mongoDB.drop("voicehubs", "channel", channel.getIdLong());
 
     }
 
-    public static boolean existesJoinHub(String channelId) {
-        return getDatabase().existsEntry("JoinHubs", "channel = ?", channelId);
+    public static boolean existesJoinHub(long channelId) {
+        return mongoDB.exists("voicehubs", "channel", channelId);
     }
-
 }

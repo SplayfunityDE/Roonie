@@ -3,11 +3,11 @@ package de.splayfer.roonie.level;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.font.TextAttribute;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -99,11 +99,11 @@ public class RankCommand extends ListenerAdapter {
 
             int xpziel = LevelManager.getLevelStep(level + 1);
 
-            Double step = Double.valueOf(xpziel) / 50;
-            Double xpcurrent = xp / step;
+            double step = (double) xpziel / 50;
+            double xpcurrent = xp / step;
 
                 try {
-                    xpBar = ImageIO.read(new File(System.getProperty("user.dir") + File.separator + "media" + File.separator + "rankImages" + File.separator + "line_" + xpcurrent.intValue() + ".png"));
+                    xpBar = ImageIO.read(new File(System.getProperty("user.dir") + File.separator + "media" + File.separator + "rankImages" + File.separator + "line_" + (int) xpcurrent + ".png"));
                 } catch (IOException exception) {
                     exception.printStackTrace();
                 }

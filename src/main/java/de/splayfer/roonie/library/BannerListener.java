@@ -207,10 +207,8 @@ public class BannerListener extends ListenerAdapter {
 
                                     archive = Font.createFont(Font.TRUETYPE_FONT, new File(System.getProperty("user.dir") + File.separator + "media" + File.separator + "fonts" + File.separator + "Archive.otf"));
 
-                                } catch (FontFormatException e) {
+                                } catch (FontFormatException | IOException e) {
                                     e.printStackTrace();
-                                } catch (IOException exception) {
-                                    exception.printStackTrace();
                                 }
 
                                 Graphics g = container.getGraphics();
@@ -303,9 +301,9 @@ public class BannerListener extends ListenerAdapter {
 
             }
 
-            if (send == true) {
+            EmbedBuilder bannerEmbed = new EmbedBuilder();
+            if (send) {
 
-                EmbedBuilder bannerEmbed = new EmbedBuilder();
                 bannerEmbed.setColor(0x43b480);
                 bannerEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/914518380088819742/banner_erfolg.png");
 
@@ -320,7 +318,6 @@ public class BannerListener extends ListenerAdapter {
 
             } else {
 
-                EmbedBuilder bannerEmbed = new EmbedBuilder();
                 bannerEmbed.setColor(0xed4245);
                 bannerEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/914518380353040384/banner_fehler.png");
 

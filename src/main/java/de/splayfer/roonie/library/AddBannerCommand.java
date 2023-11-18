@@ -33,8 +33,6 @@ public class AddBannerCommand extends ListenerAdapter {
                         String category = args[2];
                         String link = args[3];
 
-                        List<String> ymlList;
-
                         if (!LibraryManager.existsBanner(link)) {
                             LibraryManager.addBanner(category, link);
 

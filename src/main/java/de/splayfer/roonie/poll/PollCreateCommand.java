@@ -5,7 +5,10 @@ import de.splayfer.roonie.general.Roles;
 import de.splayfer.roonie.messages.DefaultMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.GuildChannel;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -18,9 +21,11 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.text.TextInput;
 import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 public class PollCreateCommand extends ListenerAdapter {
 
@@ -85,8 +90,8 @@ public class PollCreateCommand extends ListenerAdapter {
                             } else {
                                 //id
                                 try {
-                                    Double d = Double.parseDouble(event.getMessage().getContentStripped());
-                                    GuildChannel guildChannel = event.getGuild().getGuildChannelById(d.toString());
+                                    double d = Double.parseDouble(event.getMessage().getContentStripped());
+                                    GuildChannel guildChannel = event.getGuild().getGuildChannelById(Double.toString(d));
                                     if (guildChannel.getType().isMessage()) {
                                         channel = (MessageChannel) guildChannel;
                                     }

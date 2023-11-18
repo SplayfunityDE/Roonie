@@ -5,7 +5,6 @@ import de.splayfer.roonie.economy.DailyCommand;
 import de.splayfer.roonie.economy.MoneyCommand;
 import de.splayfer.roonie.general.AutoComplete;
 import de.splayfer.roonie.general.AutoRoleListener;
-import de.splayfer.roonie.general.Roles;
 import de.splayfer.roonie.general.WelcomeListener;
 import de.splayfer.roonie.giveaway.GiveawayCreateCommand;
 import de.splayfer.roonie.giveaway.GiveawayEnterListener;
@@ -29,13 +28,11 @@ import de.splayfer.roonie.tempchannel.ChannelListener;
 import de.splayfer.roonie.tempchannel.ControlListener;
 import de.splayfer.roonie.tempchannel.CreateJoinHubCommand;
 import de.splayfer.roonie.tempchannel.RemoveJoinHubCommand;
-import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -44,11 +41,9 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
-import org.bspfsystems.yamlconfiguration.file.YamlConfiguration;
 
 import javax.security.auth.login.LoginException;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.EnumSet;
@@ -66,12 +61,7 @@ public class Roonie {
     public static Guild emojiServerGuild;
     public static Guild emojiServerGuild2;
 
-    public static void main(String[] args) throws LoginException, IOException, InterruptedException, ClassNotFoundException {
-        new Roonie();
-    }
-
-    public Roonie() throws LoginException, IllegalArgumentException, IOException, InterruptedException, ClassNotFoundException {
-
+    public static void main(String[] args) throws LoginException, IOException {
         FileSystem.loadFileSystem();
 
         builder = JDABuilder.createDefault("ODg2MjA5NzYzMTc4ODQ0MjEy.G6jBkR.Wr_hOGdDVLscXvI1hfvo1nks9bedkcSDA87guw");
@@ -184,7 +174,7 @@ public class Roonie {
 
         LevelListener.checkVoiceMembers();
 
-        shardMan.getGuildById(mainServerId).upsertCommand("rank", "\uD83D\uDCCB │ Zeigt dir deinen aktuellen Rank an!").addOption(OptionType.USER, "nutzer", "Wähle einen bestimmten Nutzer!", false).queue();
+        shardMan.getGuildById(mainServerId).upsertCommand("rank", "\uD83D\uDCCB │ Zeigt dir deinen aktuellen Rank an!").addOption(OptionType.USER, "nutzer", "Wähle einen bestimmten Nutzer!", false)..queue();
         shardMan.getGuildById(mainServerId).upsertCommand("rank", "\uD83D\uDCCB │ Zeigt dir deinen aktuellen Rank an!").addOption(OptionType.USER, "nutzer", "Wähle einen bestimmten Nutzer!", false).queue();
         shardMan.getGuildById(mainServerId).upsertCommand("levels", "✨ │ Schau dir unsere Level-Vorteile an!").queue();
         shardMan.getGuildById(mainServerId).upsertCommand("level", "⚙ │ Verwalte die Level eines Nutzers!").addSubcommands(new SubcommandData("add", "➕ │ Füge dem Nutzer eine bestimmte Anzahl von Leveln hinzu!").addOption(OptionType.USER, "nutzer", "\uD83D\uDC65 │ Nutzer, dessen Level du verwalten möchtest!", true).addOption(OptionType.INTEGER, "anzahl", "\uD83D\uDCD1 │ Anzahl der zu verwaltenden Level!", true), new SubcommandData("remove", "➖ │ Entferne dem Nutzer eine bestimmte Anzahl von Leveln!").addOption(OptionType.USER, "nutzer", "\uD83D\uDC65 │ Nutzer, dessen Level du verwalten möchtest!", true).addOption(OptionType.INTEGER, "anzahl", "\uD83D\uDCD1 │ Anzahl der zu verwaltenden Level!", true), new SubcommandData("set", "\uD83D\uDCC3 │ Setze dem Nutzer die Anzahl seiner Level!").addOption(OptionType.USER, "nutzer", "\uD83D\uDC65 │ Nutzer, dessen Level du verwalten möchtest!", true).addOption(OptionType.INTEGER, "anzahl", "\uD83D\uDCD1 │ Anzahl der zu verwaltenden Level!", true)).queue();

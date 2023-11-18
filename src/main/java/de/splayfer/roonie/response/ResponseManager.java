@@ -1,36 +1,39 @@
 package de.splayfer.roonie.response;
 
+import de.splayfer.roonie.MongoDBDatabase;
+import de.splayfer.roonie.Roonie;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.Member;
+import org.bson.Document;
 
 public class ResponseManager {
 
-    public record Response (String message, Member creator, String type, String value) {}
+    public record Response (String message, Member creator, String type, String value) {
+        public Document getDocument() {
+            return new Document()
+                    .append("message", message)
+                    .append("creator", creator.getIdLong())
+                    .append("type", type)
+                    .append("value", value);
+        }
+    }
 
-    @Getter
-    private static MySQLDatabase database = new MySQLDatabase("splayfunity");
-
+    static MongoDBDatabase mongoDB = new MongoDBDatabase("splayfunity");
 
     public static void createResponse(String message, Member creator, String type, String value) {
-
-        getDatabase().insert("ResponseLog", new String[]{"message", "creator", "type", "value"}, message, creator.getId(), type, value);
+        mongoDB.insert("response", new Response(message, creator, type, value).getDocument());
     }
 
     public static void removeResponse(String message) {
-
-        getDatabase().update("DELETE FROM ResponseLog WHERE message = ?", message);
-
+        mongoDB.drop("response", "message", message);
     }
 
     public static Response getResponse(String message) {
-
-        return getDatabase().selectResponse("SELECT message, creator, type, value FROM ResponseLog WHERE message = ?", message);
+        Document doc = mongoDB.find("response", "message", message).first();
+        return new Response(doc.getString("message"), Roonie.mainGuild.getMemberById(doc.getLong("creator")), doc.getString("type"), doc.getString("value"));
     }
 
     public static boolean existsResponse(String message){
-
-        return getDatabase().existsEntry("ResponseLog", "message = ?", message);
+        return mongoDB.exists("repsonse", "message", message);
     }
-
-
 }

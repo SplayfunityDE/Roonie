@@ -16,7 +16,7 @@ public class ChannelListener extends ListenerAdapter {
     public void onGuildVoiceJoin(GuildVoiceJoinEvent event) {
         System.out.println("Line 17: Event was triggered");
 
-        if (JoinHubManager.existesJoinHub(event.getChannelJoined().getId())) {
+        if (JoinHubManager.existesJoinHub(event.getChannelJoined().getIdLong())) {
             System.out.println("Line 20: If joined in VoiceHub");
             createNewChannel(event.getGuild(), event.getMember());
             System.out.println("Line 20: Channel created successfully");
@@ -61,7 +61,7 @@ public class ChannelListener extends ListenerAdapter {
     @Override
     public void onGuildVoiceMove(GuildVoiceMoveEvent event) {
 
-        if (JoinHubManager.existesJoinHub(event.getChannelJoined().getId())) {
+        if (JoinHubManager.existesJoinHub(event.getChannelJoined().getIdLong())) {
             createNewChannel(event.getGuild(), event.getMember());
         }
 

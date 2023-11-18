@@ -194,7 +194,7 @@ public class GameSelector extends ListenerAdapter {
             EmbedBuilder bannerEmbed;
             EmbedBuilder mainEmbed;
 
-            if (Queue.checkForGame() == true) {
+            if (Queue.checkForGame()) {
 
                 //game found
 
@@ -329,7 +329,7 @@ public class GameSelector extends ListenerAdapter {
 
                                     if (!event.getMessage().getMentions().getMembers().get(0).getId().equals(event.getAuthor().getId())) {
 
-                                        if (PlayerChecker.checkPlayer(event.getMessage().getMentions().getMembers().get(0)) == true) {
+                                        if (PlayerChecker.checkPlayer(event.getMessage().getMentions().getMembers().get(0))) {
 
                                             yml.set(event.getChannel().getId() + ".player2", event.getMessage().getMentions().getMembers().get(0).getId());
 
@@ -685,11 +685,8 @@ public class GameSelector extends ListenerAdapter {
 
                     }
 
-                } else {
+                }  //do nothing
 
-                    //do nothing
-
-                }
 
             }
 

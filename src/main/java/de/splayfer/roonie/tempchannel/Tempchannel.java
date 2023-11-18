@@ -16,17 +16,16 @@ public class Tempchannel {
     private final String settingsCategory = "887680440318705735";
     private final String voiceCategory = "873506353551925310";
 
-    public Member owner = null;
+    public Member owner;
     public VoiceChannel vc = null;
     public TextChannel settings = null;
 
     public String name;
     public String emoji = "⏳";
-    public boolean nameUpdated = false;
-    public String channelType = "";
+    public boolean nameUpdated;
     public Integer limit = 0;
 
-    public List<Member> modList = new ArrayList<Member>();
+    public List<Member> modList = new ArrayList<>();
     public HashMap<Member, Member> banned = new HashMap<>();
     public HashMap<Member, Member> muted = new HashMap<>();
 
@@ -50,6 +49,7 @@ public class Tempchannel {
             updateMessage();
         }
 
+        nameUpdated = false;
     }
 
     public String getName() {
@@ -162,8 +162,8 @@ public class Tempchannel {
         eb.setDescription("Hier kannst du " + member.getAsMention() + " in deinem Kanal moderieren");
         eb.setThumbnail(member.getUser().getEffectiveAvatarUrl());
 
-        Button ban = null;
-        Button mute = null;
+        Button ban;
+        Button mute;
 
         if(banned.containsKey(member)) {
             ban = Button.secondary("tc_unban_" + member.getId(), "Entbannen");
@@ -250,11 +250,7 @@ public class Tempchannel {
         if(owner.equals(member)) {
             return true;
         }
-        if(modList.contains(member)) {
-            return true;
-        }
-
-        return false;
+        return modList.contains(member);
 
     }
 

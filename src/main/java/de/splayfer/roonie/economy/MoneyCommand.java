@@ -1,6 +1,5 @@
 package de.splayfer.roonie.economy;
 
-import de.splayfer.roonie.economy.EconomyManager;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Member;
@@ -29,12 +28,12 @@ public class MoneyCommand extends ListenerAdapter {
 
         List<Button> buttonTemp = new ArrayList<>();
 
-        for(int i = 0; i < buttons.length; i++) {
+        for (Button button : buttons) {
 
-            if(buttons[i].getId().equals(selfMenu)) {
-                buttonTemp.add(buttons[i].asDisabled().withStyle(ButtonStyle.PRIMARY).withId(buttons[i].getId()));
-            }else {
-                buttonTemp.add(buttons[i].withId(buttons[i].getId()));
+            if (button.getId().equals(selfMenu)) {
+                buttonTemp.add(button.asDisabled().withStyle(ButtonStyle.PRIMARY).withId(button.getId()));
+            } else {
+                buttonTemp.add(button.withId(button.getId()));
             }
 
         }
@@ -98,21 +97,21 @@ public class MoneyCommand extends ListenerAdapter {
             builder.setTitle(":coin: **SPLΛYFUNITY Economy Rangliste**");
             builder.setDescription("> Hier siehst du die besten Nutzer aus dem gesamten Economy System!");
 
-            String name = "";
-            String coins = "";
+            StringBuilder name = new StringBuilder();
+            StringBuilder coins = new StringBuilder();
             int i = 1;
 
             for (Integer num : list.keySet()) {
-                name += "\n **" + i + ".** <:people:1001082477537935501> <@" + list.get(num) + ">: ";
-                coins += "\n **" + num + "**";
+                name.append("\n **").append(i).append(".** <:people:1001082477537935501> <@").append(list.get(num)).append(">: ");
+                coins.append("\n **").append(num).append("**");
                 i++;
             }
             if (!list.containsValue(member.getId())) {
-                name += "\n **...** \n \n <:people:1001082477537935501> <@" + member.getId() + ">: ";
-                coins += "\n **...** \n \n **" + EconomyManager.getMoney(member) + "**";
+                name.append("\n **...** \n \n <:people:1001082477537935501> <@").append(member.getId()).append(">: ");
+                coins.append("\n **...** \n \n **").append(EconomyManager.getMoney(member)).append("**");
             }
-            builder.addField("Name", name, true);
-            builder.addField("", coins, true);
+            builder.addField("Name", name.toString(), true);
+            builder.addField("", coins.toString(), true);
 
             builder.setImage("https://cdn.discordapp.com/attachments/985551183479463998/986627378417655858/auto_faqw.png");
             builder.setFooter("ID: " + member.getId());
@@ -135,25 +134,16 @@ public class MoneyCommand extends ListenerAdapter {
             Member target = event.getGuild().getMemberById(event.getMessage().getEmbeds().get(1).getFooter().getText().substring(4));
             boolean other;
 
-            if (target.equals(event.getMember())) {
-                other = false;
-            } else {
-                other = true;
-            }
+            other = !target.equals(event.getMember());
 
-            switch(args[1]) {
-
-                case "overview":
-                    message = getOverviewEmbed(target, other); break;
-                case "leaderboard":
-                    message = getLeaderboardEmbed(target); break;
-            }
+            message = switch (args[1]) {
+                case "overview" -> getOverviewEmbed(target, other);
+                case "leaderboard" -> getLeaderboardEmbed(target);
+                default -> message;
+            };
 
             event.deferEdit().queue();
             event.getHook().editOriginal(message).queue();
-
-            return;
-
         }
 
     }
@@ -207,22 +197,22 @@ public class MoneyCommand extends ListenerAdapter {
         builder.setTitle(":coin: **SPLΛYFUNITY Economy Rangliste**");
         builder.setDescription("> Hier siehst du die besten Nutzer aus dem gesamten Economy System!");
 
-        String name = "";
-        String coins = "";
+        StringBuilder name = new StringBuilder();
+        StringBuilder coins = new StringBuilder();
         int i = 1;
 
         for (Integer num : list.keySet()) {
-            name += "\n **" + i + ".** <:people:1001082477537935501> <@" + list.get(num) + ">: ";
-            coins += "\n **" + num + "**";
+            name.append("\n **").append(i).append(".** <:people:1001082477537935501> <@").append(list.get(num)).append(">: ");
+            coins.append("\n **").append(num).append("**");
             i++;
         }
 
         if (!list.containsValue(m.getId())) {
-            name += "\n **...** \n \n <:people:1001082477537935501> <@" + m.getId() + ">: ";
-            coins += "\n **...** \n \n **" + EconomyManager.getMoney(m) + "**";
+            name.append("\n **...** \n \n <:people:1001082477537935501> <@").append(m.getId()).append(">: ");
+            coins.append("\n **...** \n \n **").append(EconomyManager.getMoney(m)).append("**");
         }
-        builder.addField("Name", name, true);
-        builder.addField("", coins, true);
+        builder.addField("Name", name.toString(), true);
+        builder.addField("", coins.toString(), true);
 
         builder.setImage("https://cdn.discordapp.com/attachments/985551183479463998/986627378417655858/auto_faqw.png");
         builder.setFooter("ID: " + m.getId());

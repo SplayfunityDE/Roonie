@@ -7,14 +7,16 @@ import org.bson.Document;
 
 public class LevelManager extends ListenerAdapter {
 
-    static MongoDBDatabase mongoDB = new MongoDBDatabase();
+    static MongoDBDatabase mongoDB = new MongoDBDatabase("splayfunity");
     public static void addXpToUser(Member member, int amount) {
         insertUser(member);
-        mongoDB.updateLine("level", new Document("guildMember", member.getIdLong()), "xp", getXp(member));
+        mongoDB.updateLine("level", new Document("guildMember", member.getIdLong()), "xp", getXp(member) + amount);
     }
 
     public static void removeXpFromUser(Member member, int amount) {
         insertUser(member);
+        if (amount > getXp(member))
+            amount = getXp(member);
         mongoDB.updateLine("level", new Document("guildMember", member.getIdLong()), "xp", getXp(member) - amount);
     }
 
@@ -30,6 +32,8 @@ public class LevelManager extends ListenerAdapter {
 
     public static void removeLevelFromUser(Member member, int amount) {
         insertUser(member);
+        if (amount > getLevel(member))
+            amount = getLevel(member);
         mongoDB.updateLine("level", new Document("guildMember", member.getIdLong()), "level", getLevel(member) - amount);
     }
 
@@ -39,8 +43,10 @@ public class LevelManager extends ListenerAdapter {
     }
 
     public static int getLevel(Member member) {
-        insertUser(member);
-        return mongoDB.find("level", "guildMember", member.getIdLong()).first().getInteger("level");
+        if (existsUser(member))
+            return mongoDB.find("level", "guildMember", member.getIdLong()).first().getInteger("level");
+        else
+            return 0;
     }
 
     public static int getXp(Member member) {
@@ -48,8 +54,12 @@ public class LevelManager extends ListenerAdapter {
         return mongoDB.find("level", "guildMember", member.getIdLong()).first().getInteger("xp");
     }
 
+    public static boolean existsUser(Member member){
+        return mongoDB.exists("level", "guildMember", member.getIdLong());
+    }
+
     public static void insertUser(Member member) {
-        if (mongoDB.exists("level", "guildMember", member.getIdLong()))
+        if (!existsUser(member))
             mongoDB.insert("level", new Document()
                     .append("guildmember", member.getIdLong())
                     .append("level", 0)
@@ -57,7 +67,7 @@ public class LevelManager extends ListenerAdapter {
     }
 
     public static int getLevelStep(int level) {
-        return mongoDB.find("levelsteps", "level", 3).first().getInteger("xp");
+        return mongoDB.find("levelsteps", "level", level).first().getInteger("xp");
     }
 
 }

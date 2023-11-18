@@ -6,10 +6,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.bspfsystems.yamlconfiguration.file.YamlConfiguration;
 public class AutoRoleListener extends ListenerAdapter {
-
-    YamlConfiguration yml;
 
     public void onGuildMemberJoin (GuildMemberJoinEvent event) {
 

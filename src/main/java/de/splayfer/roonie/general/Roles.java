@@ -77,7 +77,7 @@ public enum Roles {
     everyone ("everyone", "873506353551925308"),
     MEMBER ("member", "891292965241233448");
 
-    private ArrayList<String> roleIds;
+    private final ArrayList<String> roleIds;
     private String name;
 
     private Roles(String name, String... roleIds){

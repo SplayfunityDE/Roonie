@@ -21,7 +21,7 @@ public class LevelListener extends ListenerAdapter {
 
     public static void initRoles(Guild guild) {
 
-        levelroles = new HashMap<Integer, Role>(){{
+        levelroles = new HashMap<>() {{
             put(5, Roles.LVL5.getRole(guild));
             put(10, Roles.LVL10.getRole(guild));
             put(20, Roles.LVL20.getRole(guild));
@@ -72,10 +72,10 @@ public class LevelListener extends ListenerAdapter {
 
                     initRoles(event.getGuild());
 
-                    if (levelroles.keySet().contains(i)) {
+                    if (levelroles.containsKey(i)) {
 
                         for (Role r : member.getRoles()) {
-                            if (levelroles.values().contains(r)) {
+                            if (levelroles.containsValue(r)) {
                                 member.getGuild().removeRoleFromMember(member.getUser(), r).queue();
                             }
                         }

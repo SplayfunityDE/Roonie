@@ -5,14 +5,13 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.List;
+import java.util.Objects;
 
 public class GiveawayEnterListener extends ListenerAdapter {
 
-    String id;
-
     public void onButtonInteraction (ButtonInteractionEvent event) {
 
-        if (event.getButton().getId().equals("giveaway.enter")) {
+        if (Objects.requireNonNull(event.getButton().getId()).equals("giveaway.enter")) {
 
             if (Giveaway.isGiveaway(event.getMessage())) {
 

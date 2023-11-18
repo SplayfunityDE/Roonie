@@ -1,49 +1,56 @@
 package de.splayfer.roonie.economy;
 
-import lombok.Getter;
+import de.splayfer.roonie.MongoDBDatabase;
 import net.dv8tion.jda.api.entities.Member;
+import org.bson.Document;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class EconomyManager {
 
-    @Getter
-    private static MySQLDatabase database = new MySQLDatabase("splayfunity");
-
+    static MongoDBDatabase mongoDB = new MongoDBDatabase("splayfunity");
 
     public static void addMoneyToUser(Member member, int amount) {
         insertUser(member);
-        getDatabase().update("UPDATE MoneyStats SET amount = amount + ? WHERE guildMember = ?", amount, member.getId());
+        mongoDB.updateLine("money", new Document("guildMember", member.getIdLong()), "amount", getMoney(member) + amount);
     }
 
     public static void removeMoneyFromUser(Member member, int amount) {
         insertUser(member);
-        getDatabase().update("UPDATE MoneyStats SET amount = amount - ? WHERE guildMember = ?", amount, member.getId());
+        if (amount > getMoney(member))
+            amount = getMoney(member);
+        mongoDB.updateLine("money", new Document("guildMember", member.getIdLong()), "amount", getMoney(member) - amount);
 
     }
 
     public static int getMoney(Member member) {
+        if (existsUser(member))
+            return mongoDB.find("money", "guildMember", member.getIdLong()).first().getInteger("amount");
+        else
+            return 0;
+    }
+
+    public static void setMoney(Member member, int amount) {
         insertUser(member);
-        return getDatabase().select(Integer.class, "SELECT amount FROM MoneyStats WHERE guildMember = ?", "amount", member.getId());
+        mongoDB.updateLine("money", new Document("guildMember", member.getIdLong()), "amount", amount);
     }
 
     public static Map<Integer, String> top(int top) {
-
-        //SELECT * FROM Kontostand ORDER BY amount DESC LIMIT 3
-
-        return getDatabase().top("SELECT * FROM MoneyStats ORDER BY amount DESC LIMIT " + top, "amount");
+        HashMap<Integer, String> list = new HashMap<>();
+        mongoDB.top("money", "amount", 3).forEach(document -> list.put(document.getInteger("amount"), String.valueOf(document.getLong("guildMember"))));
+        return list;
     }
 
     public static boolean existsUser(Member member){
-        //insertUser(member);
-        return getDatabase().existsEntry("MoneyStats", "guildMember = ?", member.getId());
+        return mongoDB.exists("money", "guildMember", member.getIdLong());
     }
 
     public static void insertUser(Member member) {
-
         if(!existsUser(member))
-            getDatabase().insert("MoneyStats", new String[]{"guildMember"}, member.getId());
-
+            mongoDB.insert("money", new Document()
+                    .append("guildMember", member.getIdLong())
+                    .append("amount", 0));
     }
 
 }

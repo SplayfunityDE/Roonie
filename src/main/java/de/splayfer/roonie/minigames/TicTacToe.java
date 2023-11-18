@@ -38,9 +38,9 @@ public class TicTacToe extends ListenerAdapter {
 
             int number = Integer.parseInt(event.getValues().get(0));
 
-            if (checkEnd(event.getChannel().getId()) == false) {
+            if (!checkEnd(event.getChannel().getId())) {
 
-                if (checkTurn(event.getMember()) == true) {
+                if (checkTurn(event.getMember())) {
 
                     yml = YamlConfiguration.loadConfiguration(FileSystem.GameLog);
 
@@ -64,7 +64,7 @@ public class TicTacToe extends ListenerAdapter {
 
                         event.deferEdit().queue();
 
-                        if (checkForWin(event.getChannel().getId()) == true) {
+                        if (checkForWin(event.getChannel().getId())) {
 
                             Member winner = event.getMember();
 
@@ -464,15 +464,7 @@ public class TicTacToe extends ListenerAdapter {
 
         if (yml.contains(gameID + ".turn")) {
 
-            if (yml.getString(gameID + ".turn").equals(member.getId())) {
-
-                check = true;
-
-            } else {
-
-                check = false;
-
-            }
+            check = yml.getString(gameID + ".turn").equals(member.getId());
 
         } else {
 
@@ -484,15 +476,7 @@ public class TicTacToe extends ListenerAdapter {
                 exception.printStackTrace();
             }
 
-            if (member.getId().equals(yml.getString(gameID + ".player1"))) {
-
-                check = true;
-
-            } else {
-
-                check = false;
-
-            }
+            check = member.getId().equals(yml.getString(gameID + ".player1"));
 
         }
 
@@ -619,15 +603,8 @@ public class TicTacToe extends ListenerAdapter {
     public boolean checkEnd(String gameID) {
 
         yml = YamlConfiguration.loadConfiguration(FileSystem.GameLog);
-        boolean check = false;
 
-        if (yml.getString(gameID + ".status").equals("ending")) {
-
-            check = true;
-
-        }
-
-        return check;
+        return yml.getString(gameID + ".status").equals("ending");
 
     }
 

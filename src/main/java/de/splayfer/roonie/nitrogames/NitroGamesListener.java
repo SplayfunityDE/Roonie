@@ -106,11 +106,11 @@ public class NitroGamesListener extends ListenerAdapter {
 
         } else if (event.getSelectMenu().getId().equals("nitrogames.select")) {
 
-            String links = "";
+            StringBuilder links = new StringBuilder();
 
             for (String s : event.getValues()) {
 
-                links = links + " " + s;
+                links.append(" ").append(s);
 
             }
 
@@ -124,7 +124,7 @@ public class NitroGamesListener extends ListenerAdapter {
             entryEmbed.setDescription("Klicke nun unten auf die Schaltfläche um loszulegen!");
             entryEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");  //  <-- Nicht benötigt!
 
-            event.reply(links).setEphemeral(true).queue();
+            event.reply(links.toString()).setEphemeral(true).queue();
 
         }
 

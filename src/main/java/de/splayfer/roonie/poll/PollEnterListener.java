@@ -8,11 +8,10 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.bspfsystems.yamlconfiguration.file.YamlConfiguration;
+
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class PollEnterListener extends ListenerAdapter {
@@ -173,7 +172,7 @@ public class PollEnterListener extends ListenerAdapter {
 
                         }
 
-                        if (yml.getBoolean(buttonClickEvent.getMessage().getId() + ".showvoting") == true) {
+                        if (yml.getBoolean(buttonClickEvent.getMessage().getId() + ".showvoting")) {
 
                             replaceEmbed = new EmbedBuilder();
                             replaceEmbed.setColor(buttonClickEvent.getMessage().getEmbeds().get(1).getColor());
@@ -295,7 +294,7 @@ public class PollEnterListener extends ListenerAdapter {
 
                         }
 
-                        if (yml.getBoolean(buttonClickEvent.getMessage().getId() + ".showvoting") == true) {
+                        if (yml.getBoolean(buttonClickEvent.getMessage().getId() + ".showvoting")) {
 
                             replaceEmbed = new EmbedBuilder();
                             replaceEmbed.setColor(buttonClickEvent.getMessage().getEmbeds().get(1).getColor());
@@ -417,7 +416,7 @@ public class PollEnterListener extends ListenerAdapter {
 
                         }
 
-                        if (yml.getBoolean(buttonClickEvent.getMessage().getId() + ".showvoting") == true) {
+                        if (yml.getBoolean(buttonClickEvent.getMessage().getId() + ".showvoting")) {
 
                             replaceEmbed = new EmbedBuilder();
                             replaceEmbed.setColor(buttonClickEvent.getMessage().getEmbeds().get(1).getColor());

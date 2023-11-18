@@ -1,61 +1,59 @@
 package de.splayfer.roonie.library;
 
-import lombok.Getter;
+import de.splayfer.roonie.MongoDBDatabase;
+import org.bson.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LibraryManager {
 
-    @Getter
-    private static MySQLDatabase database = new MySQLDatabase("splayfunity");
-
+    static MongoDBDatabase mongoDB = new MongoDBDatabase("splayfunity");
 
     public static void addTemplate(String category, String url) {
-
-        getDatabase().insert("Templates", new String[]{"category", "url"}, category, url);
+        mongoDB.insert("templates", new Document()
+                .append("category", category)
+                .append("url", url));
     }
 
     public static void removeTemplate(String url) {
-
-        getDatabase().update("DELETE FROM LibraryTemplates WHERE url = ?", url);
+        mongoDB.drop("templates", "url", url);
 
     }
 
     public static List<String> getTemplatesByCategory(String category) {
-
-        return getDatabase().selectTemplates( "SELECT url FROM LibraryTemplates WHERE category = ?", category);
+        List<String> list = new ArrayList<>();
+        mongoDB.find("templates", "category", category).forEach(document -> list.add(document.getString("url")));
+        return list;
     }
 
     public static boolean existsTemplate(String message) {
-
-        return getDatabase().existsEntry("LibraryTemplates", "url = ?", message);
+        return mongoDB.exists("templates", "url", message);
     }
 
 
     public static void addBanner(String category, String url) {
-
-        getDatabase().insert("LibraryBanner", new String[]{"category", "url"}, category, url);
+        mongoDB.insert("banner", new Document()
+                .append("category", category)
+                .append("url", url));
     }
 
     public static void removeBanner(String url) {
-
-        getDatabase().update("DELETE FROM LibraryBanner WHERE url = ?", url);
-
+        mongoDB.drop("banner", "url", url);
     }
 
     public static List<String> getBannerByCategory(String category) {
-
-        return getDatabase().selectTemplates( "SELECT url FROM LibraryBanner WHERE category = ?", category);
+        List<String> list = new ArrayList<>();
+        mongoDB.find("banner", "category", category).forEach(document -> list.add(document.getString("url")));
+        return list;
     }
 
     public static boolean existsBanner(String message) {
-
-        return getDatabase().existsEntry("LibraryBanner", "url = ?", message);
+        return mongoDB.exists("banner", "url", message);
     }
 
     public static boolean existsBannerCategory (String category) {
-
-        return getDatabase().existsEntry("LibraryBanner", "category = ?", category);
+        return mongoDB.exists("banner", "category", category);
     }
 
 }

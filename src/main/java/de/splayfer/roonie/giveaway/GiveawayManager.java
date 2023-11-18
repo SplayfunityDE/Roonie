@@ -30,8 +30,8 @@ public class GiveawayManager {
 
                         //edit message
 
-                        Guild guild = null;
-                        MessageChannel channel = null;
+                        Guild guild;
+                        MessageChannel channel;
 
                         guild = Roonie.mainGuild;
                         channel = giveaway.getChannel();
@@ -41,7 +41,7 @@ public class GiveawayManager {
                         List<String> entrys = giveaway.getEntrys();
 
                         List<Member> winners = new ArrayList<>();
-                        String winmessage = "";
+                        StringBuilder winmessage = new StringBuilder();
 
                         if (entrys.size() >= giveaway.getAmount()) {
 
@@ -54,7 +54,7 @@ public class GiveawayManager {
 
                                 winners.add(winner);
                                 entrys.remove(winner.getId());
-                                winmessage = winmessage + winner.getAsMention();
+                                winmessage.append(winner.getAsMention());
 
                             }
 
@@ -69,14 +69,14 @@ public class GiveawayManager {
                             main.setDescription("Dieses Giveaway wurde bereits beendet! Du kannst hier die Details einsehen!");
                             main.addField(m.getEmbeds().get(1).getFields().get(0).getName(), m.getEmbeds().get(1).getFields().get(0).getValue(), true);
                             main.addField(m.getEmbeds().get(1).getFields().get(1).getName(), "<:cancel:877158821779345428> BEREITS BEENDET", true);
-                            main.addField(":busts_in_silhouette: Gewinner", winmessage, true);
+                            main.addField(":busts_in_silhouette: Gewinner", winmessage.toString(), true);
 
                             List<Button> buttons = new ArrayList<>();
                             buttons.add(Button.secondary("giveaway.closed", "Giveaway wurde bereits beendet!").withEmoji(Emoji.fromCustom("cancel", Long.parseLong("877158821779345428"), false)));
 
                             m.editMessageEmbeds(banner.build(), main.build()).setActionRow(buttons).queue();
 
-                            Message ping = channel.sendMessage(winmessage).complete();
+                            Message ping = channel.sendMessage(winmessage.toString()).complete();
                             ping.delete().queue();
 
                             for (Member dmMember: winners) {
@@ -96,7 +96,7 @@ public class GiveawayManager {
                                 dmMessage.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
 
                                 dm.sendMessageEmbeds(banner.build(), dmMessage.build()).queue();
-                                dm.sendMessage(guild.getVanityUrl()).queue();
+                                dm.sendMessage(Objects.requireNonNull(guild.getVanityUrl())).queue();
 
                             }
 

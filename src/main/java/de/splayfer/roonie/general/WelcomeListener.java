@@ -52,7 +52,6 @@ public class WelcomeListener extends ListenerAdapter {
 
         if (!buttonClickEvent.isFromGuild()) {
 
-            EmbedBuilder bannerEmbed;
             EmbedBuilder mainEmbed;
 
             switch (buttonClickEvent.getButton().getId()) {

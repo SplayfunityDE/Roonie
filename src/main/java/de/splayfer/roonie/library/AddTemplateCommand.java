@@ -1,17 +1,14 @@
 package de.splayfer.roonie.library;
 
 import de.splayfer.roonie.Roonie;
-import de.splayfer.roonie.messages.DefaultMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -19,21 +16,6 @@ public class AddTemplateCommand extends ListenerAdapter {
 
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd - HH:mm ");
     Date currentTime = new Date();
-
-    HashMap<String, String> initCategories() {
-
-        return new HashMap<>(){{
-
-            put("gaming", "<:controller:885085671579062284> Gaming");
-            put("musik", "<a:music:886624918983278622> Musik");
-            put("community", "<a:partner:885212849440448512> Community");
-            put("content", "\uD83D\uDCFD Content Creator");
-            put("galaxy", "\uD83C\uDF00 Galaxy");
-            put("projekt", "<:folder:883415478700232735> Projekt");
-
-        }};
-
-    }
 
     public void onMessageReceived (MessageReceivedEvent event) {
 
