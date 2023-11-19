@@ -3,20 +3,26 @@ package de.splayfer.roonie.tempchannel;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.Region;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
-import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.interactions.components.Modal;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
 import net.dv8tion.jda.api.interactions.components.selections.SelectOption;
+import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import net.dv8tion.jda.api.interactions.components.text.TextInput;
 import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
+import net.dv8tion.jda.api.interactions.modals.Modal;
+import net.dv8tion.jda.api.utils.messages.MessageEditData;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,11 +41,11 @@ public class ControlListener extends ListenerAdapter {
     public static HashMap<String, Tempchannel> tempChannels = new HashMap<>();
 
     public static boolean isTempchannel(VoiceChannel voiceChannel) {
-
        for(Entry<String, Tempchannel> entry : tempChannels.entrySet()) {
            if(entry.getValue().getVoiceChannel().equals(voiceChannel)) {
                return true;
            }
+           System.out.println("false");
        }
 
        return false;
@@ -72,7 +78,7 @@ public class ControlListener extends ListenerAdapter {
 
     //public ArrayList<Function<SelectMenuInteractionEvent, Boolean>> abc = new ArrayList<>();
 
-    public void onSelectMenuInteraction (SelectMenuInteractionEvent event) {
+    public void onStringSelectInteraction (StringSelectInteractionEvent event) {
 
         if(event.getComponentId().startsWith("tc_")) {
 
@@ -156,7 +162,7 @@ public class ControlListener extends ListenerAdapter {
                             event.reply("Es wurde kein Mitglied gefunden! Bitte überprüfe die angegebene ID.").setEphemeral(true).queue(); return;
                         }
 
-                        tchannel.ephList.put(event.reply(tchannel.getMemberView(member, event.getMember())).setEphemeral(true).complete(), "editmember_" + member.getId());
+                        tchannel.ephList.put(event.reply(tchannel.getMemberViewCreate(member, event.getMember())).setEphemeral(true).complete(), "editmember_" + member.getId());
                         tchannel.updateMessages("menu_roles");
                         return;
                     }
@@ -252,7 +258,7 @@ public class ControlListener extends ListenerAdapter {
                         event.reply("Es wurde kein Mitglied gefunden! Bitte überprüfe die angegebene ID.").setEphemeral(true).queue(); return;
                     }
 
-                    channel.ephList.put(event.reply(channel.getMemberView(member, event.getMember())).setEphemeral(true).complete(), "editmember_" + member.getId());
+                    channel.ephList.put(event.reply(channel.getMemberViewCreate(member, event.getMember())).setEphemeral(true).complete(), "editmember_" + member.getId());
                     channel.updateMessages("menu_roles");
 
             }
@@ -269,24 +275,24 @@ public class ControlListener extends ListenerAdapter {
 
             if(args[2].equals("configure")) {
                 String id = generateId();
-                InteractionHook hook = event.reply(TempchannelPageSystem.getChannelEmbed(channel, id, event.getMember())).setEphemeral(true).complete();
+                InteractionHook hook = event.reply(TempchannelPageSystem.getChannelEmbedCreate(channel, id, event.getMember())).setEphemeral(true).complete();
                 channel.ephList.put(hook, "menu_channel_" + id);
                 return;
             }
 
-            Message message = null;
+            MessageEditData message = null;
             String id = event.getMessage().getEmbeds().get(0).getFooter().getText().substring(4);
 
             switch(args[2]) {
 
                 case "moderation":
-                    message = TempchannelPageSystem.getModerationEmbed(channel, id, event.getMember()); break;
+                    message = TempchannelPageSystem.getModerationEmbedEdit(channel, id, event.getMember()); break;
                 case "activity":
-                    message = TempchannelPageSystem.getActivityEmbed(channel, id, event.getMember()); break;
+                    message = TempchannelPageSystem.getActivityEmbedEdit(channel, id, event.getMember()); break;
                 case "channel":
-                    message = TempchannelPageSystem.getChannelEmbed(channel, id, event.getMember()); break;
+                    message = TempchannelPageSystem.getChannelEmbedEdit(channel, id, event.getMember()); break;
                 case "roles":
-                    message = TempchannelPageSystem.getRoleEmbed(channel, id, event.getMember()); break;
+                    message = TempchannelPageSystem.getRoleEmbedEdit(channel, id, event.getMember()); break;
             }
 
             event.deferEdit().queue();
@@ -340,7 +346,7 @@ public class ControlListener extends ListenerAdapter {
                         response.setTitle("Wähle Moderatoren aus");
                         response.setDescription("Du kannst aus der angegebenen Liste Kanalmitglieder auswählen, die als Moderator tätig sein sollen.");
 
-                        SelectMenu.Builder list = SelectMenu.create("tc_controlmod");
+                        StringSelectMenu.Builder list = StringSelectMenu.create("tc_controlmod");
                         list.setPlaceholder("Wähle Moderatoren aus");
                         List<String> selected = new ArrayList<>();
 

@@ -14,7 +14,6 @@ public class FileSystem {
 
     //files
 
-    public static File GiveawayStats;
     public static File UmfrageButtonLog;
     public static File UmfrageLog;
     public static File NitroGamesLog;
@@ -28,7 +27,6 @@ public class FileSystem {
         //initializing objects
 
         dataFolder = new File(System.getProperty("user.dir") + File.separator + "RoonieData");
-        GiveawayStats = new File(dataFolder.getAbsolutePath() + File.separator + "GiveawayStats.yml");
         UmfrageButtonLog = new File(dataFolder.getAbsolutePath() + File.separator + "UmfrageButtonLog.yml");
         UmfrageLog = new File(dataFolder.getAbsolutePath() + File.separator + "UmfrageLog.yml");
         cacheFolder = new File(dataFolder.getAbsolutePath() + File.separator + "cache");
@@ -42,9 +40,6 @@ public class FileSystem {
 
         if (!dataFolder.exists()) {
             dataFolder.mkdir();
-        }
-        if (!GiveawayStats.exists()) {
-            GiveawayStats.createNewFile();
         }
         if (!UmfrageButtonLog.exists()) {
             UmfrageButtonLog.createNewFile();

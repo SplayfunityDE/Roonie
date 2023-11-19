@@ -3,7 +3,7 @@ package de.splayfer.roonie.schedule;
 import de.splayfer.roonie.Roonie;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public class BotCounter {
 
         try {
             guild = Roonie.shardMan.awaitReady().getGuildById("873506353551925308");
-            commmandsChat = Roonie.shardMan.awaitReady().getTextChannelById("905384274214133770");
+            commmandsChat = Roonie.shardMan.awaitReady().getTextChannelById("1175859916565643427");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

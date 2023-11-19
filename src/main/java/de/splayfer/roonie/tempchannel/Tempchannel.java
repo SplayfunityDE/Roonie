@@ -2,14 +2,24 @@ package de.splayfer.roonie.tempchannel;
 
 import de.splayfer.roonie.general.Roles;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.PermissionOverride;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
+import net.dv8tion.jda.api.utils.messages.MessageEditBuilder;
+import net.dv8tion.jda.api.utils.messages.MessageEditData;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Tempchannel {
 
@@ -18,6 +28,7 @@ public class Tempchannel {
 
     public Member owner;
     public VoiceChannel vc = null;
+
     public TextChannel settings = null;
 
     public String name;
@@ -96,9 +107,9 @@ public class Tempchannel {
     public void updateMessage() {
 
         if(embedMessage == null) {
-            embedMessage = settings.sendMessage(TempchannelPageSystem.getMainEmbed(this)).complete();
+            embedMessage = settings.sendMessage(TempchannelPageSystem.getMainEmbedCreate(this)).complete();
         }else {
-            embedMessage.editMessage(TempchannelPageSystem.getMainEmbed(this)).queue();
+            embedMessage.editMessage(TempchannelPageSystem.getMainEmbedEdit(this)).queue();
         }
 
     }
@@ -129,7 +140,7 @@ public class Tempchannel {
                 System.out.println(id + " / "+ hook.getInteraction().getId());
 
                 if(id.startsWith("editmember")) {
-                    hook.editOriginal(getMemberView(guild.getMemberById(id.split("_")[1]), hook.getInteraction().getMember())).queue(); return;
+                    hook.editOriginal(getMemberViewEdit(guild.getMemberById(id.split("_")[1]), hook.getInteraction().getMember())).queue(); return;
                 }
 
                 if(id.startsWith("menu_")) {
@@ -138,13 +149,13 @@ public class Tempchannel {
                     String[] args = id.split("_");
                     switch(args[1]) {
                         case "moderation":
-                            hook.editOriginal(TempchannelPageSystem.getModerationEmbed(channel, getId, m)).queue(); break;
+                            hook.editOriginal(TempchannelPageSystem.getModerationEmbedEdit(channel, getId, m)).queue(); break;
                         case "activity":
-                            hook.editOriginal(TempchannelPageSystem.getActivityEmbed(channel, getId, m)).queue(); break;
+                            hook.editOriginal(TempchannelPageSystem.getActivityEmbedEdit(channel, getId, m)).queue(); break;
                         case "channel":
-                            hook.editOriginal(TempchannelPageSystem.getChannelEmbed(channel, getId, m)).queue(); break;
+                            hook.editOriginal(TempchannelPageSystem.getChannelEmbedEdit(channel, getId, m)).queue(); break;
                         case "roles":
-                            hook.editOriginal(TempchannelPageSystem.getRoleEmbed(channel, getId, m)).queue(); break;
+                            hook.editOriginal(TempchannelPageSystem.getRoleEmbedEdit(channel, getId, m)).queue(); break;
                     }
                 }
 
@@ -153,9 +164,9 @@ public class Tempchannel {
 
     }
 
-    public Message getMemberView(Member member, Member viewing) {
+    public MessageCreateData getMemberViewCreate(Member member, Member viewing) {
 
-        MessageBuilder mb = new MessageBuilder();
+        MessageCreateBuilder mb = new MessageCreateBuilder();
         EmbedBuilder eb = new EmbedBuilder();
 
         eb.setTitle("Nutzerübersicht - " + member.getUser().getAsTag());
@@ -181,13 +192,46 @@ public class Tempchannel {
 
         mb.setEmbeds(eb.build());
         if(member.equals(viewing)) {
-            mb.setActionRows(ActionRow.of(ban.asDisabled(), mute.asDisabled()));
+            mb.setActionRow(ban.asDisabled(), mute.asDisabled());
         }else {
-            mb.setActionRows(ActionRow.of(ban, mute));
+            mb.setActionRow(ban, mute);
+        }
+        return mb.build();
+    }
+
+    public MessageEditData getMemberViewEdit(Member member, Member viewing) {
+
+        MessageEditBuilder mb = new MessageEditBuilder();
+        EmbedBuilder eb = new EmbedBuilder();
+
+        eb.setTitle("Nutzerübersicht - " + member.getUser().getAsTag());
+        eb.setDescription("Hier kannst du " + member.getAsMention() + " in deinem Kanal moderieren");
+        eb.setThumbnail(member.getUser().getEffectiveAvatarUrl());
+
+        Button ban;
+        Button mute;
+
+        if(banned.containsKey(member)) {
+            ban = Button.secondary("tc_unban_" + member.getId(), "Entbannen");
+            eb.addField("Gebannt von", banned.get(member).getAsMention(), true);
+        }else {
+            ban = Button.danger("tc_ban_" + member.getId(), "Bannen");
         }
 
-        return mb.build();
+        if(muted.containsKey(member)) {
+            mute = Button.secondary("tc_unmute_" + member.getId(), "Mute aufheben");
+            eb.addField("Stummgeschaltet von", muted.get(member).getAsMention(), true);
+        }else {
+            mute = Button.danger("tc_mute_" + member.getId(), "Muten");
+        }
 
+        mb.setEmbeds(eb.build());
+        if(member.equals(viewing)) {
+            mb.setActionRow(ban.asDisabled(), mute.asDisabled());
+        }else {
+            mb.setActionRow(ban, mute);
+        }
+        return mb.build();
     }
 
     public Member changeOwner() {

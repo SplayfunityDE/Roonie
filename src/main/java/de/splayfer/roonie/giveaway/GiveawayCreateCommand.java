@@ -3,20 +3,23 @@ package de.splayfer.roonie.giveaway;
 import de.splayfer.roonie.messages.DefaultMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
-import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.Modal;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
+import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import net.dv8tion.jda.api.interactions.components.text.TextInput;
 import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
+import net.dv8tion.jda.api.interactions.modals.Modal;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -547,7 +550,7 @@ public class GiveawayCreateCommand extends ListenerAdapter {
     }
 
 
-    public void onSelectMenuInteraction (SelectMenuInteractionEvent event) {
+    public void onStringSelectInteraction (StringSelectInteractionEvent event) {
 
         if (Objects.requireNonNull(event.getSelectMenu().getId()).equals("giveaway.setup.selectFormat")) {
 
@@ -564,8 +567,7 @@ public class GiveawayCreateCommand extends ListenerAdapter {
                     success.setDescription("Gib an, welche Bedinungen die Nutzer erfüllen müssen, um am Giveaway teilnehmen zu können!");
 
                     event.getChannel().sendTyping().queue();
-                    event.replyEmbeds(success.build()).setEphemeral(true).addActionRow(SelectMenu.create("giveaway.selectBedingung")
-
+                    event.replyEmbeds(success.build()).setEphemeral(true).addActionRow(StringSelectMenu.create("giveaway.selectBedingung")
                             .setPlaceholder("Setze eine Bedingung für das Giveaway!")
                             .addOption("Keine Bedingung", "none", "Fahre ohne Bedingung fort!", Emoji.fromCustom("cancel", Long.parseLong("877158821779345428"), false))
                             .addOption("Nachrichten", "message", "Mindestanzahl an Nachrichten im Chat", Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false))
@@ -865,7 +867,7 @@ public class GiveawayCreateCommand extends ListenerAdapter {
                     main.setDescription("Gib an, wie das Zeit Limit unter der Giveaway Benachrichtigung für die Nutzer sichtbar sein soll!");
 
                     event.getChannel().sendTyping().queue();
-                    event.replyEmbeds(main.build()).setEphemeral(true).addActionRow(SelectMenu.create("giveaway.setup.selectFormat")
+                    event.replyEmbeds(main.build()).setEphemeral(true).addActionRow(StringSelectMenu.create("giveaway.setup.selectFormat")
 
                             .setPlaceholder("Lege das Format der Zeit fest!")
                             .addOption("08.09.2021", "format1", "Klicke hier, um dieses Format zu wählen!", Emoji.fromFormatted("\uD83D\uDD59"))

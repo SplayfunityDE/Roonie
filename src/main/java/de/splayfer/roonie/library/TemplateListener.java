@@ -2,7 +2,7 @@ package de.splayfer.roonie.library;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
-import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
@@ -26,7 +26,7 @@ public class TemplateListener extends ListenerAdapter {
 
     }
 
-    public void onSelectMenuInteraction (SelectMenuInteractionEvent event) {
+    public void onStringSelectInteraction (StringSelectInteractionEvent event) {
 
         if (event.getSelectMenu().getId().equals("servertemplates")) {
 

@@ -1,9 +1,8 @@
 package de.splayfer.roonie.tempchannel;
 
 import de.splayfer.roonie.MongoDBDatabase;
-import lombok.Getter;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import org.bson.Document;
 
 public class JoinHubManager {

@@ -1,7 +1,6 @@
 package de.splayfer.roonie.economy;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
@@ -9,10 +8,14 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.interactions.components.ItemComponent;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
+import net.dv8tion.jda.api.utils.messages.MessageEditBuilder;
+import net.dv8tion.jda.api.utils.messages.MessageEditData;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -24,9 +27,9 @@ public class MoneyCommand extends ListenerAdapter {
             Button.secondary("m_leaderboard", Emoji.fromFormatted("<:cup:1002943693822636073>"))
     };
 
-    public static ActionRow getMenuActionrow(String selfMenu) {
+    public static List<ItemComponent> getMenuActionrow(String selfMenu) {
 
-        List<Button> buttonTemp = new ArrayList<>();
+        List<ItemComponent> buttonTemp = new ArrayList<>();
 
         for (Button button : buttons) {
 
@@ -37,7 +40,7 @@ public class MoneyCommand extends ListenerAdapter {
             }
 
         }
-        return ActionRow.of(buttonTemp);
+        return buttonTemp;
     }
 
     public void onSlashCommandInteraction (SlashCommandInteractionEvent event) {
@@ -78,7 +81,7 @@ public class MoneyCommand extends ListenerAdapter {
             builder.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
             builder.setFooter("ID: " + target.getId());
 
-            event.replyEmbeds(banner.build(), builder.build()).addActionRows(getMenuActionrow("m_overview")).setEphemeral(true).queue();
+            event.replyEmbeds(banner.build(), builder.build()).addActionRow(getMenuActionrow("m_overview")).setEphemeral(true).queue();
 
 
         } else if (event.getName().equals("leaderboard")) {
@@ -116,7 +119,7 @@ public class MoneyCommand extends ListenerAdapter {
             builder.setImage("https://cdn.discordapp.com/attachments/985551183479463998/986627378417655858/auto_faqw.png");
             builder.setFooter("ID: " + member.getId());
 
-            event.replyEmbeds(banner.build(), builder.build()).addActionRows(getMenuActionrow("m_leaderboard")).setEphemeral(true).queue();
+            event.replyEmbeds(banner.build(), builder.build()).addActionRow(getMenuActionrow("m_leaderboard")).setEphemeral(true).queue();
 
         }
 
@@ -129,7 +132,7 @@ public class MoneyCommand extends ListenerAdapter {
 
             String[] args = event.getComponentId().split("_");
 
-            Message message = null;
+            MessageEditData message = null;
 
             Member target = event.getGuild().getMemberById(event.getMessage().getEmbeds().get(1).getFooter().getText().substring(4));
             boolean other;
@@ -148,11 +151,11 @@ public class MoneyCommand extends ListenerAdapter {
 
     }
 
-    public static Message getOverviewEmbed(Member m, boolean other) {
+    public static MessageEditData getOverviewEmbed(Member m, boolean other) {
 
         int money = EconomyManager.getMoney(m);
 
-        MessageBuilder mb = new MessageBuilder();
+        MessageEditBuilder mb = new MessageEditBuilder();
 
         //building Embed
 
@@ -176,17 +179,17 @@ public class MoneyCommand extends ListenerAdapter {
         embedBuilder.setFooter("ID: " + m.getId());
 
         mb.setEmbeds(bannerEmbed.build(), embedBuilder.build());
-        mb.setActionRows(getMenuActionrow("m_overview"));
+        mb.setActionRow(getMenuActionrow("m_overview"));
 
         return mb.build();
 
     }
 
-    public static Message getLeaderboardEmbed(Member m) {
+    public static MessageEditData getLeaderboardEmbed(Member m) {
 
         Map<Integer, String> list = EconomyManager.top(5);
 
-        MessageBuilder mb = new MessageBuilder();
+        MessageEditBuilder mb = new MessageEditBuilder();
         EmbedBuilder banner = new EmbedBuilder();
         EmbedBuilder builder = new EmbedBuilder();
 
@@ -218,7 +221,7 @@ public class MoneyCommand extends ListenerAdapter {
         builder.setFooter("ID: " + m.getId());
 
         mb.setEmbeds(banner.build(), builder.build());
-        mb.setActionRows(getMenuActionrow("m_leaderboard"));
+        mb.setActionRow(getMenuActionrow("m_leaderboard"));
 
         return mb.build();
 

@@ -7,14 +7,15 @@ import net.dv8tion.jda.api.entities.emoji.CustomEmoji;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.Modal;
 import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
+import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import net.dv8tion.jda.api.interactions.components.text.TextInput;
 import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
+import net.dv8tion.jda.api.interactions.modals.Modal;
 
 import java.util.*;
 
@@ -40,7 +41,7 @@ public class ResponseAddCommand extends ListenerAdapter {
             embedBuilder.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
 
             event.getChannel().sendTyping().queue();
-            event.replyEmbeds(banner.build(), embedBuilder.build()).addActionRow(SelectMenu.create("response" + event.getOptionsByName("nachricht").get(0).getAsString())
+            event.replyEmbeds(banner.build(), embedBuilder.build()).addActionRow(StringSelectMenu.create("response" + event.getOptionsByName("nachricht").get(0).getAsString())
                     .setRequiredRange(1, 1)
                     .setPlaceholder("Lege deine Aktion fest!")
                     .addOption("Nachricht senden", "message", "Sende eine Nachricht in den Chat!", Emoji.fromCustom(event.getJDA().getEmojiById("879356542791598160")))
@@ -53,7 +54,7 @@ public class ResponseAddCommand extends ListenerAdapter {
 
     }
 
-    public void onSelectMenuInteraction (SelectMenuInteractionEvent event) {
+    public void onStringSelectInteraction (StringSelectInteractionEvent event) {
 
         if (event.getSelectMenu().getId().startsWith("response")) {
 

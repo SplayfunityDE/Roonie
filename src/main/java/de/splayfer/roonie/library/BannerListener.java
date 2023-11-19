@@ -5,10 +5,12 @@ import de.splayfer.roonie.Roonie;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
-import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
+import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
+import net.dv8tion.jda.api.utils.FileUpload;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -26,7 +28,7 @@ public class BannerListener extends ListenerAdapter {
 
     protected File cache = new File(FileSystem.cacheFolder.getAbsolutePath());
 
-    public void onSelectMenuInteraction (SelectMenuInteractionEvent event) {
+    public void onStringSelectInteraction (StringSelectInteractionEvent event) {
 
         if (event.getSelectMenu().getId().equals("serverbanner")) {
 
@@ -67,7 +69,7 @@ public class BannerListener extends ListenerAdapter {
                     reply.setDescription("Hier kannst du nun auswählen, welche Art von Bannern, du für deinen Server benötigst!");
                     reply.setImage("https://cdn.discordapp.com/attachments/906251556637249547/925055440436477982/auto_faqw.png");
 
-                    event.replyEmbeds(bannerEmbed.build(), reply.build()).addActionRow(SelectMenu.create("serverbanner.verwaltung")
+                    event.replyEmbeds(bannerEmbed.build(), reply.build()).addActionRow(StringSelectMenu.create("serverbanner.verwaltung")
                             .setPlaceholder("Triff deine Auswahl!")
 
                             .addOption("Willkommen", "willkommen", "Banner zur Begrüßung der Nutzer", Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false))
@@ -93,7 +95,7 @@ public class BannerListener extends ListenerAdapter {
                     reply.setDescription("Hier kannst du nun auswählen, welche Art von Bannern, du für deinen Server benötigst!");
                     reply.setImage("https://cdn.discordapp.com/attachments/906251556637249547/925055440436477982/auto_faqw.png");
 
-                    event.replyEmbeds(bannerEmbed.build(), reply.build()).addActionRow(SelectMenu.create("serverbanner.rollenverteilung")
+                    event.replyEmbeds(bannerEmbed.build(), reply.build()).addActionRow(StringSelectMenu.create("serverbanner.rollenverteilung")
                             .setPlaceholder("Triff deine Auswahl!")
 
                             .addOption("Alter", "alter", "Banner zur Begrüßung der Nutzer", Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false))
@@ -118,7 +120,7 @@ public class BannerListener extends ListenerAdapter {
                     reply.setDescription("Hier kannst du nun auswählen, welche Art von Bannern, du für deinen Server benötigst!");
                     reply.setImage("https://cdn.discordapp.com/attachments/906251556637249547/925055440436477982/auto_faqw.png");
 
-                    event.replyEmbeds(bannerEmbed.build(), reply.build()).addActionRow(SelectMenu.create("serverbanner.werbung")
+                    event.replyEmbeds(bannerEmbed.build(), reply.build()).addActionRow(StringSelectMenu.create("serverbanner.werbung")
                             .setPlaceholder("Triff deine Auswahl!")
 
                             .addOption("Unsere-Werbung", "Unsere-Werbung", "Banner zur Begrüßung der Nutzer", Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false))
@@ -142,7 +144,7 @@ public class BannerListener extends ListenerAdapter {
                     reply.setDescription("Hier kannst du nun auswählen, welche Art von Bannern, du für sonstige Zwecke benötigst benötigst!");
                     reply.setImage("https://cdn.discordapp.com/attachments/906251556637249547/925055440436477982/auto_faqw.png");
 
-                    event.replyEmbeds(bannerEmbed.build(), reply.build()).addActionRow(SelectMenu.create("serverbanner.werbung")
+                    event.replyEmbeds(bannerEmbed.build(), reply.build()).addActionRow(StringSelectMenu.create("serverbanner.werbung")
                             .setPlaceholder("Triff deine Auswahl!")
 
                             .addOption("Unsere-Werbung", "Unsere-Werbung", "Banner zur Begrüßung der Nutzer", Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false))
@@ -233,7 +235,7 @@ public class BannerListener extends ListenerAdapter {
 
                                 File tempFile = new File(cache.getAbsolutePath() + File.separator + "bannerCache.png");
 
-                                Message m = Roonie.shardMan.getTextChannelById("906251556637249547").sendFile(tempFile).complete();
+                                Message m = Roonie.shardMan.getTextChannelById("906251556637249547").sendFiles(FileUpload.fromData(tempFile)).complete();
 
                                 String finalLink = m.getAttachments().get(0).getUrl();
 

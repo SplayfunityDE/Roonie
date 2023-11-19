@@ -4,12 +4,13 @@ import de.splayfer.roonie.Roonie;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
+import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +78,7 @@ public class LibrarySetupCommand extends ListenerAdapter {
 
                                 channel.sendTyping().queue();
 
-                                channel.sendMessageEmbeds(bannerEmbed.build(), servertemplates.build()).setActionRow(SelectMenu.create("servertemplates")
+                                channel.sendMessageEmbeds(bannerEmbed.build(), servertemplates.build()).setActionRow(StringSelectMenu.create("servertemplates")
                                         .setPlaceholder("\uD83D\uDCC1 Wähle deine Server Kategorien!")
                                         .addOption("Gaming", "gaming", "Klicke hier, um diese Kategorie auszuwählen!", Emoji.fromCustom(event.getJDA().getEmojiById("885085671579062284")))
                                         .addOption("Musik", "musik", "Klicke hier, um diese Kategorie auszuwählen!", Emoji.fromCustom(event.getJDA().getEmojiById("886624918983278622")))
@@ -110,7 +111,7 @@ public class LibrarySetupCommand extends ListenerAdapter {
 
                                 channel.sendTyping().queue();
 
-                                channel.sendMessageEmbeds(serverbannerheadline.build(), serverbanner.build()).setActionRow(SelectMenu.create("serverbanner")
+                                channel.sendMessageEmbeds(serverbannerheadline.build(), serverbanner.build()).setActionRow(StringSelectMenu.create("serverbanner")
                                         .setPlaceholder("\uD83C\uDFA8 Wähle deine Banner Kategorien!")
                                         .addOption("Banner-Maker (Coming Soon)", "maker", "Klicke, um diese Banner anzusehen", Emoji.fromCustom("staff", Long.parseLong("879285803531010118"), true))
                                         .addOption("Server-Verwaltung", "verwaltung", "Klicke, um diese Banner anzusehen", Emoji.fromCustom("symbol_verwaltung", Long.parseLong("925823049272528967"), false))

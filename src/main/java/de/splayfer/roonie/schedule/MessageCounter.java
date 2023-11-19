@@ -1,7 +1,7 @@
 package de.splayfer.roonie.schedule;
 
 import de.splayfer.roonie.Roonie;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 import java.util.Timer;
 import java.util.TimerTask;

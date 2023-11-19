@@ -3,6 +3,7 @@ package de.splayfer.roonie.level;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.utils.FileUpload;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -135,7 +136,7 @@ public class RankCommand extends ListenerAdapter {
 
             File tempFile = new File(System.getProperty("user.dir") + File.separator + "media" + File.separator + "rankImages" + File.separator + "cache" + File.separator + id + ".png");
 
-            event.reply("").addFile(tempFile).setEphemeral(true).queue();
+            event.reply("").addFiles(FileUpload.fromData(tempFile)).setEphemeral(true).queue();
 
             tempFile.deleteOnExit();
 

@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
+import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 
 public class NitrogamesSetupCommand extends ListenerAdapter {
 
@@ -31,7 +32,7 @@ public class NitrogamesSetupCommand extends ListenerAdapter {
                     gameEmbed.addField("<a:loading:877158828465090570> Verringere deine Ladezeiten!", "In vielen Fällen sind die Ladezeiten von Nitro Games geringer, als im Launcher", false);
                     gameEmbed.setImage("https://cdn.discordapp.com/attachments/906251556637249547/925055440436477982/auto_faqw.png");
 
-                    event.getChannel().sendMessageEmbeds(bannerEmbed.build(), gameEmbed.build()).setActionRow(SelectMenu.create("nitrogames.topic")
+                    event.getChannel().sendMessageEmbeds(bannerEmbed.build(), gameEmbed.build()).setActionRow(StringSelectMenu.create("nitrogames.topic")
 
                             .setPlaceholder("Starte jetzt!")
 

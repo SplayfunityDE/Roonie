@@ -6,11 +6,13 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.ThreadChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
-import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
+import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
+import net.dv8tion.jda.api.utils.FileUpload;
 import org.bspfsystems.yamlconfiguration.file.YamlConfiguration;
 
 import javax.imageio.ImageIO;
@@ -32,7 +34,7 @@ public class TicTacToe extends ListenerAdapter {
 
     protected static YamlConfiguration yml = YamlConfiguration.loadConfiguration(FileSystem.GameLog);
 
-    public void onSelectMenuInteraction (SelectMenuInteractionEvent event) {
+    public void onStringSelectInteraction (StringSelectInteractionEvent event) {
 
         if (event.getSelectMenu().getId().equals("minigames.tictatoe")) {
 
@@ -148,7 +150,7 @@ public class TicTacToe extends ListenerAdapter {
         File file = new File(System.getProperty("user.dir") + File.separator + "media" + File.separator + "tictactoe" + File.separator + "tictactoe_empty.png");
 
         channel.sendTyping().queue();
-        channel.sendFile(file).setActionRow(SelectMenu.create("minigames.tictatoe")
+        channel.sendFiles(FileUpload.fromData(file)).setActionRow(StringSelectMenu.create("minigames.tictatoe")
 
                 .setPlaceholder(player1.getEffectiveName() + " ist nun an der Reihe!")
 
@@ -340,7 +342,7 @@ public class TicTacToe extends ListenerAdapter {
 
         Member current = channel.getGuild().getMemberById(getTurn(gameID));
 
-        Message message = channel.sendFile(tempFile).setActionRow(SelectMenu.create("minigames.tictatoe")
+        Message message = channel.sendFiles(FileUpload.fromData(tempFile)).setActionRow(StringSelectMenu.create("minigames.tictatoe")
 
                 .setPlaceholder(current.getEffectiveName() + " ist nun an der Reihe!")
 

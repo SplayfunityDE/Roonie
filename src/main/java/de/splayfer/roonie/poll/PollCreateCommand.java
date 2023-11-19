@@ -5,10 +5,10 @@ import de.splayfer.roonie.general.Roles;
 import de.splayfer.roonie.messages.DefaultMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -16,10 +16,10 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.Modal;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.text.TextInput;
 import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
+import net.dv8tion.jda.api.interactions.modals.Modal;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -556,48 +556,50 @@ public class PollCreateCommand extends ListenerAdapter {
 
     public void onModalInteraction(ModalInteractionEvent event) {
 
-        Member member = event.getMember();
-        Poll poll = Poll.getFromMember(member);
+        if (event.getModalId().startsWith("poll.setup")) {
 
-        EmbedBuilder step;
-        List<Button> buttons;
+            Member member = event.getMember();
+            Poll poll = Poll.getFromMember(member);
 
-        switch (event.getModalId().split("\\.")[2]) {
+            EmbedBuilder step;
+            List<Button> buttons;
 
-            case "topic":
+            switch (event.getModalId().split("\\.")[2]) {
 
-                step = new EmbedBuilder();
-                step.setColor(0x3aa65b);
-                step.setTitle(":bar_chart: **Gib die Beschreibung für diese Umfrage ein!**");
+                case "topic":
 
-                buttons = new ArrayList<>();
-                buttons.add(Button.secondary("poll.setup.description", "Gib die Beschreibung der Umfrage an!").withEmoji(Emoji.fromCustom("script", 878586042821787658L, false)));
+                    step = new EmbedBuilder();
+                    step.setColor(0x3aa65b);
+                    step.setTitle(":bar_chart: **Gib die Beschreibung für diese Umfrage ein!**");
 
-                event.getChannel().sendTyping().queue();
-                interactionmap.get(member).sendMessageEmbeds(step.build()).setEphemeral(true).addActionRow(buttons).queue();
+                    buttons = new ArrayList<>();
+                    buttons.add(Button.secondary("poll.setup.description", "Gib die Beschreibung der Umfrage an!").withEmoji(Emoji.fromCustom("script", 878586042821787658L, false)));
 
-                poll.setTopic(event.getValue("topic").getAsString());
+                    event.getChannel().sendTyping().queue();
+                    interactionmap.get(member).sendMessageEmbeds(step.build()).setEphemeral(true).addActionRow(buttons).queue();
 
-                break;
+                    poll.setTopic(event.getValue("topic").getAsString());
 
-            case "description":
+                    break;
 
-                step = new EmbedBuilder();
-                step.setColor(0x3aa65b);
-                step.setTitle(":bar_chart: **Gib die Dauer der Umfrage an!**");
+                case "description":
 
-                buttons = new ArrayList<>();
-                buttons.add(Button.secondary("poll.setup.duration", "Gib die Dauer der Umfrage an!").withEmoji(Emoji.fromFormatted("\uD83D\uDD51")));
+                    step = new EmbedBuilder();
+                    step.setColor(0x3aa65b);
+                    step.setTitle(":bar_chart: **Gib die Dauer der Umfrage an!**");
 
-                event.getChannel().sendTyping().queue();
-                interactionmap.get(member).sendMessageEmbeds(step.build()).setEphemeral(true).addActionRow(buttons).queue();
+                    buttons = new ArrayList<>();
+                    buttons.add(Button.secondary("poll.setup.duration", "Gib die Dauer der Umfrage an!").withEmoji(Emoji.fromFormatted("\uD83D\uDD51")));
 
-                poll.setDescription(event.getValue("description").getAsString());
+                    event.getChannel().sendTyping().queue();
+                    interactionmap.get(member).sendMessageEmbeds(step.build()).setEphemeral(true).addActionRow(buttons).queue();
 
-                break;
+                    poll.setDescription(event.getValue("description").getAsString());
 
+                    break;
+
+            }
         }
-
 
     }
 }

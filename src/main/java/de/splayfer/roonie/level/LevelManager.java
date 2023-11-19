@@ -61,7 +61,7 @@ public class LevelManager extends ListenerAdapter {
     public static void insertUser(Member member) {
         if (!existsUser(member))
             mongoDB.insert("level", new Document()
-                    .append("guildmember", member.getIdLong())
+                    .append("guildMember", member.getIdLong())
                     .append("level", 0)
                     .append("xp", 0));
     }

@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
+import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import org.bspfsystems.yamlconfiguration.file.YamlConfiguration;
 
 import java.io.IOException;
@@ -47,7 +48,7 @@ public class SetupCommand extends ListenerAdapter {
                                 mainEmbed.addField(":crossed_swords: Fordere andere Spieler heraus", "Fordere andere Spieler heraus und steige in der Rangliste auf", false);
                                 mainEmbed.setImage("https://cdn.discordapp.com/attachments/906251556637249547/925055440436477982/auto_faqw.png");
 
-                                SelectMenu test = SelectMenu.create("minigames.topic")
+                                SelectMenu test = StringSelectMenu.create("minigames.topic")
 
                                         .addOption("Suche ein Match", "search", "Suche nach einem anderen Mitspieler", Emoji.fromFormatted("\uD83D\uDD0E"))
                                         .addOption("Herausfordern", "challenge", "Fordere einen anderen Spieler heraus", Emoji.fromFormatted("⚔"))

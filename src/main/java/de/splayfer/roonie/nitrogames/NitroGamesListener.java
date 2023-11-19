@@ -3,10 +3,11 @@ package de.splayfer.roonie.nitrogames;
 import de.splayfer.roonie.FileSystem;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
-import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
+import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import org.bspfsystems.yamlconfiguration.file.YamlConfiguration;
 import java.io.File;
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ public class NitroGamesListener extends ListenerAdapter {
     protected File gameLog = FileSystem.NitroGamesLog.getAbsoluteFile();
     protected YamlConfiguration yml = YamlConfiguration.loadConfiguration(gameLog);
 
-    public void onSelectMenuInteraction (SelectMenuInteractionEvent event) {
+    public void onStringSelectInteraction(StringSelectInteractionEvent event) {
 
         if (event.getSelectMenu().getId().equals("nitrogames.topic")) {
 
@@ -39,7 +40,7 @@ public class NitroGamesListener extends ListenerAdapter {
                     entryEmbed.setDescription("Wähle aus, zu welchem Game du einen Code erhalten möchtest!");
                     entryEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
 
-                    event.replyEmbeds(bannerEmbed.build(), entryEmbed.build()).setEphemeral(true).addActionRow(SelectMenu.create("nitrogames.select")
+                    event.replyEmbeds(bannerEmbed.build(), entryEmbed.build()).setEphemeral(true).addActionRow(StringSelectMenu.create("nitrogames.select")
 
                             .setPlaceholder("Wähle dein Game aus!")
                             .setRequiredRange(1, 25)

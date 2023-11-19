@@ -28,6 +28,7 @@ public class MongoDBDatabase {
         try {
             mongoClient = MongoClients.create("mongodb://useradmin:NFC_King10@116.203.79.193");
             mongoDatabase = mongoClient.getDatabase(database);
+            System.out.println("Connected to database: " + database);
         } catch (MongoException exception) {
             System.out.println("MongoDB Connection Error: " + exception.getMessage());
         }
@@ -74,7 +75,7 @@ public class MongoDBDatabase {
         mongoDatabase.getCollection(collection).updateOne(new Document(sourceKey, sourceValue), Updates.set(key, newValue), new UpdateOptions().upsert(true));
     }
 
-    public void update (String collection, Document source, Document replace) {
+    public void update(String collection, Document source, Document replace) {
         mongoDatabase.getCollection(collection).updateOne(source, replace, new UpdateOptions().upsert(true));
     }
 

@@ -4,13 +4,14 @@ import de.splayfer.roonie.FileSystem;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.ThreadChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
-import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
+import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import org.bspfsystems.yamlconfiguration.file.YamlConfiguration;
 
 import java.io.IOException;
@@ -24,7 +25,7 @@ public class GameSelector extends ListenerAdapter {
     YamlConfiguration yml = YamlConfiguration.loadConfiguration(FileSystem.GameLog);
 
     @Override
-    public void onSelectMenuInteraction (SelectMenuInteractionEvent event) {
+    public void onStringSelectInteraction (StringSelectInteractionEvent event) {
 
         if (event.getSelectMenu().getId().equals("minigames.topic")) {
 
@@ -46,7 +47,7 @@ public class GameSelector extends ListenerAdapter {
                     mainEmbed.setDescription("> Wähle im Menü aus, in welchem Spielmodus du deine Spielersuche starten möchtest!");
                     mainEmbed.setImage("https://cdn.discordapp.com/attachments/906251556637249547/925055440436477982/auto_faqw.png");
 
-                    event.editSelectMenu(SelectMenu.create("minigames.topic")
+                    event.editSelectMenu(StringSelectMenu.create("minigames.topic")
 
                             .setRequiredRange(1, 1)
                             .setPlaceholder("Wähle eine Aktion aus!")
@@ -57,7 +58,7 @@ public class GameSelector extends ListenerAdapter {
 
                             .build()).queue();
 
-                    event.getHook().sendMessageEmbeds(bannerEmbed.build(), mainEmbed.build()).setEphemeral(true).addActionRow(SelectMenu.create("minigames.search")
+                    event.getHook().sendMessageEmbeds(bannerEmbed.build(), mainEmbed.build()).setEphemeral(true).addActionRow(StringSelectMenu.create("minigames.search")
 
                             .setRequiredRange(1, 1)
                             .setPlaceholder("Wähle deinen Spielmodus!")
@@ -81,7 +82,7 @@ public class GameSelector extends ListenerAdapter {
                     mainEmbed.setDescription("> Wähle im Menü aus, in welchem Spielmodus du jemanden herausfodern möchtest!");
                     mainEmbed.setImage("https://cdn.discordapp.com/attachments/906251556637249547/925055440436477982/auto_faqw.png");
 
-                    event.editSelectMenu(SelectMenu.create("minigames.topic")
+                    event.editSelectMenu(StringSelectMenu.create("minigames.topic")
 
                             .setRequiredRange(1, 1)
                             .setPlaceholder("Wähle eine Aktion aus!")
@@ -92,7 +93,7 @@ public class GameSelector extends ListenerAdapter {
 
                             .build()).queue();
 
-                    event.getHook().sendMessageEmbeds(bannerEmbed.build(), mainEmbed.build()).setEphemeral(true).addActionRow(SelectMenu.create("minigames.challenge")
+                    event.getHook().sendMessageEmbeds(bannerEmbed.build(), mainEmbed.build()).setEphemeral(true).addActionRow(StringSelectMenu.create("minigames.challenge")
 
                             .setRequiredRange(1, 1)
                             .setPlaceholder("Wähle deinen Spielmodus!")
@@ -118,7 +119,7 @@ public class GameSelector extends ListenerAdapter {
                             "Gewonnene Spiele: " + MinigamesManager.getWins(event.getMember(), "tictactoe"), false);
                     mainEmbed.setImage("https://cdn.discordapp.com/attachments/906251556637249547/925055440436477982/auto_faqw.png");
 
-                    event.editSelectMenu(SelectMenu.create("minigames.topic")
+                    event.editSelectMenu(StringSelectMenu.create("minigames.topic")
 
                             .setRequiredRange(1, 1)
                             .setPlaceholder("Wähle eine Aktion aus!")

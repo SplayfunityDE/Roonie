@@ -4,6 +4,7 @@ import de.splayfer.roonie.Roonie;
 import de.splayfer.roonie.general.Roles;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -168,20 +169,14 @@ public class LevelInfoCommand extends ListenerAdapter {
                     t.schedule(new TimerTask() {
                         @Override
                         public void run() {
-
                             m.delete().queue();
-
                             t.cancel();
-
                         }
                     }, 8000);
 
                 }
-
             }
-
         }
-
     }
 
     public void onButtonInteraction (ButtonInteractionEvent event) {
@@ -193,7 +188,6 @@ public class LevelInfoCommand extends ListenerAdapter {
                 Guild guild = event.getGuild();
 
                 //per Server
-
                 EmbedBuilder bannerEmbed = new EmbedBuilder();
                 bannerEmbed.setColor(0xfcc21b);
                 bannerEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905401314857611334/banner_level.png");
@@ -259,7 +253,6 @@ public class LevelInfoCommand extends ListenerAdapter {
             } else {
 
                 //per DM
-
                 Guild guild = Roonie.mainGuild;
 
                 User target = event.getUser();
@@ -327,20 +320,16 @@ public class LevelInfoCommand extends ListenerAdapter {
                 dm.sendTyping().queue();
                 dm.sendMessageEmbeds(bannerEmbed.build()).queue();
                 dm.sendMessageEmbeds(embedBuilder.build()).queue();
-
             }
-
         }
     }
 
     public void onSlashCommandInteraction (SlashCommandInteractionEvent event) {
 
         if (event.getName().equals("levels")) {
-
             Guild guild = event.getGuild();
 
             //per Server
-
             EmbedBuilder bannerEmbed = new EmbedBuilder();
             bannerEmbed.setColor(0xfcc21b);
             bannerEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905401314857611334/banner_level.png");
@@ -402,7 +391,5 @@ public class LevelInfoCommand extends ListenerAdapter {
             event.replyEmbeds(bannerEmbed.build(), embedBuilder.build()).setEphemeral(true).queue();
 
         }
-
     }
-
 }
