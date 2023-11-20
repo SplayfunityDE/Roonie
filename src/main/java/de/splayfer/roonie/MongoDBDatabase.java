@@ -52,11 +52,11 @@ public class MongoDBDatabase {
     }
 
     public boolean exists(String collection, String key, Object value) {
-        return mongoDatabase.getCollection(collection).find(Filters.eq(key, value)).first() != null;
+        return mongoDatabase.getCollection(collection).find(new Document(key, value)9.first() != null;
     }
 
     public boolean exists(String collection, Document document) {
-        return mongoDatabase.getCollection(collection).find(Filters.eq(document)).first() != null;
+        return mongoDatabase.getCollection(collection).find(document).first() != null;
     }
 
     public void insert(String collection, Document document) {
