@@ -21,11 +21,11 @@ public class LevelInfoCommand extends ListenerAdapter {
 
             Guild guild = event.getGuild();
 
-            if (event.getMessage().getContentStripped().startsWith(Roonie.prefix + "levels") || event.getMessage().getContentStripped().startsWith(Roonie.prefix + "level info")) {
+            if (event.getMessage().getContentStripped().startsWith("/levels") || event.getMessage().getContentStripped().startsWith("/level info")) {
 
                 String[] args = event.getMessage().getContentStripped().split(" ");
 
-                if (event.getMessage().getContentStripped().startsWith(Roonie.prefix + "levels") && args.length == 1) {
+                if (event.getMessage().getContentStripped().startsWith("/levels") && args.length == 1) {
 
                     EmbedBuilder bannerEmbed = new EmbedBuilder();
                     bannerEmbed.setColor(0xfcc21b);
@@ -89,7 +89,7 @@ public class LevelInfoCommand extends ListenerAdapter {
                     event.getChannel().sendMessageEmbeds(bannerEmbed.build()).queue();
                     event.getChannel().sendMessageEmbeds(embedBuilder.build()).queue();
 
-                } else if (event.getMessage().getContentStripped().startsWith(Roonie.prefix + "level info") && args.length == 2) {
+                } else if (event.getMessage().getContentStripped().startsWith("/level info") && args.length == 2) {
 
                     EmbedBuilder bannerEmbed = new EmbedBuilder();
                     bannerEmbed.setColor(0xfcc21b);

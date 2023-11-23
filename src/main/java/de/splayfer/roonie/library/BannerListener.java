@@ -26,7 +26,7 @@ import java.util.List;
 
 public class BannerListener extends ListenerAdapter {
 
-    protected File cache = new File(FileSystem.cacheFolder.getAbsolutePath());
+    protected File cache = new File(System.getProperty("user.dir") + File.separator + "media" + File.separator + "cache");
 
     public void onStringSelectInteraction (StringSelectInteractionEvent event) {
 

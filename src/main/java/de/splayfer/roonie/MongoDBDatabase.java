@@ -40,11 +40,11 @@ public class MongoDBDatabase {
     }
 
     public FindIterable<Document> find(String collection, String key, Object value) {
-        return mongoDatabase.getCollection(collection).find(Filters.eq(key, value));
+        return mongoDatabase.getCollection(collection).find(new Document(key, value));
     }
 
     public FindIterable<Document> find(String collection, Document document) {
-        return mongoDatabase.getCollection(collection).find(Filters.eq(document));
+        return mongoDatabase.getCollection(collection).find(document);
     }
 
     public FindIterable<Document> findAll(String collection) {
@@ -52,7 +52,7 @@ public class MongoDBDatabase {
     }
 
     public boolean exists(String collection, String key, Object value) {
-        return mongoDatabase.getCollection(collection).find(new Document(key, value)9.first() != null;
+        return mongoDatabase.getCollection(collection).find(new Document(key, value)).first() != null;
     }
 
     public boolean exists(String collection, Document document) {
@@ -68,6 +68,10 @@ public class MongoDBDatabase {
     }
 
     public void updateLine(String collection, Document source, String key, Object newValue) {
+        mongoDatabase.getCollection(collection).updateOne(source, Updates.set(key, newValue), new UpdateOptions().upsert(true));
+    }
+
+    public void updateLine(String collection, Document source, String key, List<Object> newValue) {
         mongoDatabase.getCollection(collection).updateOne(source, Updates.set(key, newValue), new UpdateOptions().upsert(true));
     }
 

@@ -21,7 +21,7 @@ public class RemoveTemplateCommand extends ListenerAdapter {
 
         if (event.isFromGuild()) {
 
-            if (event.getMessage().getContentStripped().startsWith(Roonie.prefix + "template remove")) {
+            if (event.getMessage().getContentStripped().startsWith("/template remove")) {
 
                 if (event.getMember().getPermissions().contains(Permission.ADMINISTRATOR)) {
 

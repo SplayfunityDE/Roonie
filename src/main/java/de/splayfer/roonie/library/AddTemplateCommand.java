@@ -21,7 +21,7 @@ public class AddTemplateCommand extends ListenerAdapter {
 
         if (event.isFromGuild()) {
 
-            if (event.getMessage().getContentStripped().startsWith(Roonie.prefix + "template add")) {
+            if (event.getMessage().getContentStripped().startsWith("/template add")) {
 
                 if (event.getMember().getPermissions().contains(Permission.ADMINISTRATOR)) {
 

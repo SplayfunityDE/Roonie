@@ -20,7 +20,7 @@ public class CreateJoinHubCommand extends ListenerAdapter {
 
         if (event.isFromGuild()) {
 
-            if (event.getMessage().getContentStripped().toLowerCase(Locale.ROOT).startsWith(Roonie.prefix + "voicehub add")) {
+            if (event.getMessage().getContentStripped().toLowerCase(Locale.ROOT).startsWith("/voicehub add")) {
 
                 if (event.getMember().getPermissions().contains(Permission.ADMINISTRATOR)) {
 

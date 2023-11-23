@@ -22,7 +22,7 @@ public class AddBannerCommand extends ListenerAdapter {
 
         if (event.isFromGuild()) {
 
-            if (event.getMessage().getContentStripped().startsWith(Roonie.prefix + "banner add")) {
+            if (event.getMessage().getContentStripped().startsWith("/banner add")) {
 
                 if (event.getMember().getPermissions().contains(Permission.ADMINISTRATOR)) {
 

@@ -6,8 +6,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class SetupCommand extends ListenerAdapter {
 
-    static MongoDBDatabase mongoDB = new MongoDBDatabase("splayfunity");
-
     public void onSlashCommandInteraction (SlashCommandInteractionEvent event) {
         if (event.getName().equals("setup")) {
             switch (event.getOption("kategorie").getAsString()) {

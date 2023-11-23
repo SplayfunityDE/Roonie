@@ -754,7 +754,6 @@ public class GiveawayCreateCommand extends ListenerAdapter {
                     break;
 
                 case "giveaway.setup.duration":
-
                     if (Giveaway.getStep(event.getMember()) == 3) {
 
                         TextInput duration = TextInput.create("duration", "Dauer des Giveaways", TextInputStyle.SHORT)
@@ -770,7 +769,6 @@ public class GiveawayCreateCommand extends ListenerAdapter {
                         event.replyModal(modal).queue();
 
                     }
-
                     break;
 
             }

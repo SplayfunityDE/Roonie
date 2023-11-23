@@ -15,7 +15,7 @@ public class NitrogamesSetupCommand extends ListenerAdapter {
 
         if (event.isFromGuild()) {
 
-            if (event.getMessage().getContentStripped().startsWith(Roonie.prefix + "setup nitrogames 1")) {
+            if (event.getMessage().getContentStripped().startsWith("/setup nitrogames 1")) {
 
                 if (event.getMember().getPermissions().contains(Permission.ADMINISTRATOR)) {
 

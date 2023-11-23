@@ -29,12 +29,10 @@ public class FileSystem {
         dataFolder = new File(System.getProperty("user.dir") + File.separator + "RoonieData");
         UmfrageButtonLog = new File(dataFolder.getAbsolutePath() + File.separator + "UmfrageButtonLog.yml");
         UmfrageLog = new File(dataFolder.getAbsolutePath() + File.separator + "UmfrageLog.yml");
-        cacheFolder = new File(dataFolder.getAbsolutePath() + File.separator + "cache");
         NitroGamesLog = new File(dataFolder.getAbsolutePath() + File.separator + "NitroGames.yml");
         EmbedStats = new File(dataFolder.getAbsolutePath() + File.separator + "EmbedStats.yml");
         GameLog = new File(dataFolder.getAbsolutePath() + File.separator + "GameLog.yml");
         StatsLog = new File(dataFolder.getAbsolutePath() + File.separator + "StatsLog.yml");
-        AutoComplete = new File(dataFolder.getAbsolutePath() + File.separator + "AutoComplete.yml");
 
         //checking folders
 
@@ -46,9 +44,6 @@ public class FileSystem {
         }
         if (!UmfrageLog.exists()) {
             UmfrageLog.createNewFile();
-        }
-        if (!cacheFolder.exists()) {
-            cacheFolder.mkdir();
         }
         if (!NitroGamesLog.exists()) {
             NitroGamesLog.createNewFile();
@@ -64,9 +59,6 @@ public class FileSystem {
         }
         if (!StatsLog.exists()) {
             StatsLog.createNewFile();
-        }
-        if (!AutoComplete.exists()) {
-            AutoComplete.createNewFile();
         }
 
 

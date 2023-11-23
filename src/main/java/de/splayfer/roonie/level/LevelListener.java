@@ -126,9 +126,7 @@ public class LevelListener extends ListenerAdapter {
             @Override
             public void run() {
 
-                try {
-
-                    for (Member member: Roonie.shardMan.awaitReady().getGuildById(Roonie.mainServerId).getMembers()) {
+                    for (Member member: Roonie.mainGuild.getMembers()) {
 
                         if (member.getVoiceState().inAudioChannel()) {
 
@@ -158,10 +156,6 @@ public class LevelListener extends ListenerAdapter {
 
                     }
 
-                } catch (InterruptedException interruptedException) {
-                    interruptedException.printStackTrace();
-                }
-
             }
         }, 180000, 180000);
 
@@ -181,7 +175,7 @@ public class LevelListener extends ListenerAdapter {
 
             case 5:
 
-                Roonie.shardMan.getGuildById(Roonie.mainServerId).getManager().getGuild().addRoleToMember(member.getUser(), Roles.LVL5.getRole(guild)).queue();
+                Roonie.mainGuild.getManager().getGuild().addRoleToMember(member.getUser(), Roles.LVL5.getRole(guild)).queue();
                 embedBuilder.addField("Neue Vorteile", Roles.LVL5.getRole(guild).getAsMention() + " = `Level 5`\n" +
                         "<a:checkblue:896351653236711454> Rechte auf Nicknames ändern\n" +
                         "<a:checkblue:896351653236711454> 5.000$ im Casino\n" +
@@ -192,7 +186,7 @@ public class LevelListener extends ListenerAdapter {
 
             case 10:
 
-                Roonie.shardMan.getGuildById(Roonie.mainServerId).getManager().getGuild().addRoleToMember(member.getUser(), Roles.LVL10.getRole(guild)).queue();
+                Roonie.mainGuild.getManager().getGuild().addRoleToMember(member.getUser(), Roles.LVL10.getRole(guild)).queue();
                 embedBuilder.addField("Neue Vorteile", Roles.LVL10.getRole(guild).getAsMention() + " = `Level 10`\n" +
                         "<a:checkgreen:896351654092374086> Alle Vorteile von Stufe 5\n" +
                         "<a:checkgreen:896351654092374086> 7.500$ im Casino\n" +
@@ -203,7 +197,7 @@ public class LevelListener extends ListenerAdapter {
 
             case 20:
 
-                Roonie.shardMan.getGuildById(Roonie.mainServerId).getManager().getGuild().addRoleToMember(member.getUser(), Roles.LVL20.getRole(guild)).queue();
+                Roonie.mainGuild.getManager().getGuild().addRoleToMember(member.getUser(), Roles.LVL20.getRole(guild)).queue();
                 embedBuilder.addField("Neue Vorteile", Roles.LVL20.getRole(guild).getAsMention() + " = `Level 20`\n" +
                         "<a:checkorange:896351648601997353> Komplett eingerichteter Discord Server\n" +
                         "<a:checkorange:896351648601997353> Exklusiver Chat & Talk\n" +
@@ -214,7 +208,7 @@ public class LevelListener extends ListenerAdapter {
 
             case 30:
 
-                Roonie.shardMan.getGuildById(Roonie.mainServerId).getManager().getGuild().addRoleToMember(member.getUser(), Roles.LVL30.getRole(guild)).queue();
+                Roonie.mainGuild.getManager().getGuild().addRoleToMember(member.getUser(), Roles.LVL30.getRole(guild)).queue();
                 embedBuilder.addField("Neue Vorteile", Roles.LVL30.getRole(guild).getAsMention() + " = `Level 30`\n" +
                         "<a:checkyellow:896351651617726484> Eigener Discord Bot + 24/7 Hosting\n" +
                         "<a:checkyellow:896351651617726484> 20.000$ im Casino\n" +
@@ -225,7 +219,7 @@ public class LevelListener extends ListenerAdapter {
 
             case 40:
 
-                Roonie.shardMan.getGuildById(Roonie.mainServerId).getManager().getGuild().addRoleToMember(member.getUser(), Roles.LVL40.getRole(guild)).queue();
+                Roonie.mainGuild.getManager().getGuild().addRoleToMember(member.getUser(), Roles.LVL40.getRole(guild)).queue();
                 embedBuilder.addField("Neue Vorteile", Roles.LVL40.getRole(guild).getAsMention() + " = `Level 40`\n" +
                         "<a:checkpurple:896351653651972116> Giveaways ohne Vorraussetzungen\n" +
                         "<a:checkpurple:896351653651972116> 20.000$ im Casino" +
@@ -235,7 +229,7 @@ public class LevelListener extends ListenerAdapter {
 
             case 50:
 
-                Roonie.shardMan.getGuildById(Roonie.mainServerId).getManager().getGuild().addRoleToMember(member.getUser(), Roles.LVL50.getRole(guild)).queue();
+                Roonie.mainGuild.getManager().getGuild().addRoleToMember(member.getUser(), Roles.LVL50.getRole(guild)).queue();
                 embedBuilder.addField("Neue Vorteile", Roles.LVL50.getRole(guild).getAsMention() + " = `Level 50`\n" +
                         "<a:checkgreen:896351654092374086> Alle Booster Vorteile\n" +
                         "<a:checkgreen:896351654092374086> Chat Cosmetic Tier II\n" +
@@ -245,7 +239,7 @@ public class LevelListener extends ListenerAdapter {
 
             case 100:
 
-                Roonie.shardMan.getGuildById(Roonie.mainServerId).getManager().getGuild().addRoleToMember(member.getUser(), Roles.LVL100.getRole(guild)).queue();
+                Roonie.mainGuild.getManager().getGuild().addRoleToMember(member.getUser(), Roles.LVL100.getRole(guild)).queue();
                 embedBuilder.addField("Neue Vorteile", Roles.LVL100.getRole(guild).getAsMention() + " = `Level 100`\n" +
                         "<a:checkpink:896351654092374086> Eigene Rolle\n" +
                         "<a:checkpink:896351654092374086> Zugriff auf den `$heck` command\n" +

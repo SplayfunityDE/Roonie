@@ -20,7 +20,7 @@ public class RemoveJoinHubCommand extends ListenerAdapter {
 
         if (event.isFromGuild()) {
 
-            if (event.getMessage().getContentStripped().toLowerCase(Locale.ROOT).startsWith(Roonie.prefix + "voicehub remove")) {
+            if (event.getMessage().getContentStripped().toLowerCase(Locale.ROOT).startsWith("/voicehub remove")) {
 
                 if (event.getMember().getPermissions().contains(Permission.ADMINISTRATOR)) {
 

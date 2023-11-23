@@ -4,7 +4,6 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.Region;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -120,7 +119,7 @@ public class ControlListener extends ListenerAdapter {
                     reply2.setDescription("Klicke nun auf den Button unter dieser Nachricht, um die Aktivität zu starten!");
                     reply2.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
 
-                    event.replyEmbeds(Embeds.SUCCESS_BANNER.getEmbed(), reply2.build()).setEphemeral(true).addActionRow(linked).queue();
+                    event.replyEmbeds(TcEmbeds.SUCCESS_BANNER.getEmbed(), reply2.build()).setEphemeral(true).addActionRow(linked).queue();
 
                     EmbedBuilder userreply = new EmbedBuilder();
                     userreply.setDescription("Klicke nun auf den Button unter dieser Nachricht, um die Aktivität zu starten!");

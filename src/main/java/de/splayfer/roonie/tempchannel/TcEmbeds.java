@@ -3,7 +3,7 @@ package de.splayfer.roonie.tempchannel;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
-public enum Embeds {
+public enum TcEmbeds {
 
     //// TempChannels
 
@@ -59,7 +59,7 @@ public enum Embeds {
 
     private EmbedBuilder eb;
 
-    private Embeds(EmbedBuilder embedBuilder) {
+    private TcEmbeds(EmbedBuilder embedBuilder) {
 
         this.eb = embedBuilder;
 

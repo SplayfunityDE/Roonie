@@ -23,7 +23,7 @@ public class LibrarySetupCommand extends ListenerAdapter {
 
         if (event.isFromGuild()) {
 
-            if (event.getMessage().getContentStripped().startsWith(Roonie.prefix + "setup library")) {
+            if (event.getMessage().getContentStripped().startsWith("/setup library")) {
 
                 String[] args = event.getMessage().getContentStripped().split(" ");
 

@@ -20,7 +20,7 @@ public class PartnerSetupCommand extends ListenerAdapter {
 
         if (event.isFromGuild()) {
 
-            if (event.getMessage().getContentStripped().startsWith(Roonie.prefix + "setup partner")) {
+            if (event.getMessage().getContentStripped().startsWith("/setup partner")) {
 
                 if (event.getChannelType().isMessage()) {
 

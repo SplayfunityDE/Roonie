@@ -1,605 +1,352 @@
 package de.splayfer.roonie.poll;
 
-import de.splayfer.roonie.Roonie;
-import de.splayfer.roonie.general.Roles;
 import de.splayfer.roonie.messages.DefaultMessage;
+import de.splayfer.roonie.messages.Embeds;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
-import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.interaction.component.EntitySelectInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
+import net.dv8tion.jda.api.interactions.components.selections.EntitySelectMenu;
+import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import net.dv8tion.jda.api.interactions.components.text.TextInput;
 import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
 import net.dv8tion.jda.api.interactions.modals.Modal;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 public class PollCreateCommand extends ListenerAdapter {
 
-    static HashMap<Member, InteractionHook> interactionmap = new HashMap<>();
-
-    protected List<String> umfrageList = new ArrayList<>();
-
-    SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd - HH:mm ");
-    SimpleDateFormat formatterOnlyDate = new SimpleDateFormat("yyyy.MM.dd ");
-    Date currentTime = new Date();
-
-    public void onMessageReceived (MessageReceivedEvent event) {
-
-        if (event.isFromGuild()) {
-
-            TextChannel umfrageChannel = event.getGuild().getTextChannelById("880717025255751721");
-
-            if (event.getMessage().getContentStripped().startsWith(Roonie.prefix + "umfrage create")) {
-
-                if (event.getMember().getPermissions().contains(Permission.ADMINISTRATOR) || event.getMember().getRoles().contains(Roles.CONTENT.getRole(event.getGuild()))) {
-
-                    String[] args = event.getMessage().getContentStripped().split(" ");
-
-                    if (args.length == 2) {
-
-                        EmbedBuilder step1 = new EmbedBuilder();
-                        step1.setColor(0x3aa65b);
-                        step1.setTitle(":bar_chart: **Gib den Kanal für die Umfragen an!**");
-
-                        event.getChannel().sendTyping().queue();
-                        event.getChannel().sendMessageEmbeds(step1.build()).queue();
-
-                    }
-
-                }
-
-            } else {
-
-                if (Poll.existsPoll(event.getMember())) {
-
-                    Member member = event.getMember();
-
-                    EmbedBuilder step;
-                    List<Button> buttons;
-                    Poll poll = Poll.getFromMember(member);
-
-                    switch (poll.getStep()) {
-
-                        case 1:
-
-                            MessageChannel channel = null;
-                            if (event.getMessage().getMentions().getChannels() != null) {
-                                if (event.getMessage().getMentions().getChannels().size() == 1) {
-                                    if (event.getMessage().getMentions().getChannels().get(0).getType().isMessage()) {
-                                        channel = (MessageChannel) event.getMessage().getMentions().getChannels().get(0);
-                                    } else {
-                                        interactionmap.get(member).sendMessageEmbeds(DefaultMessage.error("Du musst einen Nachrichtenkanal angeben!")).setEphemeral(true).queue();
-                                    }
-                                } else {
-                                    interactionmap.get(member).sendMessageEmbeds(DefaultMessage.error("Du kannst nur einen Kanal erwähnen!")).setEphemeral(true).queue();
-                                }
-                            } else {
-                                //id
-                                try {
-                                    double d = Double.parseDouble(event.getMessage().getContentStripped());
-                                    GuildChannel guildChannel = event.getGuild().getGuildChannelById(Double.toString(d));
-                                    if (guildChannel.getType().isMessage()) {
-                                        channel = (MessageChannel) guildChannel;
-                                    }
-
-                                } catch (Exception e) {
-                                    interactionmap.get(member).sendMessageEmbeds(DefaultMessage.error("Du musst den Kanal erwähnen oder seine ID angeben!")).setEphemeral(true).queue();
-                                }
-                            }
-
-                            if (channel != null) {
-
-                                step = new EmbedBuilder();
-                                step.setColor(0x3aa65b);
-                                step.setTitle(":bar_chart: **Gib das Thema der Umfrage an!**");
-
-                                buttons = new ArrayList<>();
-                                buttons.add(Button.secondary("poll.setup.topic", "Gib das Thema der Umfrage an!").withEmoji(Emoji.fromCustom("chat", 879356542791598160L, true)));
-
-                                event.getChannel().sendTyping().queue();
-                                interactionmap.get(member).sendMessageEmbeds(step.build()).setEphemeral(true).addActionRow(buttons).queue();
-
-                                poll.setChannel(channel);
-
-                            }
-
-                            break;
-
-                            //test
-
-                        case 2:
-
-                            break;
-
-                    }
-
-                    /*
-
-                    switch (Poll.getFromMember(event.getMember()).getStep()) {
-
-                        case 1:
-
-                            thema.put(event.getMember().getId(), event.getMessage().getContentStripped());
-
-                            EmbedBuilder step1 = new EmbedBuilder();
-                            step1.setColor(0x3aa65b);
-                            step1.setTitle(":bar_chart: **Gib die Beschreibung für diese Umfrage ein!**");
-
-                            event.getChannel().sendTyping().queue();
-                            event.getChannel().sendMessageEmbeds(step1.build()).queue();
-
-                            stepInfo.put(event.getMember().getId(), "step2");
-
-
-                            break;
-
-                        case 2:
-
-                            description.put(event.getMember().getId(), event.getMessage().getContentStripped());
-
-                            EmbedBuilder step2 = new EmbedBuilder();
-                            step2.setColor(0x3aa65b);
-                            step2.setTitle(":bar_chart: **Gib den Inhalt des 1. Buttons an!**");
-
-                            event.getChannel().sendTyping().queue();
-                            event.getChannel().sendMessageEmbeds(step2.build()).queue();
-
-                            stepInfo.put(event.getMember().getId(), "step3");
-
-                            break;
-
-                        case 3:
-
-                            if (!(event.getMessage().getContentStripped().length() > 25)) {
-
-                                buttontrue.put(event.getMember().getId(), event.getMessage().getContentStripped());
-
-                                EmbedBuilder step3 = new EmbedBuilder();
-                                step3.setColor(0x3aa65b);
-                                step3.setTitle(":bar_chart: **Gib den Inhalt des 2. Buttons an!**");
-
-                                event.getChannel().sendTyping().queue();
-                                event.getChannel().sendMessageEmbeds(step3.build()).queue();
-
-                                stepInfo.put(event.getMember().getId(), "step4");
-
-                            } else {
-
-                                //building Embed
-
-                                EmbedBuilder embedBuilder = new EmbedBuilder();
-                                embedBuilder.setTitle(":exclamation: **Der Inhalt des Buttons darf maximal 25 Zeichen besitzen!**");
-                                embedBuilder.setColor(0xc01c34);
-
-                                event.getChannel().sendTyping().queue();
-                                Message m = event.getChannel().sendMessageEmbeds(embedBuilder.build()).complete();
-                                embedBuilder.clear();
-
-                                Timer t = new Timer();
-                                t.schedule(new TimerTask() {
-                                    @Override
-                                    public void run() {
-
-                                        m.delete().queue();
-
-                                        t.cancel();
-
-                                    }
-                                }, 8000);
-
-                            }
-
-                            break;
-
-                        case 4:
-
-                            if (!(event.getMessage().getContentStripped().length() > 25)) {
-
-                                buttonnone.put(event.getMember().getId(), event.getMessage().getContentStripped());
-
-                                EmbedBuilder step4 = new EmbedBuilder();
-                                step4.setColor(0x3aa65b);
-                                step4.setTitle(":bar_chart: **Gib den Inhalt des 3. Buttons an!**");
-
-                                event.getChannel().sendTyping().queue();
-                                event.getChannel().sendMessageEmbeds(step4.build()).queue();
-
-                                stepInfo.put(event.getMember().getId(), "step5");
-
-                            } else {
-
-                                //building Embed
-
-                                EmbedBuilder embedBuilder = new EmbedBuilder();
-                                embedBuilder.setTitle(":exclamation: **Der Inhalt des Buttons darf maximal 25 Zeichen besitzen!**");
-                                embedBuilder.setColor(0xc01c34);
-
-                                event.getChannel().sendTyping().queue();
-                                Message m = event.getChannel().sendMessageEmbeds(embedBuilder.build()).complete();
-                                embedBuilder.clear();
-
-                                Timer t = new Timer();
-                                t.schedule(new TimerTask() {
-                                    @Override
-                                    public void run() {
-
-                                        m.delete().queue();
-
-                                        t.cancel();
-
-                                    }
-                                }, 8000);
-
-                            }
-
-                            break;
-
-                        case 5:
-
-
-                            if (!(event.getMessage().getContentStripped().length() > 25)) {
-
-                                buttonfalse.put(event.getMember().getId(), event.getMessage().getContentStripped());
-
-                                EmbedBuilder step5 = new EmbedBuilder();
-                                step5.setColor(0x3aa65b);
-                                step5.setTitle(":bar_chart: **Sollen die Ergebnisse der Umfrage öffentlich sein?**");
-                                step5.setDescription("Schreibe `JA` oder `NEIN` in den Chat!");
-
-                                event.getChannel().sendTyping().queue();
-                                event.getChannel().sendMessageEmbeds(step5.build()).queue();
-
-                                stepInfo.put(event.getMember().getId(), "step6");
-
-                            } else {
-
-                                //building Embed
-
-                                EmbedBuilder embedBuilder = new EmbedBuilder();
-                                embedBuilder.setTitle(":exclamation: **Der Inhalt des Buttons darf maximal 25 Zeichen besitzen!**");
-                                embedBuilder.setColor(0xc01c34);
-
-                                event.getChannel().sendTyping().queue();
-                                Message m = event.getChannel().sendMessageEmbeds(embedBuilder.build()).complete();
-                                embedBuilder.clear();
-
-                                Timer t = new Timer();
-                                t.schedule(new TimerTask() {
-                                    @Override
-                                    public void run() {
-
-                                        m.delete().queue();
-
-                                        t.cancel();
-
-                                    }
-                                }, 8000);
-
-                            }
-
-                            break;
-
-                        case 6:
-
-                            EmbedBuilder step5;
-                            EmbedBuilder bannerEmbed;
-                            EmbedBuilder debug;
-                            List<Button> buttons;
-                            Message m;
-                            EmbedBuilder information;
-
-                            switch (event.getMessage().getContentStripped().toLowerCase(Locale.ROOT)) {
-
-                                case "ja":
-
-                                    showvoting.put(event.getMember().getId(), true);
-                                    stepInfo.remove(event.getMember().getId());
-
-                                    step5 = new EmbedBuilder();
-                                    step5.setColor(0x3aa65b);
-                                    step5.setTitle(":bar_chart: **Umfrage erfolgreich erstellt!**");
-                                    step5.setDescription("Die Umfrage wurde mithilfe der angegebenen Daten erfolgreich in <#880717025255751721> gestartet!");
-                                    step5.addField("Details zu dieser Aktion", "<:text:877158818088386580> Kanal: <#880717025255751721>\n" +
-                                            "<:member:880022583947431947> Ersteller: `" + event.getMember().getUser().getAsTag() + "`\n" +
-                                            "<a:chat:879356542791598160> Thema: `" + thema.get(event.getMember().getId()) + "`\n" +
-                                            ":clock10: Uhrzeit: `" + formatter.format(currentTime) + "Uhr`", false);
-
-                                    event.getChannel().sendTyping().queue();
-                                    event.getChannel().sendMessageEmbeds(step5.build()).queue();
-
-                                    //sending umfrage
-
-                                    bannerEmbed = new EmbedBuilder();
-                                    bannerEmbed.setColor(0x28346d);
-                                    bannerEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/910194455494144021/banner_umfrage.png");
-
-                                    buttons = new ArrayList<>();
-
-                                    buttons.add(Button.success("true", buttontrue.get(event.getMember().getId()) + " (0)").withEmoji(Emoji.fromCustom("voting_true", Long.parseLong("910240688690585630"), false)));
-                                    buttons.add(Button.secondary("none", buttonnone.get(event.getMember().getId()) + " (0)").withEmoji(Emoji.fromCustom("voting_none", Long.parseLong("910240688489242675"), false)));
-                                    buttons.add(Button.danger("false", buttonfalse.get(event.getMember().getId()) + " (0)").withEmoji(Emoji.fromCustom("voting_false", Long.parseLong("910240688627671040"), false)));
-
-                                    information = new EmbedBuilder();
-                                    information.setColor(0x28346d);
-                                    information.setAuthor("Umfrage am " + formatterOnlyDate.format(currentTime), "https://discord.gg/GAPAnSxKbM", "https://cdn.discordapp.com/attachments/883278317753626655/910245826020921374/38bfa82363472a2ff8e43b6559b9a9a6.png");
-                                    information.setTitle("Umfrage zum Thema " + thema.get(event.getMember().getId()));
-                                    information.addField("Details", description.get(event.getMember().getId()), false);
-                                    information.addField(":clock10: Dauer der Umfrage", "`UNBEGRENZT`", true);
-                                    information.addField(":clock10: Erstellt am", formatter.format(currentTime), true);
-                                    information.addField("Klicke auf einen der unteren Button um abzustimmen!", "", false);
-                                    information.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
-
-                                    umfrageChannel.sendTyping().queue();
-                                    m = umfrageChannel.sendMessageEmbeds(bannerEmbed.build(), information.build()).setActionRow(buttons).complete();
-
-                                    //save to yml
-
-                                    yml.set(m.getId() + ".thema", thema.get(event.getMember().getId()));
-                                    yml.set(m.getId() + ".description", description.get(event.getMember().getId()));
-                                    yml.set(m.getId() + ".buttontrue", buttontrue.get(event.getMember().getId()));
-                                    yml.set(m.getId() + ".buttonnone", buttonnone.get(event.getMember().getId()));
-                                    yml.set(m.getId() + ".buttonfalse", buttonfalse.get(event.getMember().getId()));
-                                    yml.set(m.getId() + ".showvoting", showvoting.get(event.getMember().getId()));
-
-                                    try {
-                                        yml.save(umfrageLog);
-                                    } catch (IOException exception) {
-                                        exception.printStackTrace();
-                                    }
-
-                                    thema.remove(event.getMember().getId());
-                                    description.remove(event.getMember().getId());
-                                    buttontrue.remove(event.getMember().getId());
-                                    buttonnone.remove(event.getMember().getId());
-                                    buttonfalse.remove(event.getMember().getId());
-                                    showvoting.remove(event.getMember().getId());
-
-                                    break;
-
-                                case "nein":
-
-                                    showvoting.put(event.getMember().getId(), false);
-                                    stepInfo.remove(event.getMember().getId());
-
-                                    step5 = new EmbedBuilder();
-                                    step5.setColor(0x3aa65b);
-                                    step5.setTitle(":bar_chart: **Umfrage erfolgreich erstellt!**");
-                                    step5.setDescription("Die Umfrage wurde mithilfe der angegebenen Daten erfolgreich in <#880717025255751721> gestartet!");
-                                    step5.addField("Details zu dieser Aktion", "<:text:877158818088386580> Kanal: <#880717025255751721>\n" +
-                                            "<:member:880022583947431947> Ersteller: `" + event.getMember().getUser().getAsTag() + "`\n" +
-                                            "<a:chat:879356542791598160> Thema: `" + thema.get(event.getMember().getId()) + "`\n" +
-                                            ":clock10: Uhrzeit: `" + formatter.format(currentTime) + "Uhr`", false);
-
-                                    event.getChannel().sendTyping().queue();
-                                    event.getChannel().sendMessageEmbeds(step5.build()).queue();
-
-                                    //sending umfrage
-
-                                    bannerEmbed = new EmbedBuilder();
-                                    bannerEmbed.setColor(0x28346d);
-                                    bannerEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/910194455494144021/banner_umfrage.png");
-
-                                    buttons = new ArrayList<>();
-
-                                    buttons.add(Button.success("true", buttontrue.get(event.getMember().getId())).withEmoji(Emoji.fromCustom("voting_true", Long.parseLong("910240688690585630"), false)));
-                                    buttons.add(Button.secondary("none", buttonnone.get(event.getMember().getId())).withEmoji(Emoji.fromCustom("voting_none", Long.parseLong("910240688489242675"), false)));
-                                    buttons.add(Button.danger("false", buttonfalse.get(event.getMember().getId())).withEmoji(Emoji.fromCustom("voting_false", Long.parseLong("910240688627671040"), false)));
-
-                                    information = new EmbedBuilder();
-                                    information.setColor(0x3aa65b);
-                                    information.setAuthor("Umfrage am " + formatterOnlyDate.format(currentTime), "https://discord.gg/GAPAnSxKbM", "https://cdn.discordapp.com/attachments/883278317753626655/910245826020921374/38bfa82363472a2ff8e43b6559b9a9a6.png");
-                                    information.setTitle("Umfrage zum Thema " + thema.get(event.getMember().getId()));
-                                    information.addField("Details", description.get(event.getMember().getId()), false);
-                                    information.addField(":clock10: Dauer der Umfrage", "`UNBEGRENZT`", true);
-                                    information.addField(":clock10: Erstellt am", formatter.format(currentTime), true);
-                                    information.addField("Klicke auf einen der unteren Button um abzustimmen!", "", false);
-                                    information.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
-
-                                    umfrageChannel.sendTyping().queue();
-                                    m = umfrageChannel.sendMessageEmbeds(bannerEmbed.build(), information.build()).setActionRow(buttons).complete();
-
-                                    //save to yml
-
-                                    yml.set(m.getId() + ".thema", thema.get(event.getMember().getId()));
-                                    yml.set(m.getId() + ".description", description.get(event.getMember().getId()));
-                                    yml.set(m.getId() + ".buttontrue", buttontrue.get(event.getMember().getId()));
-                                    yml.set(m.getId() + ".buttonnone", buttonnone.get(event.getMember().getId()));
-                                    yml.set(m.getId() + ".buttonfalse", buttonfalse.get(event.getMember().getId()));
-                                    yml.set(m.getId() + ".showvoting", showvoting.get(event.getMember().getId()));
-
-                                    try {
-                                        yml.save(umfrageLog);
-                                    } catch (IOException exception) {
-                                        exception.printStackTrace();
-                                    }
-
-                                    thema.remove(event.getMember().getId());
-                                    description.remove(event.getMember().getId());
-                                    buttontrue.remove(event.getMember().getId());
-                                    buttonnone.remove(event.getMember().getId());
-                                    buttonfalse.remove(event.getMember().getId());
-                                    showvoting.remove(event.getMember().getId());
-
-                                    break;
-
-                                default:
-
-                                    //building Embed
-
-                                    EmbedBuilder embedBuilder = new EmbedBuilder();
-                                    embedBuilder.setTitle(":exclamation: **Du musst `JA` oder `NEIN` angeben!**");
-                                    embedBuilder.setColor(0xc01c34);
-
-                                    event.getChannel().sendTyping().queue();
-                                    Message m2 = event.getChannel().sendMessageEmbeds(embedBuilder.build()).complete();
-                                    embedBuilder.clear();
-
-                                    Timer t = new Timer();
-                                    t.schedule(new TimerTask() {
-                                        @Override
-                                        public void run() {
-
-                                            m2.delete().queue();
-
-                                            t.cancel();
-
-                                        }
-                                    }, 8000);
-
-                                    break;
-
-                            }
-
-                            break;
-
-                        default:
-
-                            if (Poll.getFromMember(event.getMember()).getStep() >= 7) {
-
-
-                            }
-
-                            break;
-
-                    }
-
-                     */
-
-
-
-                }
-
-            }
-
+    static HashMap<Member, InteractionHook> interactionMap = new HashMap<>();
+    static HashMap<Button, InteractionHook> buttonMap = new HashMap<>();
+
+    public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
+        if (event.getName().equals("umfrage") && event.getSubcommandName().equals("create")) {
+            if (!interactionMap.containsKey(event.getMember())) {
+                Poll poll = Poll.create(event.getMember());
+                interactionMap.put(event.getMember(), event.replyEmbeds(getSetupEmbed(poll)).setEphemeral(true).setComponents(getSetupActionRow(poll)).complete());
+            } else
+                event.replyEmbeds(DefaultMessage.error("Umfrage bereits gestartet", "Du hast bereits eine Umfrage gestartet!")).addActionRow(Button.danger("poll.create.restart", "Neue Umfrage starten").withEmoji(Emoji.fromCustom("undo", 878590238782550076L, false)), Button.success("poll.create.resume", "Mit aktueller fortfahren").withEmoji(Emoji.fromCustom("text", 877158818088386580L, false))).setEphemeral(true).queue();
         }
+    }
 
-
-
+    public void onEntitySelectInteraction(EntitySelectInteractionEvent event) {
+        if (event.getSelectMenu().getId().startsWith("poll.create")) {
+            switch (event.getSelectMenu().getId().split("\\.")[2]) {
+                case "channel":
+                    if (event.getMentions().getChannels().get(0).getType().equals(ChannelType.TEXT)) {
+                        Poll poll = Poll.getFromMember(event.getMember());
+                        poll.setChannel(event.getGuild().getTextChannelById(event.getMentions().getChannels().get(0).getId()));
+                        updateHook(event.getMember());
+                        event.deferEdit().queue();
+                    }
+                    break;
+            }
+        }
     }
 
     public void onButtonInteraction(ButtonInteractionEvent event) {
+        if (event.getButton().getId().startsWith("poll.create")) {
+            TextInput subject;
+            Modal modal;
+            Button button = null;
+            switch (event.getButton().getId().split("\\.")[2]) {
+                case "topic":
+                    modal = Modal.create("poll.create.topic", "Wähle das Thema!")
+                            .addComponents(
+                                    ActionRow.of(TextInput.create("topic", "Thema", TextInputStyle.SHORT)
+                                    .setPlaceholder("Erläutere das Thema")
+                                    .setRequiredRange(1, 50)
+                                    .build()))
+                            .build();
 
-        if (Poll.existsPoll(event.getMember())) {
-            if (event.getButton().getId().startsWith("poll.setup")) {
+                    event.replyModal(modal).queue();
+                    break;
+                case "description":
+                    modal = Modal.create("poll.create.description", "Setze die Beschreibung!")
+                            .addComponents(
+                                    ActionRow.of(TextInput.create("description", "Beschreibung", TextInputStyle.PARAGRAPH)
+                                    .setPlaceholder("Beschreibe die Umfrage")
+                                    .setRequiredRange(1, 100)
+                                    .build()))
+                            .build();
 
-                Member member = event.getMember();
-                Poll poll = Poll.getFromMember(member);
+                    event.replyModal(modal).queue();
+                    break;
+                case "buttonContent":
+                    for (Button bt : Poll.getFromMember(event.getMember()).getButtons())
+                        if (bt.getId().equals(event.getButton().getId().split("\\.")[3]))
+                            button = bt;
 
-                switch (event.getButton().getId().split("\\.")[2]) {
+                    modal = Modal.create("poll.create.buttonContent." + button.getId(), "Inhalt bearbeiten!")
+                            .addComponents(
+                                    ActionRow.of(TextInput.create("content", "Neuer Inhalt", TextInputStyle.SHORT)
+                                    .setPlaceholder("Gib den neuen Inhalt an")
+                                    .setRequiredRange(1, 25)
+                                    .build()))
+                            .build();
 
-                    case "topic":
-
-                        if (poll.getStep() == 2) {
-
-                            TextInput topic = TextInput.create("topic", "Thema der Umfrage", TextInputStyle.SHORT)
-                                    .setPlaceholder("Gib das Thema an!")
-                                    .setMinLength(1)
-                                    .setMaxLength(50) // or setRequiredRange(10, 100)
-                                    .build();
-
-                            Modal modal = Modal.create("poll.setup.topic", "\uD83D\uDCDC〣Gib das Thema an!")
-                                    .addActionRows(ActionRow.of(topic))
-                                    .build();
-
-                            event.replyModal(modal).queue();
-
+                    event.replyModal(modal).queue();
+                    break;
+                case "buttonColor":
+                    for (Button bt : Poll.getFromMember(event.getMember()).getButtons())
+                        if (bt.getId().equals(event.getButton().getId().split("\\.")[3]))
+                            button = bt;
+                    event.reply("Eingeben").addActionRow(StringSelectMenu.create("poll.create.buttonColor." + button.getId())
+                            .addOption("Grün", "poll.create.buttonColor.success", Emoji.fromFormatted("\uD83D\uDFE9"))
+                            .addOption("Rot", "poll.create.buttonColor.danger", Emoji.fromFormatted("\uD83D\uDFE5"))
+                            .addOption("Blau", "poll.create.buttonColor.primary", Emoji.fromFormatted("\uD83D\uDFE6"))
+                            .addOption("Grau", "poll.create.buttonColor.secondary", Emoji.fromFormatted("⬜"))
+                            .setDefaultValues("poll.create.buttonColor." + button.getStyle().name().toLowerCase()).build()).setEphemeral(true).queue();
+                    break;
+                case "buttonContinue":
+                    if (Poll.getFromMember(event.getMember()).getButtons().length >= 2) {
+                        Poll poll = Poll.getFromMember(event.getMember());
+                        EmbedBuilder information = new EmbedBuilder();
+                        information.setColor(0x28346d);
+                        information.setTitle("Umfrage zum Thema " + poll.getTopic());
+                        information.addField("Details", poll.getDescription(), false);
+                        information.addField(":clock10: Dauer der Umfrage", "`UNBEGRENZT`", true);
+                        information.addField("Klicke auf einen der unteren Button um abzustimmen!", "", false);
+                        information.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
+                        int count = 0;
+                        Button[] buttons = poll.getButtons();
+                        for (Button pollButton : buttons) {
+                            pollButton = pollButton.withLabel(pollButton.getLabel() + " (0)");
+                            buttons[count] = pollButton;
+                            count++;
                         }
-
-                        break;
-
-                    case "description":
-
-                        if (poll.getStep() == 3) {
-
-                            TextInput description = TextInput.create("description", "Beschreibung der Umfrage", TextInputStyle.SHORT)
-                                    .setPlaceholder("Gib die Beschreibung an!")
-                                    .setMinLength(1)
-                                    .setMaxLength(50) // or setRequiredRange(10, 100)
-                                    .build();
-
-                            Modal modal = Modal.create("poll.setup.description", "\uD83D\uDCDC〣Gib die Beschreibung an!")
-                                    .addActionRows(ActionRow.of(description))
-                                    .build();
-
-                            event.replyModal(modal).queue();
-
-                        }
-
-                        break;
-
-                    case "duration":
-
-
-
-                        break;
-
-                }
-
+                        poll.setMessage(poll.getChannel().sendMessageEmbeds(Embeds.BANNER_UMFRAGE, information.build()).setActionRow(buttons).complete());
+                        poll.insertToMongoDB();
+                        event.editMessageEmbeds(DefaultMessage.success("Umfrage erfolgreich erstellt!", "Die Umfrage wurde mit deinen angegebenen Details erfolgreich erstellt!")).queue();
+                        interactionMap.remove(event.getMember());
+                        buttonMap.forEach((bt, hook) -> {
+                            if (Arrays.asList(poll.getButtons()).contains(bt)) {
+                                buttonMap.remove(bt);
+                            }
+                        });
+                    } else
+                        event.replyEmbeds(DefaultMessage.error("Ungültige Buttonangabe", "Bitte gib bei der Umfrage mindestens **2** Buttons an, um fortzufahren!")).setEphemeral(true).queue();
+                    break;
+                case "restart":
+                    interactionMap.get(event.getMember()).deleteOriginal().queue();
+                    buttonMap.forEach((bt, hook) -> {hook.deleteOriginal().queue(); buttonMap.remove(bt);});
+                    Poll poll = Poll.create(event.getMember());
+                    interactionMap.put(event.getMember(), event.replyEmbeds(getSetupEmbed(poll)).setEphemeral(true).setComponents(getSetupActionRow(poll)).complete());
+                    event.getMessage().delete().queue();
+                    break;
+                case "resume":
+                    interactionMap.get(event.getMember()).deleteOriginal().queue();
+                    buttonMap.forEach((bt, hook) -> {hook.deleteOriginal().queue(); buttonMap.remove(bt);});
+                    interactionMap.put(event.getMember(), event.replyEmbeds(getSetupEmbed(Poll.getFromMember(event.getMember()))).setEphemeral(true).setComponents(getSetupActionRow(Poll.getFromMember(event.getMember()))).complete());
+                    event.getMessage().delete().queue();
+                    break;
             }
         }
-
     }
 
     public void onModalInteraction(ModalInteractionEvent event) {
-
-        if (event.getModalId().startsWith("poll.setup")) {
-
-            Member member = event.getMember();
-            Poll poll = Poll.getFromMember(member);
-
-            EmbedBuilder step;
-            List<Button> buttons;
-
+        if (event.getModalId().startsWith("poll.create")) {
+            Button button = null;
             switch (event.getModalId().split("\\.")[2]) {
-
                 case "topic":
-
-                    step = new EmbedBuilder();
-                    step.setColor(0x3aa65b);
-                    step.setTitle(":bar_chart: **Gib die Beschreibung für diese Umfrage ein!**");
-
-                    buttons = new ArrayList<>();
-                    buttons.add(Button.secondary("poll.setup.description", "Gib die Beschreibung der Umfrage an!").withEmoji(Emoji.fromCustom("script", 878586042821787658L, false)));
-
-                    event.getChannel().sendTyping().queue();
-                    interactionmap.get(member).sendMessageEmbeds(step.build()).setEphemeral(true).addActionRow(buttons).queue();
-
-                    poll.setTopic(event.getValue("topic").getAsString());
-
+                    Poll.getFromMember(event.getMember()).setTopic(event.getValue("topic").getAsString());
+                    updateHook(event.getMember());
+                    event.deferEdit().queue();
                     break;
-
                 case "description":
-
-                    step = new EmbedBuilder();
-                    step.setColor(0x3aa65b);
-                    step.setTitle(":bar_chart: **Gib die Dauer der Umfrage an!**");
-
-                    buttons = new ArrayList<>();
-                    buttons.add(Button.secondary("poll.setup.duration", "Gib die Dauer der Umfrage an!").withEmoji(Emoji.fromFormatted("\uD83D\uDD51")));
-
-                    event.getChannel().sendTyping().queue();
-                    interactionmap.get(member).sendMessageEmbeds(step.build()).setEphemeral(true).addActionRow(buttons).queue();
-
-                    poll.setDescription(event.getValue("description").getAsString());
-
+                    Poll.getFromMember(event.getMember()).setDescription(event.getValue("description").getAsString());
+                    updateHook(event.getMember());
+                    event.deferEdit().queue();
                     break;
-
+                case "buttonContent":
+                    for (Button bt : Poll.getFromMember(event.getMember()).getButtons())
+                        if (bt.getId().equals(event.getModalId().split("\\.")[3]))
+                            button = bt;
+                    InteractionHook hook = buttonMap.get(button);
+                    buttonMap.remove(button);
+                    List<Button> list = new ArrayList<>(Arrays.asList(Poll.getFromMember(event.getMember()).getButtons()));
+                    int index = list.indexOf(button);
+                    list.remove(button);
+                    button = button.withLabel(event.getValue("content").getAsString());
+                    list.add(index, button);
+                    MessageEmbed msgEmbed = hook.retrieveOriginal().complete().getEmbeds().get(0);
+                    EmbedBuilder embed = new EmbedBuilder();
+                    embed.setColor(msgEmbed.getColor());
+                    embed.setTitle(msgEmbed.getTitle());
+                    embed.addField(msgEmbed.getFields().get(0).getName(), event.getValue("content").getAsString(), true);
+                    embed.addBlankField(true);
+                    embed.addField(msgEmbed.getFields().get(1).getName(), getColorIcon(button.getStyle()) + " " + getColorName(button.getStyle()), true);
+                    hook.editOriginalEmbeds(embed.build()).queue();
+                    Poll.getFromMember(event.getMember()).setButtons(list.toArray(new Button[0]));
+                    event.deferEdit().queue();
+                    updateHook(event.getMember());
+                    buttonMap.put(button, hook);
+                    break;
             }
         }
+    }
 
+    public void onStringSelectInteraction(StringSelectInteractionEvent event) {
+        if (event.getSelectMenu().getId().startsWith("poll.create")) {
+            EmbedBuilder embed;
+            Button button = null;
+            List<Button> list;
+            switch (event.getValues().get(0).split("\\.")[2]) {
+                case "buttonEdit":
+                    for (Button bt : Poll.getFromMember(event.getMember()).getButtons())
+                        if (bt.getId().equals(event.getValues().get(0).split("\\.")[3]))
+                            button = bt;
+                    embed = new EmbedBuilder();
+                    embed.setColor(0x28346d);
+                    embed.setTitle("Button bearbeiten");
+                    embed.addField("Inhalt", button.getLabel(), true);
+                    embed.addBlankField(true);
+                    embed.addField("Farbe", getColorIcon(button.getStyle()) + " " + getColorName(button.getStyle()), true);
+                    buttonMap.put(button, event.replyEmbeds(embed.build()).setEphemeral(true).addActionRow(
+                            Button.secondary("poll.create.buttonContent." + button.getId(), "Inhalt bearbeiten"),
+                            Button.secondary("poll.create.buttonColor." + button.getId(), "Farbe ändern")
+                    ).complete());
+                    break;
+                case "buttonAdd":
+                    if (!(Poll.getFromMember(event.getMember()).getButtons().length >= 5)) {
+                        embed = new EmbedBuilder();
+                        embed.setColor(0x28346d);
+                        embed.setTitle("Button erstellen");
+                        embed.addField("Inhalt", "*Nicht angegeben*", true);
+                        embed.addBlankField(true);
+                        embed.addField("Farbe", "*Nicht angegeben*", true);
+                        list = new ArrayList<>(Arrays.asList(Poll.getFromMember(event.getMember()).getButtons()));
+                        button = Button.secondary("button" + (list.size() + 1), "default");
+                        list.add(button);
+                        Poll.getFromMember(event.getMember()).setButtons(list.toArray(new Button[list.size()]));
+                        buttonMap.put(button, event.replyEmbeds(embed.build()).setEphemeral(true).addActionRow(
+                                Button.secondary("poll.create.buttonContent." + button.getId(), "Inhalt festlegen"),
+                                Button.secondary("poll.create.buttonColor." + button.getId(), "Farbe wählen")
+                        ).complete());
+                    } else
+                        event.replyEmbeds(DefaultMessage.error("Buttonlimit erreicht!", "Du kannst maximal **5** Buttons in einer Umfrage hinzufügen.")).setEphemeral(true).queue();
+                    break;
+                case "buttonColor":
+                    for (Button bt : Poll.getFromMember(event.getMember()).getButtons())
+                        if (bt.getId().equals(event.getSelectMenu().getId().split("\\.")[3]))
+                            button = bt;
+                    InteractionHook hook = buttonMap.get(button);
+                    buttonMap.remove(button);
+                    list = new ArrayList<>(Arrays.asList(Poll.getFromMember(event.getMember()).getButtons()));
+                    int index = list.indexOf(button);
+                    list.remove(button);
+                    for (ButtonStyle bt : ButtonStyle.values())
+                        if (bt.name().equalsIgnoreCase(event.getValues().get(0).split("\\.")[3]))
+                            button = button.withStyle(bt);
+                    list.add(index, button);
+                    MessageEmbed msgEmbed = hook.retrieveOriginal().complete().getEmbeds().get(0);
+                    embed = new EmbedBuilder();
+                    embed.setColor(msgEmbed.getColor());
+                    embed.setTitle(msgEmbed.getTitle());
+                    embed.addField(msgEmbed.getFields().get(0).getName(), button.getLabel(), true);
+                    embed.addBlankField(true);
+                    embed.addField(msgEmbed.getFields().get(1).getName(), getColorIcon(button.getStyle()) + " " + getColorName(button.getStyle()), true);
+                    hook.editOriginalEmbeds(embed.build()).queue();
+                    Poll.getFromMember(event.getMember()).setButtons(list.toArray(new Button[list.size()]));
+                    event.deferEdit().queue();
+                    updateHook(event.getMember());
+                    buttonMap.put(button, hook);
+                    event.getHook().deleteOriginal().queue();
+                    break;
+            }
+        }
+    }
+
+    public List<MessageEmbed> getSetupEmbed(Poll poll) {
+        EmbedBuilder bannerEmbed = new EmbedBuilder();
+        bannerEmbed.setColor(0x28346d);
+        bannerEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/910194455494144021/banner_umfrage.png");
+
+        EmbedBuilder embed = new EmbedBuilder();
+        embed.setColor(0x28346d);
+        if (poll.getChannel() != null)
+            embed.addField("<:channel:1001082478804615238> Kanal", poll.getChannel().getAsMention(), true);
+        else
+            embed.addField("<:channel:1001082478804615238> Kanal", "*Nicht ausgewählt*", true);
+        if (poll.getTopic() != null)
+            embed.addField("<:write:1001784497626435584> Thema", poll.getTopic(), true);
+        else
+            embed.addField("<:write:1001784497626435584> Thema", "*Nicht ausgewählt*", true);
+        if (poll.getDescription() != null)
+            embed.addField("<:list:1002591375960842300> Beschreibung", poll.getDescription(), true);
+        else
+            embed.addField("<:list:1002591375960842300> Beschreibung", "*Nicht ausgewählt*", true);
+        embed.addBlankField(false);
+        int count = 1;
+        for (Button button : poll.getButtons()) {
+            embed.addField(getColorIcon(button.getStyle()) + " " + count + ". Button", button.getLabel(), true);
+            count++;
+        }
+        embed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
+        return List.of(bannerEmbed.build(), embed.build());
+    }
+
+    public List<ActionRow> getSetupActionRow(Poll poll) {
+        List<ActionRow> actionRow = new ArrayList<>();
+        switch (poll.getStep()) {
+            case 1:
+                actionRow.add(ActionRow.of(EntitySelectMenu.create("poll.create.channel", EntitySelectMenu.SelectTarget.CHANNEL).setChannelTypes(ChannelType.TEXT).build()));
+                break;
+            case 2:
+                actionRow.add(ActionRow.of(Button.secondary("poll.create.topic", "Wähle das Thema")));
+                break;
+            case 3:
+                actionRow.add(ActionRow.of(Button.secondary("poll.create.description", "Wähle eine Beschreibung")));
+                break;
+            case 4:
+                StringSelectMenu.Builder builder = StringSelectMenu.create("poll.create.buttons");
+                for (Button button : poll.getButtons())
+                    builder.addOption(button.getLabel(), "poll.create.buttonEdit." + button.getId(), "Klicke zum Bearbeiten!", Emoji.fromCustom("write", 1001784497626435584L, false));
+                builder.addOption("Button hinzufügen", "poll.create.buttonAdd.", Emoji.fromCustom("icon-neu", 986654769101828166L, false));
+                actionRow.add(ActionRow.of(builder.build()));
+                actionRow.add(ActionRow.of(Button.primary("poll.create.buttonContinue", "Vervollständigen").withEmoji(Emoji.fromCustom("chat", 879356542791598160L, true))));
+                break;
+        }
+        return actionRow;
+    }
+
+    public void updateHook(Member member) {
+        Poll poll = Poll.getFromMember(member);
+        InteractionHook hook = interactionMap.get(member);
+        hook.editOriginalEmbeds(getSetupEmbed(poll)).setComponents(getSetupActionRow(poll)).queue();
+    }
+
+    public String getColorName(ButtonStyle style) {
+        HashMap<ButtonStyle, String> name = new HashMap<>(){{
+            put(ButtonStyle.SUCCESS, "Grün");
+            put(ButtonStyle.DANGER, "Rot");
+            put(ButtonStyle.PRIMARY, "Blau");
+            put(ButtonStyle.SECONDARY, "Grau");
+        }};
+        return name.get(style);
+    }
+
+    public String getColorIcon(ButtonStyle style) {
+        HashMap<ButtonStyle, String> name = new HashMap<>(){{
+            put(ButtonStyle.SUCCESS, "\uD83D\uDFE2");
+            put(ButtonStyle.DANGER, "\uD83D\uDD34");
+            put(ButtonStyle.PRIMARY, "\uD83D\uDD35");
+            put(ButtonStyle.SECONDARY, "⚪");
+        }};
+        return name.get(style);
     }
 }

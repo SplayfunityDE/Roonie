@@ -21,7 +21,7 @@ public class RemoveBannerCommand extends ListenerAdapter {
 
         if (event.isFromGuild()) {
 
-            if (event.getMessage().getContentStripped().startsWith(Roonie.prefix + "banner remove")) {
+            if (event.getMessage().getContentStripped().startsWith("/banner remove")) {
 
                 if (event.getMember().getPermissions().contains(Permission.ADMINISTRATOR)) {
 

@@ -26,7 +26,6 @@ public class Config {
     }
 
     public static boolean isConfigChannel(Channel channel, String identifier) {
-        System.out.println(mongoDB.exists("config", new Document().append("identifier", identifier).append("channel", channel.getIdLong())));
         return mongoDB.exists("config", new Document().append("identifier", identifier).append("channel", channel.getIdLong()));
     }
 

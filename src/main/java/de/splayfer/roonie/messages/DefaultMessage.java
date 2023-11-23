@@ -3,11 +3,11 @@ package de.splayfer.roonie.messages;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
+import java.util.List;
+
 public class DefaultMessage {
 
-    private static final int errorColor = 0xc01c34;
-    private static final int successColor = 0x3aa65b;
-    private static final String errorEmoji = "❗";
+    private static final String errorEmoji = ":no_entry_sign:";
     private static final String successEmoji = "✅";
 
     private String type;
@@ -65,64 +65,61 @@ public class DefaultMessage {
         this.title = title;
     }
 
-    public static MessageEmbed error(String title, String description, MessageEmbed.Field... fields) {
+    public static List<MessageEmbed> error(String title, String description, MessageEmbed.Field... fields) {
         return new DefaultMessage("error", title, description, fields).load();
     }
 
-    public static MessageEmbed error(String title, String description) {
+    public static List<MessageEmbed> error(String title, String description) {
         return new DefaultMessage("error", title, description).load();
     }
 
-    public static MessageEmbed error(String title) {
+    public static List<MessageEmbed> error(String title) {
         return new DefaultMessage("error", title).load();
     }
 
-    public static MessageEmbed success(String title, String description, MessageEmbed.Field... fields) {
+    public static List<MessageEmbed> success(String title, String description, MessageEmbed.Field... fields) {
         return new DefaultMessage("success", title, description, fields).load();
     }
 
-    public static MessageEmbed success(String title, String description) {
+    public static List<MessageEmbed> success(String title, String description) {
         return new DefaultMessage("success", title, description).load();
     }
 
-    public static MessageEmbed success(String title) {
+    public static List<MessageEmbed> success(String title) {
         return new DefaultMessage("success", title).load();
     }
 
-    private MessageEmbed load() {
+    private List<MessageEmbed> load() {
+        EmbedBuilder bannerEmbed = new EmbedBuilder();
+        EmbedBuilder reply = new EmbedBuilder();
+        reply.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
 
         int color;
-        String emoji;
+        String emoji = null;
         switch (type) {
             case "error" -> {
-                color = errorColor;
+                bannerEmbed.setColor(0xed4245);
+                bannerEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/914518380353040384/banner_fehler.png");
+                reply.setColor(0xed4245);
                 emoji = errorEmoji;
             }
             case "success" -> {
-                color = successColor;
+                bannerEmbed.setColor(0x43b480);
+                bannerEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/914518380088819742/banner_erfolg.png");
+                reply.setColor(0x43b480);
                 emoji = successEmoji;
             }
-            default -> {
-                color = 0x2e3137;
-                emoji = "";
-            }
         }
-
-        EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setColor(color);
-        embedBuilder.setTitle(emoji + " **" + title + "**");
-
+        reply.setTitle(emoji + " **" + title + "**");
         if (description != null) {
-            embedBuilder.setDescription(description);
+            reply.setDescription("> " + description);
         }
         if (fields != null) {
             for (MessageEmbed.Field f : fields) {
-                embedBuilder.addField(f);
+                reply.addField(f);
             }
         }
-
-        return embedBuilder.build();
+        return List.of(bannerEmbed.build(), reply.build());
     }
-
 
 }

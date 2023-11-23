@@ -21,7 +21,7 @@ public class SetupCommand extends ListenerAdapter {
 
         if (event.isFromGuild()) {
 
-            if (event.getMessage().getContentStripped().startsWith(Roonie.prefix + "setup minigames")) {
+            if (event.getMessage().getContentStripped().startsWith("/setup minigames")) {
 
                 if (event.getMember().getPermissions().contains(Permission.ADMINISTRATOR)) {
 
