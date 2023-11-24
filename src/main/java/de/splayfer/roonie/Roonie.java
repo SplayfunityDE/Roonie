@@ -1,39 +1,39 @@
 package de.splayfer.roonie;
 
-import de.splayfer.roonie.commands.AutoDeleteListener;
-import de.splayfer.roonie.commands.CommandInfoListener;
+import de.splayfer.roonie.modules.management.commands.AutoDeleteListener;
+import de.splayfer.roonie.modules.management.commands.CommandInfoListener;
 import de.splayfer.roonie.config.SetupCommand;
-import de.splayfer.roonie.economy.CoinBomb;
-import de.splayfer.roonie.economy.DailyCommand;
-import de.splayfer.roonie.economy.MoneyCommand;
+import de.splayfer.roonie.modules.economy.CoinBomb;
+import de.splayfer.roonie.modules.economy.DailyCommand;
+import de.splayfer.roonie.modules.economy.MoneyCommand;
 import de.splayfer.roonie.general.AutoComplete;
 import de.splayfer.roonie.general.AutoRoleListener;
 import de.splayfer.roonie.general.WelcomeListener;
-import de.splayfer.roonie.giveaway.GiveawayCreateCommand;
-import de.splayfer.roonie.giveaway.GiveawayEnterListener;
-import de.splayfer.roonie.giveaway.GiveawayManager;
-import de.splayfer.roonie.level.*;
-import de.splayfer.roonie.library.*;
-import de.splayfer.roonie.minigames.DeleteListener;
-import de.splayfer.roonie.minigames.GameSelector;
-import de.splayfer.roonie.minigames.RequestManager;
-import de.splayfer.roonie.minigames.TicTacToe;
-import de.splayfer.roonie.nitrogames.NitroGamesListener;
-import de.splayfer.roonie.nitrogames.NitrogamesSetupCommand;
+import de.splayfer.roonie.modules.giveaway.GiveawayCreateCommand;
+import de.splayfer.roonie.modules.giveaway.GiveawayEnterListener;
+import de.splayfer.roonie.modules.giveaway.GiveawayManager;
+import de.splayfer.roonie.modules.level.*;
+import de.splayfer.roonie.modules.library.*;
+import de.splayfer.roonie.modules.minigames.DeleteListener;
+import de.splayfer.roonie.modules.minigames.GameSelector;
+import de.splayfer.roonie.modules.minigames.RequestManager;
+import de.splayfer.roonie.modules.minigames.TicTacToe;
+import de.splayfer.roonie.modules.library.nitrogames.NitroGamesListener;
+import de.splayfer.roonie.modules.library.nitrogames.NitrogamesSetupCommand;
 import de.splayfer.roonie.partner.PartnerSetupCommand;
 import de.splayfer.roonie.partner.PartnerUnlockListener;
-import de.splayfer.roonie.poll.PollCreateCommand;
-import de.splayfer.roonie.poll.PollEnterListener;
-import de.splayfer.roonie.response.ResponseAddCommand;
-import de.splayfer.roonie.response.ResponseListener;
-import de.splayfer.roonie.response.ResponseRemoveCommand;
-import de.splayfer.roonie.schedule.BannerCounter;
-import de.splayfer.roonie.schedule.BotCounter;
-import de.splayfer.roonie.schedule.MessageCounter;
-import de.splayfer.roonie.tempchannel.ChannelListener;
-import de.splayfer.roonie.tempchannel.ControlListener;
-import de.splayfer.roonie.tempchannel.CreateJoinHubCommand;
-import de.splayfer.roonie.tempchannel.RemoveJoinHubCommand;
+import de.splayfer.roonie.modules.poll.PollCreateCommand;
+import de.splayfer.roonie.modules.poll.PollEnterListener;
+import de.splayfer.roonie.modules.response.ResponseAddCommand;
+import de.splayfer.roonie.modules.response.ResponseListener;
+import de.splayfer.roonie.modules.response.ResponseRemoveCommand;
+import de.splayfer.roonie.general.schedule.BannerCounter;
+import de.splayfer.roonie.general.schedule.BotCounter;
+import de.splayfer.roonie.general.schedule.MessageCounter;
+import de.splayfer.roonie.modules.tempchannel.ChannelListener;
+import de.splayfer.roonie.modules.tempchannel.ControlListener;
+import de.splayfer.roonie.modules.tempchannel.CreateJoinHubCommand;
+import de.splayfer.roonie.modules.tempchannel.RemoveJoinHubCommand;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -52,9 +52,7 @@ import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.EnumSet;
 
 public class Roonie {
@@ -145,7 +143,7 @@ public class Roonie {
         //commands
         builder.addEventListeners(new AutoDeleteListener());
         builder.addEventListeners(new CommandInfoListener());
-        builder.addEventListeners(new de.splayfer.roonie.commands.SetupCommand());
+        builder.addEventListeners(new de.splayfer.roonie.modules.management.commands.SetupCommand());
 
         //config
         builder.addEventListeners(new SetupCommand());
