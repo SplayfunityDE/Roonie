@@ -25,7 +25,6 @@ public class MoneyCommand extends ListenerAdapter {
     };
 
     public static List<ItemComponent> getMenuActionrow(String selfMenu) {
-
         List<ItemComponent> buttonTemp = new ArrayList<>();
 
         for (Button button : buttons) {
@@ -41,7 +40,6 @@ public class MoneyCommand extends ListenerAdapter {
     }
 
     public void onSlashCommandInteraction (SlashCommandInteractionEvent event) {
-
         if (event.getName().equals("money")) {
 
             Member target;
@@ -80,7 +78,6 @@ public class MoneyCommand extends ListenerAdapter {
 
             event.replyEmbeds(banner.build(), builder.build()).addActionRow(getMenuActionrow("m_overview")).setEphemeral(true).queue();
 
-
         } else if (event.getName().equals("leaderboard")) {
 
             Member member = event.getMember();
@@ -117,14 +114,12 @@ public class MoneyCommand extends ListenerAdapter {
             builder.setFooter("ID: " + member.getId());
 
             event.replyEmbeds(banner.build(), builder.build()).addActionRow(getMenuActionrow("m_leaderboard")).setEphemeral(true).queue();
-
         }
 
     }
 
     @Override
     public void onButtonInteraction (ButtonInteractionEvent event) {
-
         if (event.getButton().getId().startsWith("m_")) {
 
             String[] args = event.getComponentId().split("_");
@@ -145,11 +140,9 @@ public class MoneyCommand extends ListenerAdapter {
             event.deferEdit().queue();
             event.getHook().editOriginal(message).queue();
         }
-
     }
 
     public static MessageEditData getOverviewEmbed(Member m, boolean other) {
-
         int money = EconomyManager.getMoney(m);
 
         MessageEditBuilder mb = new MessageEditBuilder();
@@ -179,11 +172,9 @@ public class MoneyCommand extends ListenerAdapter {
         mb.setActionRow(getMenuActionrow("m_overview"));
 
         return mb.build();
-
     }
 
     public static MessageEditData getLeaderboardEmbed(Member m) {
-
         Map<Integer, String> list = EconomyManager.top(5);
 
         MessageEditBuilder mb = new MessageEditBuilder();
@@ -221,7 +212,6 @@ public class MoneyCommand extends ListenerAdapter {
         mb.setActionRow(getMenuActionrow("m_leaderboard"));
 
         return mb.build();
-
     }
 
 }

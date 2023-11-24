@@ -14,7 +14,7 @@ public class ChannelListener extends ListenerAdapter {
     public void onGuildVoiceUpdate(GuildVoiceUpdateEvent event) {
         if (event.getVoiceState().inAudioChannel()) {
 
-            if (JoinHubManager.existesJoinHub(event.getChannelJoined().getIdLong())) {
+            if (TempchannelManager.existesJoinHub(event.getChannelJoined().getIdLong())) {
                 createNewChannel(event.getGuild(), event.getMember());
                 return;
             }

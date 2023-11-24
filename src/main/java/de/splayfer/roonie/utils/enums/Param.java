@@ -1,4 +1,4 @@
-package de.splayfer.roonie.utils;
+package de.splayfer.roonie.utils.enums;
 
 public enum Param {
     GUILD_ONLY,

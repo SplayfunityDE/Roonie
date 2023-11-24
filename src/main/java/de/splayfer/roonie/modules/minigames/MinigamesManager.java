@@ -1,12 +1,17 @@
 package de.splayfer.roonie.modules.minigames;
 
 import de.splayfer.roonie.MongoDBDatabase;
+import de.splayfer.roonie.Roonie;
 import net.dv8tion.jda.api.entities.Member;
 import org.bson.Document;
 
 public class MinigamesManager {
 
     static MongoDBDatabase mongoDB = new MongoDBDatabase("minigames");
+
+    public static void init() {
+        Roonie.builder.addEventListeners(new DeleteListener(), new GameSelector(), new RequestManager(), new SetupCommand(), new TicTacToe());
+    }
 
     public static void addMatchToMember(Member member, String game) {
         insertStats(member, game);

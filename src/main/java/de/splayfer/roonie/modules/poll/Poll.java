@@ -172,40 +172,6 @@ public class Poll {
                     return id;
         return null;
     }
-
-    /*public void vote(Member member, String buttonId) {
-        Document document = mongoDB.find("pollEntrys", new Document().append("channel", channel.getIdLong()).append("message", message.getIdLong())).first();
-        List<Long> list = document.getList(buttonId, Long.class);
-        list.add(member.getIdLong());
-        mongoDB.updateLine("pollEntrys", new Document().append("channel", channel.getIdLong()).append("message", message.getIdLong()), buttonId, list);
-        List<Button> buttons = message.getButtons();
-        Button target = null;
-        for (Button button : message.getButtons())
-            if (button.getId().equals(buttonId))
-                target = button;
-        int index = buttons.indexOf(target);
-        buttons.remove(target);
-        target = target.withLabel(target.getLabel().substring(0, target.getLabel().length() - 2) + list.size() + ")");
-        buttons.add(index, target);
-        message.editMessageComponents(ActionRow.of(buttons)).queue();
-    }
-
-    public void unVote(Member member, String buttonId) {
-        Document document = mongoDB.find("pollEntrys", new Document().append("channel", channel.getIdLong()).append("message", message.getIdLong())).first();
-        List<Long> list = document.getList(buttonId, Long.class);
-        list.remove(member.getIdLong());
-        mongoDB.updateLine("pollEntrys", new Document().append("channel", channel.getIdLong()).append("message", message.getIdLong()), buttonId, list);
-        List<Button> buttons = message.getButtons();
-        Button target = null;
-        for (Button button : message.getButtons())
-            if (button.getId().equals(buttonId))
-                target = button;
-        int index = buttons.indexOf(target);
-        buttons.remove(target);
-        target = target.withLabel(target.getLabel().substring(0, target.getLabel().length() - 2) + list.size() + ")");
-        buttons.add(index, target);
-        message.editMessageComponents(ActionRow.of(buttons)).queue();
-    }*/
     
     public void updateVote(Member member, String buttonId, VoteAction action) {
         Document document = mongoDB.find("pollEntrys", new Document().append("channel", channel.getIdLong()).append("message", message.getIdLong())).first();

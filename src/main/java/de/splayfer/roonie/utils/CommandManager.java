@@ -1,9 +1,38 @@
 package de.splayfer.roonie.utils;
 
 import de.splayfer.roonie.Roonie;
+import de.splayfer.roonie.utils.enums.Guilds;
+import de.splayfer.roonie.utils.enums.Param;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+
+import java.util.HashMap;
+import java.util.List;
 
 public class CommandManager {
+
+    private static HashMap<Long, List<SlashCommandData>> commands = new HashMap<>();
+
+    public static void addCommand(SlashCommandData data) {
+        addCommand(Guilds.GLOBAL, data);
+    }
+    public static void addCommand(Guilds guild, SlashCommandData data) {
+        commands.get(guild.getId()).add(data);
+    }
+    public static void initCommands(JDA shardman) {
+        for(Long id : commands.keySet()) {
+            for(SlashCommandData data : commands.get(id)) {
+                if(id == -1) {
+                    shardman.upsertCommand(data).queue();
+                }else {
+                    Guild g = shardman.getGuildById(id);
+                    g.upsertCommand(data).queue();
+                }
+            }
+        }
+    }
 
     public static boolean checkCommand(SlashCommandInteraction interaction, String name, Param... parameters) {
         if(interaction.getName().equals(name)) {

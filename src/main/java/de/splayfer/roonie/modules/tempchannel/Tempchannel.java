@@ -1,6 +1,6 @@
 package de.splayfer.roonie.modules.tempchannel;
 
-import de.splayfer.roonie.utils.Roles;
+import de.splayfer.roonie.utils.enums.Roles;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
@@ -81,13 +81,10 @@ public class Tempchannel {
 
         guild.getManager().getGuild().moveVoiceMember(owner, channel).queue();
         owner.mute(false).queue();
-
         return channel;
-
     }
 
     private TextChannel createSettingsChannel() {
-
         TextChannel tempSettings = guild.getCategoryById(settingsCategory).createTextChannel("〣│🔨・einstellungen").setTopic("Einstellungskanal von <#" + vc.getId() + "> (ID: " + vc.getId() + ")")
                 .addPermissionOverride(Roles.everyone.getRole(guild), List.of(Permission.EMPTY_PERMISSIONS), List.of(Permission.VIEW_CHANNEL))
                 .complete();
@@ -99,23 +96,18 @@ public class Tempchannel {
 
         tempSettings.sendMessage(owner.getAsMention()).complete().delete().queue();
         tempSettings.sendTyping().queue();
-
         return tempSettings;
-
     }
 
     public void updateMessage() {
-
         if(embedMessage == null) {
             embedMessage = settings.sendMessage(TempchannelPageSystem.getMainEmbedCreate(this)).complete();
         }else {
             embedMessage.editMessage(TempchannelPageSystem.getMainEmbedEdit(this)).queue();
         }
-
     }
 
     public InteractionHook getHookByRandomId(String id) {
-
         for(Map.Entry<InteractionHook, String> entry : ephList.entrySet()) {
             String[] args = entry.getValue().split("_");
             if(args.length >= 3) {
@@ -124,16 +116,12 @@ public class Tempchannel {
                 }
             }
         }
-
         return null;
-
     }
 
     public void updateMessages(String id) {
-
         for(Map.Entry<InteractionHook, String> entry : ephList.entrySet()) {
             if(entry.getValue().startsWith(id)) {
-
                 InteractionHook hook = entry.getKey();
                 Tempchannel channel = ControlListener.getTempchannel((TextChannel) hook.getInteraction().getChannel());
 
@@ -158,14 +146,11 @@ public class Tempchannel {
                             hook.editOriginal(TempchannelPageSystem.getRoleEmbedEdit(channel, getId, m)).queue(); break;
                     }
                 }
-
             }
         }
-
     }
 
     public MessageCreateData getMemberViewCreate(Member member, Member viewing) {
-
         MessageCreateBuilder mb = new MessageCreateBuilder();
         EmbedBuilder eb = new EmbedBuilder();
 
@@ -200,7 +185,6 @@ public class Tempchannel {
     }
 
     public MessageEditData getMemberViewEdit(Member member, Member viewing) {
-
         MessageEditBuilder mb = new MessageEditBuilder();
         EmbedBuilder eb = new EmbedBuilder();
 
@@ -235,7 +219,6 @@ public class Tempchannel {
     }
 
     public Member changeOwner() {
-
         if(!vc.getMembers().contains(owner)) {
 
             vc.upsertPermissionOverride(owner).reset().queue();
@@ -260,26 +243,18 @@ public class Tempchannel {
                 modList.remove(owner);
             }
             updateMessages("menu_roles");
-
             return owner;
-
         }
-
         return null;
-
     }
 
     public void delete() {
-
         this.vc.delete().queue();
         this.settings.delete().queue();
 
         if(ControlListener.tempChannels.containsKey(vc.getId())) {
-
             ControlListener.tempChannels.remove(vc.getId());
-
         }
-
     }
 
     public VoiceChannel getVoiceChannel() {
@@ -287,7 +262,6 @@ public class Tempchannel {
     }
 
     public boolean isPermitted(Member member) {
-
         if(Roles.TEMPCHANNEL_MODERATOR.hasAnyRoles(member.getGuild(), member)) {
             return true;
         }
@@ -295,27 +269,20 @@ public class Tempchannel {
             return true;
         }
         return modList.contains(member);
-
     }
 
     public void updatePermissions() {
-
         for(PermissionOverride po : settings.getMemberPermissionOverrides()) {
-
             if(modList.contains(po.getMember()) || owner.equals(po.getMember())) {
                 settings.upsertPermissionOverride(po.getMember()).grant(Permission.VIEW_CHANNEL).grant(Permission.MESSAGE_SEND).queue();
             }else {
                 po.delete().queue();
             }
-
         }
 
         for(Member member : modList) {
-
             settings.upsertPermissionOverride(member).clear().grant(Permission.VIEW_CHANNEL).grant(Permission.MESSAGE_SEND).queue();
-
         }
-
     }
 
 }

@@ -1,13 +1,58 @@
 package de.splayfer.roonie.modules.level;
 
 import de.splayfer.roonie.MongoDBDatabase;
+import de.splayfer.roonie.Roonie;
+import de.splayfer.roonie.utils.CommandManager;
+import de.splayfer.roonie.utils.enums.Guilds;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import org.bson.Document;
 
 public class LevelManager extends ListenerAdapter {
 
     static MongoDBDatabase mongoDB = new MongoDBDatabase("splayfunity");
+
+    public static void init() {
+        Roonie.builder.addEventListeners(new LevelListener(), new LevelInfoCommand(), new RankCommand(), new LevelCommand(), new XpCommand());
+
+        CommandManager.addCommand(Guilds.MAIN,
+                Commands.slash("rank", "\uD83D\uDCCB │ Zeigt dir deinen aktuellen Rank an!")
+                        .addOption(OptionType.USER, "nutzer", "Wähle einen bestimmten Nutzer!", false));
+        CommandManager.addCommand(Guilds.MAIN,
+                Commands.slash("levels", "✨ │ Schau dir unsere Level-Vorteile an!"));
+        CommandManager.addCommand(Guilds.MAIN,
+                Commands.slash("level", "⚙ │ Verwalte die Level eines Nutzers!")
+                        .addSubcommands(new SubcommandData("add", "➕ │ Füge dem Nutzer eine bestimmte Anzahl von Leveln hinzu!")
+                                            .addOption(OptionType.USER, "nutzer", "\uD83D\uDC65 │ Nutzer, dessen Level du verwalten möchtest!", true)
+                                            .addOption(OptionType.INTEGER, "anzahl", "\uD83D\uDCD1 │ Anzahl der zu verwaltenden Level!", true),
+                                        new SubcommandData("remove", "➖ │ Entferne dem Nutzer eine bestimmte Anzahl von Leveln!")
+                                            .addOption(OptionType.USER, "nutzer", "\uD83D\uDC65 │ Nutzer, dessen Level du verwalten möchtest!", true)
+                                            .addOption(OptionType.INTEGER, "anzahl", "\uD83D\uDCD1 │ Anzahl der zu verwaltenden Level!", true),
+                                        new SubcommandData("set", "\uD83D\uDCC3 │ Setze dem Nutzer die Anzahl seiner Level!")
+                                            .addOption(OptionType.USER, "nutzer", "\uD83D\uDC65 │ Nutzer, dessen Level du verwalten möchtest!", true)
+                                            .addOption(OptionType.INTEGER, "anzahl", "\uD83D\uDCD1 │ Anzahl der zu verwaltenden Level!", true))
+                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)));
+        CommandManager.addCommand(Guilds.MAIN,
+                Commands.slash("xp", "⚙ │ Verwalte die Xp eines Nutzers!")
+                        .addSubcommands(new SubcommandData("add", "➕ │ Füge dem Nutzer eine bestimmte Anzahl an Xp hinzu!")
+                                            .addOption(OptionType.USER, "nutzer", "\uD83D\uDC65 │ Nutzer, dessen Xp du verwalten möchtest!", true)
+                                            .addOption(OptionType.INTEGER, "anzahl", "\uD83D\uDCD1 │ Anzahl der zu verwaltenden Xp!", true),
+                                        new SubcommandData("remove", "➖ │ Entferne dem Nutzer eine bestimmte Anzahl an Xp!")
+                                            .addOption(OptionType.USER, "nutzer", "\uD83D\uDC65 │ Nutzer, dessen Xp du verwalten möchtest!", true)
+                                            .addOption(OptionType.INTEGER, "anzahl", "\uD83D\uDCD1 │ Anzahl der zu verwaltenden Xp!", true),
+                                        new SubcommandData("set", "\uD83D\uDCC3 │ Setze dem Nutzer die Anzahl seiner Xp!")
+                                            .addOption(OptionType.USER, "nutzer", "\uD83D\uDC65 │ Nutzer, dessen Xp du verwalten möchtest!", true)
+                                            .addOption(OptionType.INTEGER, "anzahl", "\uD83D\uDCD1 │ Anzahl der zu verwaltenden Xp!", true))
+                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)));
+
+        LevelListener.checkVoiceMembers();
+    }
+
     public static void addXpToUser(Member member, int amount) {
         insertUser(member);
         mongoDB.updateLine("level", new Document("guildMember", member.getIdLong()), "xp", getXp(member) + amount);

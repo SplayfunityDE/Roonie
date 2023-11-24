@@ -1,7 +1,7 @@
 package de.splayfer.roonie.modules.level;
 
 import de.splayfer.roonie.Roonie;
-import de.splayfer.roonie.utils.Roles;
+import de.splayfer.roonie.utils.enums.Roles;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;

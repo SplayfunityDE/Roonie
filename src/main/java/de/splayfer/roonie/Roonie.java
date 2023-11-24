@@ -1,39 +1,26 @@
 package de.splayfer.roonie;
 
+import de.splayfer.roonie.modules.economy.EconomyManager;
 import de.splayfer.roonie.modules.management.commands.AutoDeleteListener;
 import de.splayfer.roonie.modules.management.commands.CommandInfoListener;
 import de.splayfer.roonie.config.SetupCommand;
-import de.splayfer.roonie.modules.economy.CoinBomb;
-import de.splayfer.roonie.modules.economy.DailyCommand;
-import de.splayfer.roonie.modules.economy.MoneyCommand;
 import de.splayfer.roonie.general.AutoComplete;
 import de.splayfer.roonie.general.AutoRoleListener;
 import de.splayfer.roonie.general.WelcomeListener;
-import de.splayfer.roonie.modules.giveaway.GiveawayCreateCommand;
-import de.splayfer.roonie.modules.giveaway.GiveawayEnterListener;
 import de.splayfer.roonie.modules.giveaway.GiveawayManager;
 import de.splayfer.roonie.modules.level.*;
 import de.splayfer.roonie.modules.library.*;
-import de.splayfer.roonie.modules.minigames.DeleteListener;
-import de.splayfer.roonie.modules.minigames.GameSelector;
-import de.splayfer.roonie.modules.minigames.RequestManager;
-import de.splayfer.roonie.modules.minigames.TicTacToe;
-import de.splayfer.roonie.modules.library.nitrogames.NitroGamesListener;
+import de.splayfer.roonie.modules.minigames.*;
 import de.splayfer.roonie.modules.library.nitrogames.NitrogamesSetupCommand;
-import de.splayfer.roonie.partner.PartnerSetupCommand;
-import de.splayfer.roonie.partner.PartnerUnlockListener;
-import de.splayfer.roonie.modules.poll.PollCreateCommand;
-import de.splayfer.roonie.modules.poll.PollEnterListener;
+import de.splayfer.roonie.modules.poll.PollManager;
 import de.splayfer.roonie.modules.response.ResponseAddCommand;
 import de.splayfer.roonie.modules.response.ResponseListener;
 import de.splayfer.roonie.modules.response.ResponseRemoveCommand;
 import de.splayfer.roonie.general.schedule.BannerCounter;
 import de.splayfer.roonie.general.schedule.BotCounter;
 import de.splayfer.roonie.general.schedule.MessageCounter;
-import de.splayfer.roonie.modules.tempchannel.ChannelListener;
-import de.splayfer.roonie.modules.tempchannel.ControlListener;
-import de.splayfer.roonie.modules.tempchannel.CreateJoinHubCommand;
-import de.splayfer.roonie.modules.tempchannel.RemoveJoinHubCommand;
+import de.splayfer.roonie.modules.tempchannel.*;
+import de.splayfer.roonie.utils.CommandManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -57,16 +44,18 @@ import java.util.EnumSet;
 
 public class Roonie {
 
-    public static JDA shardMan;
     public static Guild mainGuild;
     public static Guild emojiServerGuild;
     public static Guild emojiServerGuild2;
     public static Role[] autoRoles;
 
-    public static void main(String[] args) throws IOException {
+    public static JDABuilder builder;
+    public static JDA shardMan;
+
+    public static void main(String[] args) throws IOException, InterruptedException {
         FileSystem.loadFileSystem();
 
-        JDABuilder builder = JDABuilder.createDefault("ODg2MjA5NzYzMTc4ODQ0MjEy.G6jBkR.Wr_hOGdDVLscXvI1hfvo1nks9bedkcSDA87guw");
+        builder = JDABuilder.createDefault("ODg2MjA5NzYzMTc4ODQ0MjEy.G6jBkR.Wr_hOGdDVLscXvI1hfvo1nks9bedkcSDA87guw");
         builder.setActivity(Activity.streaming("auf 🌀SPLΛYFUNITY🌀", "https://twitch.tv/splayfer"));
         builder.setStatus(OnlineStatus.ONLINE);
         builder.setChunkingFilter(ChunkingFilter.ALL);
@@ -75,13 +64,16 @@ public class Roonie {
         EnumSet<CacheFlag> enumSet = EnumSet.of(CacheFlag.ONLINE_STATUS, CacheFlag.CLIENT_STATUS, CacheFlag.EMOJI, CacheFlag.VOICE_STATE);
         builder.enableCache(enumSet);
 
+        EconomyManager.init();
+        GiveawayManager.init();
+        TempchannelManager.init();
+        LibraryManager.init();
+        PollManager.init();
+        MinigamesManager.init();
+        LevelManager.init();
+
         //register events
         builder.addEventListeners(new ReadyEventClass());
-        //tempchannel
-        builder.addEventListeners(new CreateJoinHubCommand());
-        builder.addEventListeners(new RemoveJoinHubCommand());
-        builder.addEventListeners(new ChannelListener());
-        builder.addEventListeners(new ControlListener());
 
         //profil
         builder.addEventListeners(new NitrogamesSetupCommand());
@@ -91,54 +83,10 @@ public class Roonie {
         builder.addEventListeners(new WelcomeListener());
         builder.addEventListeners(new AutoComplete());
 
-        //library
-        builder.addEventListeners(new LibrarySetupCommand());
-        builder.addEventListeners(new BannerListener());
-        builder.addEventListeners(new AddBannerCommand());
-        builder.addEventListeners(new RemoveBannerCommand());
-        builder.addEventListeners(new TemplateListener());
-        builder.addEventListeners(new AddTemplateCommand());
-        builder.addEventListeners(new RemoveTemplateCommand());
-
-        //partner
-        builder.addEventListeners(new PartnerSetupCommand());
-        builder.addEventListeners(new PartnerUnlockListener());
-
         //autoresponse
         builder.addEventListeners(new ResponseAddCommand());
         builder.addEventListeners(new ResponseRemoveCommand());
         builder.addEventListeners(new ResponseListener());
-
-        //levelsystem
-        builder.addEventListeners(new LevelListener());
-        builder.addEventListeners(new LevelInfoCommand());
-        builder.addEventListeners(new RankCommand());
-        builder.addEventListeners(new LevelCommand());
-        builder.addEventListeners(new XpCommand());
-
-        //umfragen
-        builder.addEventListeners(new PollCreateCommand());
-        builder.addEventListeners(new PollEnterListener());
-
-        //giveaways
-        builder.addEventListeners(new GiveawayCreateCommand());
-        builder.addEventListeners(new GiveawayEnterListener());
-
-        //nitrogames
-        builder.addEventListeners(new NitrogamesSetupCommand());
-        builder.addEventListeners(new NitroGamesListener());
-
-        //economy
-        builder.addEventListeners(new CoinBomb());
-        builder.addEventListeners(new MoneyCommand());
-        builder.addEventListeners(new DailyCommand());
-
-        //minigames
-        builder.addEventListeners(new DeleteListener());
-        builder.addEventListeners(new GameSelector());
-        builder.addEventListeners(new RequestManager());
-        builder.addEventListeners(new SetupCommand());
-        builder.addEventListeners(new TicTacToe());
 
         //commands
         builder.addEventListeners(new AutoDeleteListener());
@@ -149,44 +97,17 @@ public class Roonie {
         builder.addEventListeners(new SetupCommand());
 
         shardMan = builder.build();
+        CommandManager.initCommands(shardMan.awaitReady());
 
         MessageCounter.chatCounterUpdate();
         BotCounter.botCounterUpdate();
         BannerCounter.updateBannerMemberCount();
+
         AutoRoleListener.fixMemberRoles();
         AutoDeleteListener.checkCommandMessages();
-        GiveawayManager.checkGiveaways();
-        LevelListener.checkVoiceMembers();
 
         System.out.println("[Splayfer] Bot changed Status: Online");
     }
-
-    /*public void shutdown() {
-        new Thread(() -> {
-            String line;
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            try {
-                while((line = reader.readLine()) != null) {
-                    if(line.equalsIgnoreCase("exit")) {
-                        if(shardMan != null) {
-                            shardMan.shutdown();
-                            System.out.println("Bot offline.");
-                        }
-                        reader.close();
-                        break;
-                    }
-                    else if(line.equalsIgnoreCase("info"))
-                        for(Guild guild : shardMan.getGuilds())
-                            System.out.println(guild.getName() + " " + guild.getIdLong());
-                    else {
-                        System.out.println("Use 'exit' to shutdown.");
-                    }
-                }
-            } catch (IOException e) {
-                //e.printStackTrace();
-            }
-        }).start();
-    }*/
 
 }
 
@@ -203,54 +124,18 @@ class ReadyEventClass extends ListenerAdapter {
         };
 
         Roonie.mainGuild.updateCommands().addCommands(
-                Commands.slash("rank", "\uD83D\uDCCB │ Zeigt dir deinen aktuellen Rank an!")
-                        .addOption(OptionType.USER, "nutzer", "Wähle einen bestimmten Nutzer!", false),
-                Commands.slash("levels", "✨ │ Schau dir unsere Level-Vorteile an!"),
-                Commands.slash("level", "⚙ │ Verwalte die Level eines Nutzers!")
-                        .addSubcommands(new SubcommandData("add", "➕ │ Füge dem Nutzer eine bestimmte Anzahl von Leveln hinzu!")
-                                .addOption(OptionType.USER, "nutzer", "\uD83D\uDC65 │ Nutzer, dessen Level du verwalten möchtest!", true)
-                                .addOption(OptionType.INTEGER, "anzahl", "\uD83D\uDCD1 │ Anzahl der zu verwaltenden Level!", true),
-                                new SubcommandData("remove", "➖ │ Entferne dem Nutzer eine bestimmte Anzahl von Leveln!")
-                                        .addOption(OptionType.USER, "nutzer", "\uD83D\uDC65 │ Nutzer, dessen Level du verwalten möchtest!", true)
-                                        .addOption(OptionType.INTEGER, "anzahl", "\uD83D\uDCD1 │ Anzahl der zu verwaltenden Level!", true),
-                                new SubcommandData("set", "\uD83D\uDCC3 │ Setze dem Nutzer die Anzahl seiner Level!")
-                                        .addOption(OptionType.USER, "nutzer", "\uD83D\uDC65 │ Nutzer, dessen Level du verwalten möchtest!", true)
-                                        .addOption(OptionType.INTEGER, "anzahl", "\uD83D\uDCD1 │ Anzahl der zu verwaltenden Level!", true))
-                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)),
-                Commands.slash("xp", "⚙ │ Verwalte die Xp eines Nutzers!")
-                        .addSubcommands(new SubcommandData("add", "➕ │ Füge dem Nutzer eine bestimmte Anzahl an Xp hinzu!")
-                                .addOption(OptionType.USER, "nutzer", "\uD83D\uDC65 │ Nutzer, dessen Xp du verwalten möchtest!", true)
-                                .addOption(OptionType.INTEGER, "anzahl", "\uD83D\uDCD1 │ Anzahl der zu verwaltenden Xp!", true),
-                                new SubcommandData("remove", "➖ │ Entferne dem Nutzer eine bestimmte Anzahl an Xp!")
-                                        .addOption(OptionType.USER, "nutzer", "\uD83D\uDC65 │ Nutzer, dessen Xp du verwalten möchtest!", true)
-                                        .addOption(OptionType.INTEGER, "anzahl", "\uD83D\uDCD1 │ Anzahl der zu verwaltenden Xp!", true),
-                                new SubcommandData("set", "\uD83D\uDCC3 │ Setze dem Nutzer die Anzahl seiner Xp!")
-                                        .addOption(OptionType.USER, "nutzer", "\uD83D\uDC65 │ Nutzer, dessen Xp du verwalten möchtest!", true)
-                                        .addOption(OptionType.INTEGER, "anzahl", "\uD83D\uDCD1 │ Anzahl der zu verwaltenden Xp!", true))
-                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)),
                 Commands.slash("response", "\uD83D\uDCDC │ Verwalte automatisierte Reaktionen des Bots!")
                         .addSubcommands(new SubcommandData("add", "\uD83D\uDCDC │ Füge automatisierte Reaktionen hinzu!")
                                 .addOption(OptionType.STRING, "nachricht", "\uD83D\uDCE2 │ Nachricht, auf die der Bot reagieren soll", true),
                                 new SubcommandData("remove", "\uD83D\uDCDC │ Entferne automatisierte Reaktionen!")
                                         .addOption(OptionType.STRING, "nachricht", "\uD83D\uDCE2 │ Nachricht, auf die der Bot reagieren soll", true))
                                 .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)),
-                Commands.slash("money", "\uD83D\uDCB3 │ Zeigt dir den aktuellen Kontostand an!")
-                        .addOption(OptionType.USER, "nutzer", "\uD83D\uDC65 │ Nutzer, welchen du anzeigen möchtest!", false),
-                Commands.slash("leaderboard", "\uD83D\uDCCA │ Zeigt dir die Rangliste mit den aktuell besten Casino Spielern an!"),
-                Commands.slash("daily", "\uD83D\uDCC5 │ Hole dir deine tägliche Menge an Coins!"),
-                Commands.slash("giveaway", "\uD83C\uDF89 │ Verwalte die gesamten Giveaways des Servers!")
-                        .addSubcommands(new SubcommandData("create", "➕ │ Erstelle ein neues Giveaway!"))
-                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)),
                 Commands.slash("setup", "\uD83D\uDEE0️ │ Sende verwaltungsrelevante Nachrichten mithilfe dieses Commands")
                         .addOption(OptionType.STRING, "kategorie", "\uD83C\uDFF7️ │ Kategorie, über welche du Nachrichten versenden möchtest!", true, true)
                         .addOption(OptionType.INTEGER, "id", "⚙️ │ Id, der von dir verwendeten Kategorie (muss eine Ganzzahl sein)", false)
                         .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)),
-                Commands.slash("letsjohannes", "Hmm :eyes:"),
-                Commands.slash("umfrage", "\uD83D\uDCCA │ Verwaltet die gesamten Umfragen des Servers!")
-                        .addSubcommands(new SubcommandData("create", "➕ │ Erstelle eine neue Umfrage!"))
-                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
+                Commands.slash("letsjohannes", "Hmm :eyes:")
         ).queue();
-
     }
 
 }

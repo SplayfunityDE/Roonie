@@ -1,11 +1,17 @@
 package de.splayfer.roonie.modules.giveaway;
 
 import de.splayfer.roonie.Roonie;
+import de.splayfer.roonie.utils.CommandManager;
+import de.splayfer.roonie.utils.enums.Guilds;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
+import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 import java.time.LocalDateTime;
@@ -14,8 +20,18 @@ import java.util.*;
 
 public class GiveawayManager {
 
-    public static void checkGiveaways() {
+    public static void init() {
+        Roonie.builder.addEventListeners(new GiveawayEnterListener(), new GiveawayCreateCommand());
 
+        CommandManager.addCommand(Guilds.MAIN,
+                Commands.slash("giveaway", "\uD83C\uDF89 │ Verwalte die gesamten Giveaways des Servers!")
+                        .addSubcommands(new SubcommandData("create", "➕ │ Erstelle ein neues Giveaway!"))
+                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)));
+
+        checkGiveaways();
+    }
+
+    public static void checkGiveaways() {
         Timer t = new Timer();
         t.schedule(new TimerTask() {
             @Override

@@ -33,8 +33,8 @@ public class RemoveJoinHubCommand extends ListenerAdapter {
 
                             VoiceChannel c = event.getGuild().getVoiceChannelById(args[2]);
 
-                            if (JoinHubManager.existesJoinHub(c.getIdLong())) {
-                                JoinHubManager.removeJoinHub(c);
+                            if (TempchannelManager.existesJoinHub(c.getIdLong())) {
+                                TempchannelManager.removeJoinHub(c);
                             }
 
                             EmbedBuilder sucess = new EmbedBuilder();

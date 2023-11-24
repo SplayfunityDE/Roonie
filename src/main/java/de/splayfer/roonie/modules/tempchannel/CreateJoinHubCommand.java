@@ -36,8 +36,8 @@ public class CreateJoinHubCommand extends ListenerAdapter {
 
                             //save to yml
 
-                            if (!JoinHubManager.existesJoinHub(c.getIdLong())) {
-                                JoinHubManager.createJoinHub(c, event.getMember());
+                            if (!TempchannelManager.existesJoinHub(c.getIdLong())) {
+                                TempchannelManager.createJoinHub(c, event.getMember());
                             }
 
                             EmbedBuilder sucess = new EmbedBuilder();

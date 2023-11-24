@@ -1,4 +1,4 @@
-package de.splayfer.roonie.poll;
+package de.splayfer.roonie.modules.poll;
 
 import de.splayfer.roonie.Roonie;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;

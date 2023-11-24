@@ -1,4 +1,4 @@
-package de.splayfer.roonie.utils;
+package de.splayfer.roonie.utils.enums;
 
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;

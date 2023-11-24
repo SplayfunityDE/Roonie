@@ -1,6 +1,9 @@
 package de.splayfer.roonie.modules.library;
 
 import de.splayfer.roonie.MongoDBDatabase;
+import de.splayfer.roonie.Roonie;
+import de.splayfer.roonie.modules.library.nitrogames.NitroGamesListener;
+import de.splayfer.roonie.modules.library.nitrogames.NitrogamesSetupCommand;
 import org.bson.Document;
 
 import java.util.ArrayList;
@@ -9,6 +12,13 @@ import java.util.List;
 public class LibraryManager {
 
     static MongoDBDatabase mongoDB = new MongoDBDatabase("splayfunity");
+
+    public static void init() {
+        Roonie.builder.addEventListeners(new LibrarySetupCommand(), new BannerListener(), new AddBannerCommand(), new RemoveBannerCommand(), new TemplateListener(), new AddTemplateCommand(), new RemoveTemplateCommand());
+
+        //NitroGames
+        Roonie.builder.addEventListeners(new NitroGamesListener(), new NitrogamesSetupCommand());
+    }
 
     public static void addTemplate(String category, String url) {
         mongoDB.insert("templates", new Document()

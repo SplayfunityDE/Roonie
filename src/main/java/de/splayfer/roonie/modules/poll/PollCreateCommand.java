@@ -1,7 +1,7 @@
 package de.splayfer.roonie.modules.poll;
 
 import de.splayfer.roonie.utils.DefaultMessage;
-import de.splayfer.roonie.utils.Embeds;
+import de.splayfer.roonie.utils.enums.Embeds;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
