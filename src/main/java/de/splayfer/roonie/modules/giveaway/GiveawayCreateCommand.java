@@ -257,14 +257,12 @@ public class GiveawayCreateCommand extends ListenerAdapter {
                         break;
 
                     case 7:
-
                         if (!event.getMessage().getAttachments().isEmpty()) {
-
                             //wenn attachment
 
                             if (event.getMessage().getAttachments().get(0).isImage()) {
 
-                                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("EEEE dd. MMM YYY / HH:mm");
+                                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("EEEE dd. MMM yyy / HH:mm");
 
                                 Giveaway giveaway = Giveaway.getFromMember(event.getMember());
                                 giveaway.setPicture(event.getMessage().getAttachments().get(0).getUrl());
@@ -298,10 +296,8 @@ public class GiveawayCreateCommand extends ListenerAdapter {
                         } else if (args.length == 1) {
 
                             //wenn link
-
                             try {
-
-                                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("EEEE dd. MMM YYY / HH:mm");
+                                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("EEEE dd. MMM yyy / HH:mm");
 
                                 Giveaway giveaway = Giveaway.getFromMember(event.getMember());
                                 giveaway.setPicture(args[0]);
@@ -324,41 +320,26 @@ public class GiveawayCreateCommand extends ListenerAdapter {
                                 timeoutList.remove(event.getMember());
                                 startGiveaway(giveaway);
                                 interactionList.remove(event.getMember());
-
                             } catch (Exception exception) {
-
                                 event.getChannel().sendTyping().queue();
                                 interactionList.get(event.getMember()).sendMessageEmbeds(DefaultMessage.error("Bitte gib einen :link: Link an!")).setEphemeral(true).queue();
-
                             }
-
                         } else {
-
                             event.getChannel().sendTyping().queue();
                             interactionList.get(event.getMember()).sendMessageEmbeds(DefaultMessage.error("Bitte gib einen :link: Link an!")).setEphemeral(true).queue();
-
                         }
-
                         break;
-
                 }
 
             } else {
-
                 EmbedBuilder main;
-
                 String[] args = event.getMessage().getContentStripped().split(" ");
 
                 Giveaway giveaway = Giveaway.getFromMember(event.getMember());
-
                 switch (giveaway.getRequirement().keySet().toArray()[0].toString()) {
-
                     case "message":
-
                         if (args.length == 1) {
-
                             try {
-
                                 main = new EmbedBuilder();
                                 main.setColor(0xeed147);
                                 main.setTitle("\uD83D\uDC65 Wieviele Gewinner soll es geben?");
@@ -372,25 +353,16 @@ public class GiveawayCreateCommand extends ListenerAdapter {
                                     put(giveaway.getRequirement().keySet().toArray()[0].toString(), args[0]);
                                 }});
                                 checkTimeout(event.getMember());
-
                             } catch (Exception exception) {
-
                                 event.getChannel().sendTyping().queue();
                                 interactionList.get(event.getMember()).sendMessageEmbeds(DefaultMessage.error("Du musst eine Zahl angeben!")).setEphemeral(true).queue();
-
                             }
-
                         } else {
-
                             event.getChannel().sendTyping().queue();
                             interactionList.get(event.getMember()).sendMessageEmbeds(DefaultMessage.error("Du musst eine Zahl angeben!")).setEphemeral(true).queue();
-
                         }
-
                         break;
-
                     case "voice":
-
                         if (args.length == 1) {
 
                             try {
@@ -610,87 +582,62 @@ public class GiveawayCreateCommand extends ListenerAdapter {
                         EmbedBuilder success;
 
                         switch (event.getValues().get(0)) {
-
-                            case "message":
-
+                            case "message" -> {
                                 success = new EmbedBuilder();
                                 success.setColor(0xeed147);
                                 success.setTitle(":speech_balloon: Wieviele Nachrichten sollen benötigt werden?");
                                 success.setDescription("Gib an, wieviele Nachrichten ein Nutzer benötigt, um an dem Giveaway teilnehmen zu können!");
-
                                 event.getChannel().sendTyping().queue();
                                 event.replyEmbeds(success.build()).queue();
-
                                 Giveaway.getFromMember(event.getMember()).setRequirement(new HashMap<>() {{
                                     put(event.getValues().get(0), null);
                                 }});
                                 checkTimeout(event.getMember());
                                 reqList.add(event.getMember());
-
                                 interactionList.put(event.getMember(), event.getHook());
-
-                                break;
-
-                            case "voice":
-
+                            }
+                            case "voice" -> {
                                 success = new EmbedBuilder();
                                 success.setColor(0xeed147);
                                 success.setTitle(":loud_sound: Wieviele Minuten im Voice sollen benötigt werden?");
                                 success.setDescription("Gib an, wieviele Minuten lang ein Nutzer in einem Sprachkanal gewesen sein muss, um an dem Giveaway teilnehmen zu können!");
-
                                 event.getChannel().sendTyping().queue();
                                 event.replyEmbeds(success.build()).queue();
-
                                 Giveaway.getFromMember(event.getMember()).setRequirement(new HashMap<>() {{
                                     put(event.getValues().get(0), null);
                                 }});
                                 checkTimeout(event.getMember());
                                 reqList.add(event.getMember());
-
                                 interactionList.put(event.getMember(), event.getHook());
-
-                                break;
-
-                            case "invite":
-
+                            }
+                            case "invite" -> {
                                 success = new EmbedBuilder();
                                 success.setColor(0xeed147);
                                 success.setTitle(":link: Wieviele Einladungen sollen benötigt werden?");
                                 success.setDescription("Gib an, wieviele Servereinladungen ein Nutzer benötigt, um an dem Giveaway teilnehmen zu können!");
-
                                 event.getChannel().sendTyping().queue();
                                 event.replyEmbeds(success.build()).queue();
-
                                 Giveaway.getFromMember(event.getMember()).setRequirement(new HashMap<>() {{
                                     put(event.getValues().get(0), null);
                                 }});
                                 checkTimeout(event.getMember());
                                 reqList.add(event.getMember());
-
                                 interactionList.put(event.getMember(), event.getHook());
-
-                                break;
-
-                            case "role":
-
+                            }
+                            case "role" -> {
                                 success = new EmbedBuilder();
                                 success.setColor(0xeed147);
                                 success.setTitle(":busts_in_silhouette: Welche Rolle soll benötigt werden?");
                                 success.setDescription("Gib an, welche Rolle der Nutzer besitzten muss, um an dem Giveaway teilnehmen zu können!");
-
                                 event.getChannel().sendTyping().queue();
                                 event.replyEmbeds(success.build()).queue();
-
                                 Giveaway.getFromMember(event.getMember()).setRequirement(new HashMap<>() {{
                                     put(event.getValues().get(0), null);
                                 }});
                                 checkTimeout(event.getMember());
                                 reqList.add(event.getMember());
-
                                 interactionList.put(event.getMember(), event.getHook());
-
-                                break;
-
+                            }
                         }
 
                     }
@@ -718,7 +665,7 @@ public class GiveawayCreateCommand extends ListenerAdapter {
 
                         //wenn kein Bild vorhanden!
 
-                        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("EEEE dd. MMM YYY / HH:mm");
+                        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("EEEE dd. MMM yyy / HH:mm");
 
                         Giveaway giveaway = Giveaway.getFromMember(event.getMember());
 
@@ -796,31 +743,22 @@ public class GiveawayCreateCommand extends ListenerAdapter {
             List<Button> buttons;
 
             switch (event.getModalId()) {
-
-                case "giveaway.setup.prize":
-
+                case "giveaway.setup.prize" -> {
                     main = new EmbedBuilder();
                     main.setColor(0xeed147);
                     main.setTitle(":clock10: Wie lange soll das Giveaway dauern?");
                     main.setDescription("Gib an, wie lange das Giveaway, das du starten willst, dauern soll!");
                     main.addField("Beispiel zum Format", "5d 3h 43m", false);
-
                     buttons = new ArrayList<>();
                     buttons.add(Button.secondary("giveaway.setup.duration", "Leg die Dauer fest!").withEmoji(Emoji.fromFormatted("\uD83D\uDD53")));
-
                     event.getChannel().sendTyping().queue();
                     event.replyEmbeds(main.build()).addActionRow(buttons).setEphemeral(true).queue();
-
                     Giveaway.getFromMember(event.getMember()).setPrize(Objects.requireNonNull(event.getValue("prize")).getAsString());
                     checkTimeout(event.getMember());
                     interactionList.put(event.getMember(), event.getHook());
-
-                    break;
-
-                case "giveaway.setup.duration":
-
+                }
+                case "giveaway.setup.duration" -> {
                     time = LocalDateTime.now();
-
                     for (String s : Objects.requireNonNull(event.getValue("duration")).getAsString().toLowerCase(Locale.ROOT).split(" ")) {
 
                         if (s.contains("d") || s.contains("h") || s.contains("m")) {
@@ -863,18 +801,13 @@ public class GiveawayCreateCommand extends ListenerAdapter {
                         }
 
                     }
-
                     time = time.minusHours(1);
-
                     long unix = time.toEpochSecond(ZoneOffset.UTC);
-
                     event.getChannel().sendMessage("<t:" + unix + ":R>").queue();
-
                     main = new EmbedBuilder();
                     main.setColor(0xeed147);
                     main.setTitle(":clock10: In welchem Format soll die Zeit angezeigt werden?");
                     main.setDescription("Gib an, wie das Zeit Limit unter der Giveaway Benachrichtigung für die Nutzer sichtbar sein soll!");
-
                     event.getChannel().sendTyping().queue();
                     event.replyEmbeds(main.build()).setEphemeral(true).addActionRow(StringSelectMenu.create("giveaway.setup.selectFormat")
 
@@ -888,13 +821,10 @@ public class GiveawayCreateCommand extends ListenerAdapter {
                             .addOption("8. September 2021", "format7", "Klicke hier, um dieses Format zu wählen!", Emoji.fromFormatted("\uD83D\uDD59"))
 
                             .build()).queue();
-
                     Giveaway.getFromMember(event.getMember()).setDuration(unix);
                     checkTimeout(event.getMember());
                     interactionList.put(event.getMember(), event.getHook());
-
-                    break;
-
+                }
             }
 
         }
@@ -1009,28 +939,16 @@ public class GiveawayCreateCommand extends ListenerAdapter {
     public List<ActionRow> getSetupActionRow(Giveaway giveaway) {
         List<ActionRow> actionRow = new ArrayList<>();
         switch (giveaway.getStep()) {
-            case 1:
-                actionRow.add(ActionRow.of(EntitySelectMenu.create("giveaway.create.channel", EntitySelectMenu.SelectTarget.CHANNEL).setChannelTypes(ChannelType.TEXT).build()));
-                break;
-            case 2:
-                actionRow.add(ActionRow.of(Button.secondary("giveaway.create.prize", "Wähle das Thema")));
-                break;
-            case 3:
-                actionRow.add(ActionRow.of(Button.secondary("giveaway.create.duration", "Setze die Dauer des Giveaways")));
-                break;
-            case 4:
-                actionRow.add(ActionRow.of(StringSelectMenu.create("giveaway.create.requirement")
-                        .addOption("Keine Bedingung", "giveaway.create.requirement.none", "Es sind keine Bedingungen erforderlich")
-                        .addOption("Rolle", "giveaway.create.requirement.role", "Das Mitglied muss Mitglied einer Rolle sein")
-                        .addOption("Level", "giveaway.create.requirement.level", "Das Mitglied braucht ein bestimmtes Level")
-                        .build()));
-                break;
-            case 5:
-                actionRow.add(ActionRow.of(Button.secondary("giveaway.create.amount", "Gib die Anzahl der Gewinner an")));
-                break;
-            case 6:
-                actionRow.add(ActionRow.of(Button.secondary("giveaway,create.picture", "Ich habe kein Bild")));
-                break;
+            case 1 -> actionRow.add(ActionRow.of(EntitySelectMenu.create("giveaway.create.channel", EntitySelectMenu.SelectTarget.CHANNEL).setChannelTypes(ChannelType.TEXT).build()));
+            case 2 -> actionRow.add(ActionRow.of(Button.secondary("giveaway.create.prize", "Wähle das Thema")));
+            case 3 -> actionRow.add(ActionRow.of(Button.secondary("giveaway.create.duration", "Setze die Dauer des Giveaways")));
+            case 4 -> actionRow.add(ActionRow.of(StringSelectMenu.create("giveaway.create.requirement")
+                    .addOption("Keine Bedingung", "giveaway.create.requirement.none", "Es sind keine Bedingungen erforderlich")
+                    .addOption("Rolle", "giveaway.create.requirement.role", "Das Mitglied muss Mitglied einer Rolle sein")
+                    .addOption("Level", "giveaway.create.requirement.level", "Das Mitglied braucht ein bestimmtes Level")
+                    .build()));
+            case 5 -> actionRow.add(ActionRow.of(Button.secondary("giveaway.create.amount", "Gib die Anzahl der Gewinner an")));
+            case 6 -> actionRow.add(ActionRow.of(Button.secondary("giveaway,create.picture", "Ich habe kein Bild")));
         }
         return actionRow;
     }

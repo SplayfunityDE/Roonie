@@ -45,22 +45,19 @@ public class PollCreateCommand extends ListenerAdapter {
 
     public void onEntitySelectInteraction(EntitySelectInteractionEvent event) {
         if (event.getSelectMenu().getId().startsWith("poll.create")) {
-            switch (event.getSelectMenu().getId().split("\\.")[2]) {
-                case "channel":
-                    if (event.getMentions().getChannels().get(0).getType().equals(ChannelType.TEXT)) {
-                        Poll poll = Poll.getFromMember(event.getMember());
-                        poll.setChannel(event.getGuild().getTextChannelById(event.getMentions().getChannels().get(0).getId()));
-                        updateHook(event.getMember());
-                        event.deferEdit().queue();
-                    }
-                    break;
+            if ("channel".equals(event.getSelectMenu().getId().split("\\.")[2])) {
+                if (event.getMentions().getChannels().get(0).getType().equals(ChannelType.TEXT)) {
+                    Poll poll = Poll.getFromMember(event.getMember());
+                    poll.setChannel(event.getGuild().getTextChannelById(event.getMentions().getChannels().get(0).getId()));
+                    updateHook(event.getMember());
+                    event.deferEdit().queue();
+                }
             }
         }
     }
 
     public void onButtonInteraction(ButtonInteractionEvent event) {
         if (event.getButton().getId().startsWith("poll.create")) {
-            TextInput subject;
             Modal modal;
             Button button = null;
             switch (event.getButton().getId().split("\\.")[2]) {
@@ -162,17 +159,17 @@ public class PollCreateCommand extends ListenerAdapter {
         if (event.getModalId().startsWith("poll.create")) {
             Button button = null;
             switch (event.getModalId().split("\\.")[2]) {
-                case "topic":
+                case "topic" -> {
                     Poll.getFromMember(event.getMember()).setTopic(event.getValue("topic").getAsString());
                     updateHook(event.getMember());
                     event.deferEdit().queue();
-                    break;
-                case "description":
+                }
+                case "description" -> {
                     Poll.getFromMember(event.getMember()).setDescription(event.getValue("description").getAsString());
                     updateHook(event.getMember());
                     event.deferEdit().queue();
-                    break;
-                case "buttonContent":
+                }
+                case "buttonContent" -> {
                     for (Button bt : Poll.getFromMember(event.getMember()).getButtons())
                         if (bt.getId().equals(event.getModalId().split("\\.")[3]))
                             button = bt;
@@ -195,7 +192,7 @@ public class PollCreateCommand extends ListenerAdapter {
                     event.deferEdit().queue();
                     updateHook(event.getMember());
                     buttonMap.put(button, hook);
-                    break;
+                }
             }
         }
     }
@@ -303,23 +300,17 @@ public class PollCreateCommand extends ListenerAdapter {
     public List<ActionRow> getSetupActionRow(Poll poll) {
         List<ActionRow> actionRow = new ArrayList<>();
         switch (poll.getStep()) {
-            case 1:
-                actionRow.add(ActionRow.of(EntitySelectMenu.create("poll.create.channel", EntitySelectMenu.SelectTarget.CHANNEL).setChannelTypes(ChannelType.TEXT).build()));
-                break;
-            case 2:
-                actionRow.add(ActionRow.of(Button.secondary("poll.create.topic", "Wähle das Thema")));
-                break;
-            case 3:
-                actionRow.add(ActionRow.of(Button.secondary("poll.create.description", "Wähle eine Beschreibung")));
-                break;
-            case 4:
+            case 1 -> actionRow.add(ActionRow.of(EntitySelectMenu.create("poll.create.channel", EntitySelectMenu.SelectTarget.CHANNEL).setChannelTypes(ChannelType.TEXT).build()));
+            case 2 -> actionRow.add(ActionRow.of(Button.secondary("poll.create.topic", "Wähle das Thema")));
+            case 3 -> actionRow.add(ActionRow.of(Button.secondary("poll.create.description", "Wähle eine Beschreibung")));
+            case 4 -> {
                 StringSelectMenu.Builder builder = StringSelectMenu.create("poll.create.buttons");
                 for (Button button : poll.getButtons())
                     builder.addOption(button.getLabel(), "poll.create.buttonEdit." + button.getId(), "Klicke zum Bearbeiten!", Emoji.fromCustom("write", 1001784497626435584L, false));
                 builder.addOption("Button hinzufügen", "poll.create.buttonAdd.", Emoji.fromCustom("icon-neu", 986654769101828166L, false));
                 actionRow.add(ActionRow.of(builder.build()));
                 actionRow.add(ActionRow.of(Button.primary("poll.create.buttonContinue", "Vervollständigen").withEmoji(Emoji.fromCustom("chat", 879356542791598160L, true))));
-                break;
+            }
         }
         return actionRow;
     }
