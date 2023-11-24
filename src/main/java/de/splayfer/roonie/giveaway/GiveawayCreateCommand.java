@@ -1,8 +1,11 @@
+
 package de.splayfer.roonie.giveaway;
 
 import de.splayfer.roonie.messages.DefaultMessage;
+import de.splayfer.roonie.poll.Poll;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
@@ -15,7 +18,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
+import net.dv8tion.jda.api.interactions.components.selections.EntitySelectMenu;
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import net.dv8tion.jda.api.interactions.components.text.TextInput;
 import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
@@ -33,7 +36,7 @@ public class GiveawayCreateCommand extends ListenerAdapter {
 
     static HashMap<Member, Long> timeoutList = new HashMap<>();
 
-    public static HashMap<String, String> unixCode = new HashMap<>(){{
+    public static HashMap<String, String> unixCode = new HashMap<>() {{
         put("format1", "<t: :d>");
         put("format2", "<t: :R>");
         put("format3", "<t: :t>");
@@ -44,7 +47,7 @@ public class GiveawayCreateCommand extends ListenerAdapter {
 
     protected LocalDateTime time;
 
-    public void onSlashCommandInteraction (SlashCommandInteractionEvent event) {
+    public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
 
         if (event.getName().equals("giveaway") && Objects.requireNonNull(event.getSubcommandName()).equals("create")) {
 
@@ -550,7 +553,7 @@ public class GiveawayCreateCommand extends ListenerAdapter {
     }
 
 
-    public void onStringSelectInteraction (StringSelectInteractionEvent event) {
+    public void onStringSelectInteraction(StringSelectInteractionEvent event) {
 
         if (Objects.requireNonNull(event.getSelectMenu().getId()).equals("giveaway.setup.selectFormat")) {
 
@@ -589,7 +592,9 @@ public class GiveawayCreateCommand extends ListenerAdapter {
 
                     if (event.getValues().get(0).equals("none")) {
 
-                        Giveaway.getFromMember(event.getMember()).setRequirement(new HashMap<>(){{put(event.getValues().get(0), null);}});
+                        Giveaway.getFromMember(event.getMember()).setRequirement(new HashMap<>() {{
+                            put(event.getValues().get(0), null);
+                        }});
                         checkTimeout(event.getMember());
 
                         EmbedBuilder success = new EmbedBuilder();
@@ -618,7 +623,9 @@ public class GiveawayCreateCommand extends ListenerAdapter {
                                 event.getChannel().sendTyping().queue();
                                 event.replyEmbeds(success.build()).queue();
 
-                                Giveaway.getFromMember(event.getMember()).setRequirement(new HashMap<>(){{put(event.getValues().get(0), null);}});
+                                Giveaway.getFromMember(event.getMember()).setRequirement(new HashMap<>() {{
+                                    put(event.getValues().get(0), null);
+                                }});
                                 checkTimeout(event.getMember());
                                 reqList.add(event.getMember());
 
@@ -636,7 +643,9 @@ public class GiveawayCreateCommand extends ListenerAdapter {
                                 event.getChannel().sendTyping().queue();
                                 event.replyEmbeds(success.build()).queue();
 
-                                Giveaway.getFromMember(event.getMember()).setRequirement(new HashMap<>(){{put(event.getValues().get(0), null);}});
+                                Giveaway.getFromMember(event.getMember()).setRequirement(new HashMap<>() {{
+                                    put(event.getValues().get(0), null);
+                                }});
                                 checkTimeout(event.getMember());
                                 reqList.add(event.getMember());
 
@@ -654,7 +663,9 @@ public class GiveawayCreateCommand extends ListenerAdapter {
                                 event.getChannel().sendTyping().queue();
                                 event.replyEmbeds(success.build()).queue();
 
-                                Giveaway.getFromMember(event.getMember()).setRequirement(new HashMap<>(){{put(event.getValues().get(0), null);}});
+                                Giveaway.getFromMember(event.getMember()).setRequirement(new HashMap<>() {{
+                                    put(event.getValues().get(0), null);
+                                }});
                                 checkTimeout(event.getMember());
                                 reqList.add(event.getMember());
 
@@ -672,7 +683,9 @@ public class GiveawayCreateCommand extends ListenerAdapter {
                                 event.getChannel().sendTyping().queue();
                                 event.replyEmbeds(success.build()).queue();
 
-                                Giveaway.getFromMember(event.getMember()).setRequirement(new HashMap<>(){{put(event.getValues().get(0), null);}});
+                                Giveaway.getFromMember(event.getMember()).setRequirement(new HashMap<>() {{
+                                    put(event.getValues().get(0), null);
+                                }});
                                 checkTimeout(event.getMember());
                                 reqList.add(event.getMember());
 
@@ -692,7 +705,7 @@ public class GiveawayCreateCommand extends ListenerAdapter {
 
     }
 
-    public void onButtonInteraction (ButtonInteractionEvent event) {
+    public void onButtonInteraction(ButtonInteractionEvent event) {
 
         if (Giveaway.existsGiveaway(event.getMember())) {
 
@@ -718,7 +731,7 @@ public class GiveawayCreateCommand extends ListenerAdapter {
                         success.addField("<:text:877158818088386580> Kanal", giveaway.getChannel().getAsMention(), true);
                         success.addField("<a:wettbewerb:898566916958978078> Preis / Gewinn", giveaway.getPrize(), true);
                         success.addField(":clock10: Dauer", time.format(dateTimeFormatter), false);
-                        success.addField(":clock10: Format", "<t:" +giveaway.getDuration() + ":R>", true);
+                        success.addField(":clock10: Format", "<t:" + giveaway.getDuration() + ":R>", true);
                         success.addField(":busts_in_silhouette: Anzahl der Gewinner", giveaway.getAmount().toString(), true);
                         success.addField(":link: Url des Bildes", "<:cancel:877158821779345428> KEIN BILD", false);
 
@@ -795,7 +808,7 @@ public class GiveawayCreateCommand extends ListenerAdapter {
                     main.addField("Beispiel zum Format", "5d 3h 43m", false);
 
                     buttons = new ArrayList<>();
-                    buttons.add(Button.secondary("giveaway.setup.duration" ,"Leg die Dauer fest!").withEmoji(Emoji.fromFormatted("\uD83D\uDD53")));
+                    buttons.add(Button.secondary("giveaway.setup.duration", "Leg die Dauer fest!").withEmoji(Emoji.fromFormatted("\uD83D\uDD53")));
 
                     event.getChannel().sendTyping().queue();
                     event.replyEmbeds(main.build()).addActionRow(buttons).setEphemeral(true).queue();
@@ -971,4 +984,79 @@ public class GiveawayCreateCommand extends ListenerAdapter {
 
     }
 
+    public List<MessageEmbed> getSetupEmbed(Giveaway giveaway) {
+        EmbedBuilder bannerEmbed = new EmbedBuilder();
+        bannerEmbed.setColor(0x28346d);
+        bannerEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/910194455494144021/banner_umfrage.png");
+
+        EmbedBuilder embed = new EmbedBuilder();
+        embed.setColor(0x28346d);
+        if (giveaway.getChannel() != null)
+            embed.addField("<:channel:1001082478804615238> Kanal", giveaway.getChannel().getAsMention(), true);
+        else
+            embed.addField("<:channel:1001082478804615238> Kanal", "*Nicht ausgewählt*", true);
+        if (giveaway.getPrize() != null)
+            embed.addField("<:write:1001784497626435584> Preis", giveaway.getPrize(), true);
+        else
+            embed.addField("<:write:1001784497626435584> Preis", "*Nicht ausgewählt*", true);
+        if (giveaway.getDuration() != null)
+            embed.addField("<:list:1002591375960842300> Dauer", giveaway.getDuration(), true);
+        else
+            embed.addField("<:list:1002591375960842300> Dauer", "*Nicht ausgewählt*", true);
+        embed.addBlankField(false);
+        embed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
+        return List.of(bannerEmbed.build(), embed.build());
+    }
+
+    public List<ActionRow> getSetupActionRow(Giveaway giveaway) {
+        List<ActionRow> actionRow = new ArrayList<>();
+        switch (giveaway.getStep()) {
+            case 1:
+                actionRow.add(ActionRow.of(EntitySelectMenu.create("giveaway.create.channel", EntitySelectMenu.SelectTarget.CHANNEL).setChannelTypes(ChannelType.TEXT).build()));
+                break;
+            case 2:
+                actionRow.add(ActionRow.of(Button.secondary("giveaway.create.prize", "Wähle das Thema")));
+                break;
+            case 3:
+                actionRow.add(ActionRow.of(Button.secondary("giveaway.create.duration", "Setze die Dauer des Giveaways")));
+                break;
+            case 4:
+                actionRow.add(ActionRow.of(StringSelectMenu.create("giveaway.create.requirement")
+                        .addOption("Keine Bedingung", "giveaway.create.requirement.none", "Es sind keine Bedingungen erforderlich")
+                        .addOption("Rolle", "giveaway.create.requirement.role", "Das Mitglied muss Mitglied einer Rolle sein")
+                        .addOption("Level", "giveaway.create.requirement.level", "Das Mitglied braucht ein bestimmtes Level")
+                        .build()));
+                break;
+            case 5:
+                actionRow.add(ActionRow.of(Button.secondary("giveaway.create.amount", "Gib die Anzahl der Gewinner an")));
+                break;
+            case 6:
+                actionRow.add(ActionRow.of(Button.secondary("giveaway,create.picture", "Ich habe kein Bild")));
+                break;
+        }
+        return actionRow;
+    }
+
+    public Long getDurationFromText(String text) {
+        time = LocalDateTime.now();
+        int count = 0;
+        char[] array = text.toCharArray();
+        for (char ch : array) {
+            if (!Character.isDigit(ch)) {
+                array = 
+            } else
+                count++;
+        }
+            if (s.contains("d") || s.contains("h") || s.contains("m")) {
+                long l = Long.parseLong(s.substring(0, s.length() - 1));
+                if (s.contains("d")) {
+                    time = time.plusDays(l);
+                } else if (s.contains("h")) {
+                    time = time.plusHours(l);
+                } else if (s.contains("m")) {
+                    time = time.plusMinutes(l);
+                }
+            }
+    }
 }
+

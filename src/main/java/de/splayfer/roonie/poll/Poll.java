@@ -217,15 +217,10 @@ public class Poll {
             case UNVOTE -> {list.remove(member.getIdLong());}
         }
         mongoDB.updateLine("pollEntrys", new Document().append("channel", channel.getIdLong()).append("message", message.getIdLong()), buttonId, list);
-        List<Button> buttons = message.getButtons();
-        Button target = null;
-        for (Button button : message.getButtons())
-            if (button.getId().equals(buttonId))
-                target = button;
-        int index = buttons.indexOf(target);
-        buttons.remove(target);
-        target = target.withLabel(target.getLabel().substring(0, target.getLabel().length() - 2) + list.size() + ")");
-        buttons.add(index, target);
+        List<Button> buttons = new ArrayList<>();
+        for (String id : document.keySet())
+            if (message.getButtonById(id) != null)
+                buttons.add(message.getButtonById(id).withLabel(message.getButtonById(id).getLabel().substring(0, message.getButtonById(id).getLabel().length() - 2) + document.getList(id, Long.class).size() + ")"));
         message.editMessageComponents(ActionRow.of(buttons)).queue();
     }
     

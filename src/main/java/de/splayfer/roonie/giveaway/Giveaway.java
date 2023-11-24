@@ -22,7 +22,6 @@ public class Giveaway {
     private MessageChannel channel;
     private String prize;
     private Long duration;
-    private String timeFormat;
     private HashMap<String, String> requirement;
     private Integer amount;
     private Message message;
@@ -43,10 +42,6 @@ public class Giveaway {
 
     public Long getDuration() {
         return duration;
-    }
-
-    public String getTimeFormat() {
-        return timeFormat;
     }
 
     public HashMap<String, String> getRequirement() {
@@ -73,10 +68,6 @@ public class Giveaway {
         this.duration = duration;
     }
 
-    public void setTimeFormat(String timeFormat) {
-        this.timeFormat = timeFormat;
-    }
-
     public void setRequirement(HashMap<String, String> requirement) {
         this.requirement = requirement;
     }
@@ -99,7 +90,6 @@ public class Giveaway {
                 "channel=" + channel +
                 ", prize='" + prize + '\'' +
                 ", duration=" + duration +
-                ", timeFormat='" + timeFormat + '\'' +
                 ", requirement=" + requirement +
                 ", amount=" + amount +
                 ", picture='" + picture + '\'' +
@@ -112,57 +102,39 @@ public class Giveaway {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Giveaway giveaway = (Giveaway) o;
-        return duration == giveaway.duration && amount == giveaway.amount && Objects.equals(channel, giveaway.channel) && Objects.equals(prize, giveaway.prize) && Objects.equals(timeFormat, giveaway.timeFormat) && Objects.equals(requirement, giveaway.requirement) && Objects.equals(picture, giveaway.picture) && Objects.equals(message, giveaway.message);
+        return duration == giveaway.duration && amount == giveaway.amount && Objects.equals(channel, giveaway.channel) && Objects.equals(prize, giveaway.prize) && Objects.equals(requirement, giveaway.requirement) && Objects.equals(picture, giveaway.picture) && Objects.equals(message, giveaway.message);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(channel, prize, duration, timeFormat, requirement, amount, picture);
-    }
-
-    public Giveaway(MessageChannel channel, String prize, Long duration, String timeFormat, HashMap<String, String> requirement, Integer amount, String picture, Message message) {
-
+    public Giveaway(MessageChannel channel, String prize, Long duration, HashMap<String, String> requirement, Integer amount, String picture, Message message) {
         this.channel = channel;
         this.prize = prize;
         this.duration  = duration;
-        this.timeFormat = timeFormat;
         this.requirement = requirement;
         this.amount = amount;
         this.picture = picture;
         this.message = message;
-
     }
 
     public static Giveaway create(Member member) {
-
-        Giveaway giveaway = new Giveaway(null, null, null, null, null, null, null, null);
+        Giveaway giveaway = new Giveaway(null, null, null, null, null, null, null);
         giveaways.put(member, giveaway);
-
         return giveaway;
-
     }
 
     public List<?> keySet() {
-
         return new ArrayList<>(){{
-
             add(channel);
             add(prize);
             add(duration);
-            add(timeFormat);
             add(requirement);
             add(amount);
             add(picture);
             add(message);
-
         }};
-
     }
 
     public int getStep() {
-
         int step = 1;
-
         for (Object t : keySet()) {
             if (t != null) {
                 step++;
@@ -170,39 +142,28 @@ public class Giveaway {
                 break;
             }
         }
-
         return step;
-
     }
 
     public static int getStep(Member member) {
-
         return giveaways.get(member).getStep();
-
     }
 
     public static Giveaway getFromMember(Member member) {
-
         return giveaways.get(member);
-
     }
 
     public static boolean existsGiveaway(Member member) {
-
         return giveaways.containsKey(member);
-
     }
 
     public void insertToMySQL() {
-
         String req = (String) requirement.keySet().toArray()[0];
         String val = requirement.get(req);
-
         mongoDB.insert("giveaway", new Document()
                 .append("channel", channel.getIdLong())
                 .append("prize", prize)
                 .append("duration", duration)
-                .append("timeFormat", timeFormat)
                 .append("requirement", req)
                 .append("value", val)
                 .append("amount", amount)
@@ -211,16 +172,11 @@ public class Giveaway {
     }
 
     public void removeFromMySQl() {
-
         mongoDB.drop("giveaway", "message", message.getIdLong());
         mongoDB.drop("giveawayEntrys", "message", message.getIdLong());
-
-        for (Member m : giveaways.keySet()) {
-            if (giveaways.get(m).equals(Giveaway.getFromMessage(message))) {
+        for (Member m : giveaways.keySet())
+            if (giveaways.get(m).equals(Giveaway.getFromMessage(message)))
                 giveaways.remove(m);
-            }
-        }
-
     }
 
     public static boolean isGiveaway(Message message) {
@@ -255,22 +211,18 @@ public class Giveaway {
     }
 
     public static List<Giveaway> getAllGiveaways() {
-        List<Document> list = new ArrayList<>();
         List<Giveaway> gwList = new ArrayList<>();
-        mongoDB.findAll("giveaway").forEach(list::add);
-        list.forEach(document -> gwList.add(selectGiveaway(document)));
+        mongoDB.findAll("giveaway").forEach(document -> gwList.add(selectGiveaway(document)));
         return gwList;
     }
 
     public void delete(Member member) {
-
         giveaways.remove(member);
     }
 
     public static Giveaway selectGiveaway(Document document) {
         TextChannel channel = Roonie.mainGuild.getTextChannelById(document.getLong("channel"));
         assert channel != null;
-        return new Giveaway(channel, document.getString("prize"), document.getLong("duration"), document.getString("timeFormat"), new HashMap<>(){{put(document.getString("requirement"), document.getString("value"));}}, document.getInteger("amount"), document.getString("picture"), channel.getHistory().getMessageById(document.getLong("message")));
+        return new Giveaway(channel, document.getString("prize"), document.getLong("duration"), new HashMap<>(){{put(document.getString("requirement"), document.getString("value"));}}, document.getInteger("amount"), document.getString("picture"), channel.getHistory().getMessageById(document.getLong("message")));
     }
-
 }
