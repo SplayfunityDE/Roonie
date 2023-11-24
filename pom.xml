@@ -61,16 +61,7 @@
             <artifactId>emoji-java</artifactId>
             <version>5.1.1</version>
         </dependency>
-        <dependency>
-            <groupId>org.bspfsystems</groupId>
-            <artifactId>yamlconfiguration</artifactId>
-            <version>1.2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.29</version>
-        </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

@@ -23,7 +23,7 @@ public class AutoDeleteListener extends ListenerAdapter {
 
     public static void checkCommandMessages() {
         TextChannel channel = Roonie.mainGuild.getTextChannelById(Config.getConfigChannelId("commands"));
-        if (!channel.getLatestMessageId().equals(Config.getConfigMessageId("commands"))) {
+        if (channel.getLatestMessageIdLong() != Config.getConfigMessageId("commands")) {
             MessageHistory history = channel.getHistoryAfter(Config.getConfigMessageId("commands"), 100).complete();
             List<Message> messages = history.getRetrievedHistory();
             channel.purgeMessages(messages);

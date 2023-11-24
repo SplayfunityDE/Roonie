@@ -17,18 +17,8 @@ import java.util.TimerTask;
 
 public class SetupCommand extends ListenerAdapter {
 
-    protected static Role adminrole;
-    protected static Role modrole;
-    protected static Role suprole;
-    protected static Role azubirole;
-
     public static void setup(SlashCommandInteractionEvent event) {
         if (event.isFromGuild()) {
-
-            adminrole = event.getGuild().getRoleById("873515181114806272");
-            modrole = event.getGuild().getRoleById("873508502063169556");
-            suprole = event.getGuild().getRoleById("873515229470928937");
-            azubirole = event.getGuild().getRoleById("880863788763603054");
 
             EmbedBuilder bannerEmbed = new EmbedBuilder();
             bannerEmbed.setColor(0x28346d);
@@ -55,7 +45,6 @@ public class SetupCommand extends ListenerAdapter {
 
             //save to config
             Config.setConfigChannel("commands", event.getChannel(), commandMessage);
-
         }
     }
 }

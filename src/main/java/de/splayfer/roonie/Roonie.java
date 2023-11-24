@@ -76,6 +76,7 @@ public class Roonie {
         builder.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_VOICE_STATES, GatewayIntent.DIRECT_MESSAGE_TYPING, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.MESSAGE_CONTENT);
         EnumSet<CacheFlag> enumSet = EnumSet.of(CacheFlag.ONLINE_STATUS, CacheFlag.CLIENT_STATUS, CacheFlag.EMOJI, CacheFlag.VOICE_STATE);
         builder.enableCache(enumSet);
+
         //register events
         builder.addEventListeners(new ReadyEventClass());
         //tempchannel
@@ -162,7 +163,7 @@ public class Roonie {
         System.out.println("[Splayfer] Bot changed Status: Online");
     }
 
-    public void shutdown() {
+    /*public void shutdown() {
         new Thread(() -> {
             String line;
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -187,7 +188,7 @@ public class Roonie {
                 //e.printStackTrace();
             }
         }).start();
-    }
+    }*/
 
 }
 

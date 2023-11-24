@@ -161,7 +161,7 @@ public class TempchannelPageSystem {
 
     }
 
-    public static MessageCreateData getRoleEmbedCreate(Tempchannel channel, String id, Member m) {
+   /* public static MessageCreateData getRoleEmbedCreate(Tempchannel channel, String id, Member m) {
 
         MessageCreateBuilder mb = new MessageCreateBuilder();
         EmbedBuilder builder = new EmbedBuilder();
@@ -225,8 +225,8 @@ public class TempchannelPageSystem {
                 Button.secondary("tc_switchowner", "Kanal übertragen").asDisabled(),
                 Button.secondary("tc_setvisibility", "Sichtbarkeit ändern").asDisabled()));
         return mb.build();
+    }*/
 
-    }
     public static MessageEditData getRoleEmbedEdit(Tempchannel channel, String id, Member m) {
 
         MessageEditBuilder mb = new MessageEditBuilder();
@@ -292,10 +292,9 @@ public class TempchannelPageSystem {
                 Button.secondary("tc_setvisibility", "Sichtbarkeit ändern").asDisabled()
         ));
         return mb.build();
-
     }
 
-    public static MessageCreateData getModerationEmbedCreate(Tempchannel channel, String id, Member m) {
+    /*public static MessageCreateData getModerationEmbedCreate(Tempchannel channel, String id, Member m) {
 
         MessageCreateBuilder mb = new MessageCreateBuilder();
         EmbedBuilder builder = new EmbedBuilder();
@@ -341,13 +340,10 @@ public class TempchannelPageSystem {
 
         mb.setEmbeds(builder.build());
         mb.setComponents(getMenuActionrow("tc_menu_moderation"), ActionRow.of(menu.build()));
-
         return mb.build();
-
-    }
+    }*/
 
     public static MessageEditData getModerationEmbedEdit(Tempchannel channel, String id, Member m) {
-
         MessageEditBuilder mb = new MessageEditBuilder();
         EmbedBuilder builder = new EmbedBuilder();
 
@@ -395,10 +391,9 @@ public class TempchannelPageSystem {
         mb.setComponents(getMenuActionrow("tc_menu_moderation"), ActionRow.of(menu.build()));
 
         return mb.build();
-
     }
 
-    public static MessageCreateData getActivityEmbedCreate(Tempchannel channel, String id, Member m) {
+    /*public static MessageCreateData getActivityEmbedCreate(Tempchannel channel, String id, Member m) {
 
         MessageCreateBuilder mb = new MessageCreateBuilder();
         EmbedBuilder builder = new EmbedBuilder();
@@ -435,10 +430,9 @@ public class TempchannelPageSystem {
 
         return mb.build();
 
-    }
+    }*/
 
     public static MessageEditData getActivityEmbedEdit(Tempchannel channel, String id, Member m) {
-
         MessageEditBuilder mb = new MessageEditBuilder();
         EmbedBuilder builder = new EmbedBuilder();
 
@@ -471,13 +465,10 @@ public class TempchannelPageSystem {
 
         mb.setEmbeds(builder.build());
         mb.setComponents(getMenuActionrow("tc_menu_activity"), ActionRow.of(menu));
-
         return mb.build();
-
     }
 
     public static ActionRow getMenuActionrow(String selfMenu) {
-
         List<Button> buttonTemp = new ArrayList<>();
 
         for (Button button : buttons) {
@@ -486,15 +477,11 @@ public class TempchannelPageSystem {
             } else {
                 buttonTemp.add(button.withId(button.getId()));
             }
-
         }
-
         return ActionRow.of(buttonTemp);
-
     }
 
     public static String parseRegion(Region region) {
-
         return switch (region.getName()) {
             case "automatic" -> "Automatisch";
             case "rotterdam" -> "Europa";
@@ -509,11 +496,9 @@ public class TempchannelPageSystem {
             case "usa-central" -> "USA";
             default -> "Automatisch";
         };
-
     }
 
     public static String getArray(Collection<Member> members) {
-
         StringBuilder array = new StringBuilder();
 
         for(Member member : members) {
@@ -524,7 +509,6 @@ public class TempchannelPageSystem {
         }
 
         return array.toString();
-
     }
 
 }
