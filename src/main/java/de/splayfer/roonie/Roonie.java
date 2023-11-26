@@ -1,6 +1,7 @@
 package de.splayfer.roonie;
 
 import de.splayfer.roonie.modules.economy.EconomyManager;
+import de.splayfer.roonie.modules.giveaway.GiveawayCreateCommand;
 import de.splayfer.roonie.modules.management.commands.AutoDeleteListener;
 import de.splayfer.roonie.modules.management.commands.CommandInfoListener;
 import de.splayfer.roonie.config.SetupCommand;
@@ -107,6 +108,8 @@ public class Roonie {
         AutoDeleteListener.checkCommandMessages();
 
         System.out.println("[Splayfer] Bot changed Status: Online");
+
+        GiveawayCreateCommand.getDurationFromText("1h");
     }
 
 }

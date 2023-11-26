@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -19,6 +20,8 @@ public class CommandManager {
         addCommand(Guilds.GLOBAL, data);
     }
     public static void addCommand(Guilds guild, SlashCommandData data) {
+        if (!commands.containsKey(guild.getId()))
+            commands.put(guild.getId(), new ArrayList<>());
         commands.get(guild.getId()).add(data);
     }
     public static void initCommands(JDA shardman) {
@@ -26,7 +29,7 @@ public class CommandManager {
             for(SlashCommandData data : commands.get(id)) {
                 if(id == -1) {
                     shardman.upsertCommand(data).queue();
-                }else {
+                } else {
                     Guild g = shardman.getGuildById(id);
                     g.upsertCommand(data).queue();
                 }

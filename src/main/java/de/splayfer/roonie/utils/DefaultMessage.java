@@ -110,7 +110,7 @@ public class DefaultMessage {
                 emoji = successEmoji;
             }
         }
-        reply.setTitle(emoji + " **" + title + "**");
+        reply.setTitle(emoji + " **" + title.toUpperCase() + "**");
         if (description != null) {
             reply.setDescription("> " + description);
         }

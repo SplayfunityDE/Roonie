@@ -8,10 +8,7 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import org.bson.Document;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class Giveaway {
 
@@ -22,7 +19,7 @@ public class Giveaway {
     private MessageChannel channel;
     private String prize;
     private Long duration;
-    private HashMap<String, String> requirement;
+    private List<String> requirement;
     private Integer amount;
     private Message message;
 
@@ -44,7 +41,7 @@ public class Giveaway {
         return duration;
     }
 
-    public HashMap<String, String> getRequirement() {
+    public List<String> getRequirement() {
         return requirement;
     }
 
@@ -68,7 +65,7 @@ public class Giveaway {
         this.duration = duration;
     }
 
-    public void setRequirement(HashMap<String, String> requirement) {
+    public void setRequirement(List<String> requirement) {
         this.requirement = requirement;
     }
 
@@ -105,7 +102,7 @@ public class Giveaway {
         return duration == giveaway.duration && amount == giveaway.amount && Objects.equals(channel, giveaway.channel) && Objects.equals(prize, giveaway.prize) && Objects.equals(requirement, giveaway.requirement) && Objects.equals(picture, giveaway.picture) && Objects.equals(message, giveaway.message);
     }
 
-    public Giveaway(MessageChannel channel, String prize, Long duration, HashMap<String, String> requirement, Integer amount, String picture, Message message) {
+    public Giveaway(MessageChannel channel, String prize, Long duration, List<String> requirement, Integer amount, String picture, Message message) {
         this.channel = channel;
         this.prize = prize;
         this.duration  = duration;
@@ -158,14 +155,11 @@ public class Giveaway {
     }
 
     public void insertToMySQL() {
-        String req = (String) requirement.keySet().toArray()[0];
-        String val = requirement.get(req);
         mongoDB.insert("giveaway", new Document()
                 .append("channel", channel.getIdLong())
                 .append("prize", prize)
                 .append("duration", duration)
-                .append("requirement", req)
-                .append("value", val)
+                .append("requirement", requirement)
                 .append("amount", amount)
                 .append("picture", picture)
                 .append("message", message.getIdLong()));
@@ -223,6 +217,6 @@ public class Giveaway {
     public static Giveaway selectGiveaway(Document document) {
         TextChannel channel = Roonie.mainGuild.getTextChannelById(document.getLong("channel"));
         assert channel != null;
-        return new Giveaway(channel, document.getString("prize"), document.getLong("duration"), new HashMap<>(){{put(document.getString("requirement"), document.getString("value"));}}, document.getInteger("amount"), document.getString("picture"), channel.getHistory().getMessageById(document.getLong("message")));
+        return new Giveaway(channel, document.getString("prize"), document.getLong("duration"), Arrays.asList(document.getList("requirement", String.class).get(0), document.getList("requirement", String.class).get(1)), document.getInteger("amount"), document.getString("picture"), channel.getHistory().getMessageById(document.getLong("message")));
     }
 }
