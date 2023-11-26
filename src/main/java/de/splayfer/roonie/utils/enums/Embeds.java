@@ -9,6 +9,7 @@ public class Embeds {
         setColor(0x28346d);
         setImage("https://cdn.discordapp.com/attachments/880725442481520660/910194455494144021/banner_umfrage.png");}}.build();
 
-
-
+    public static MessageEmbed BANNER_GIVEAWAY = new EmbedBuilder() {{
+        setColor(0x28346d);
+        setImage("https://cdn.discordapp.com/attachments/880725442481520660/913825741588803635/banner_giveaway.png");}}.build();
 }

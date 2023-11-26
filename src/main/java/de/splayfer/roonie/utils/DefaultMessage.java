@@ -89,6 +89,18 @@ public class DefaultMessage {
         return new DefaultMessage("success", title).load();
     }
 
+    public static List<MessageEmbed> success2(String title, String description, MessageEmbed.Field... fields) {
+        return new DefaultMessage("success", title, description, fields).load();
+    }
+
+    public static List<MessageEmbed> success2(String title, String description) {
+        return new DefaultMessage("success", title, description).load();
+    }
+
+    public static List<MessageEmbed> success2(String title) {
+        return new DefaultMessage("success", title).load();
+    }
+
     private List<MessageEmbed> load() {
         EmbedBuilder bannerEmbed = new EmbedBuilder();
         EmbedBuilder reply = new EmbedBuilder();
@@ -106,6 +118,13 @@ public class DefaultMessage {
             case "success" -> {
                 bannerEmbed.setColor(0x43b480);
                 bannerEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/914518380088819742/banner_erfolg.png");
+                reply.setColor(0x43b480);
+                emoji = successEmoji;
+            }
+
+            case "success2" -> {
+                bannerEmbed.setColor(0x43b480);
+                bannerEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/914598873719263282/banner_erfolg2.png");
                 reply.setColor(0x43b480);
                 emoji = successEmoji;
             }

@@ -135,6 +135,9 @@ public class Poll {
         for (String id : values)
             document.append(id, emptyList);
         mongoDB.insert("pollEntrys", document);
+        for (Member m : polls.keySet())
+            if (polls.get(m).equals(this))
+                polls.remove(m);
     }
 
     public static boolean isPoll(MessageChannel channel, Message message) {

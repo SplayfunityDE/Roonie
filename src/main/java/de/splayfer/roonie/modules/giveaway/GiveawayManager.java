@@ -36,18 +36,9 @@ public class GiveawayManager {
         t.schedule(new TimerTask() {
             @Override
             public void run() {
-
                 for (Giveaway giveaway : Giveaway.getAllGiveaways()) {
-
-                    LocalDateTime now = LocalDateTime.now();
-                    LocalDateTime required = LocalDateTime.ofEpochSecond(giveaway.getDuration(), 0, ZoneOffset.UTC);
-
-                    if (now.isAfter(required)) {
-
+                    if (LocalDateTime.now().isAfter(LocalDateTime.ofEpochSecond(giveaway.getDuration(), 0, ZoneOffset.UTC))) {
                         //TODO | roll giveaway
-
-                        //edit message
-
                         Guild guild;
                         MessageChannel channel;
 
@@ -56,15 +47,13 @@ public class GiveawayManager {
 
                         Message m = giveaway.getMessage();
 
-                        List<String> entrys = giveaway.getEntrys();
+                        List<Long> entrys = giveaway.getEntrys();
 
                         List<Member> winners = new ArrayList<>();
                         StringBuilder winmessage = new StringBuilder();
 
                         if (entrys.size() >= giveaway.getAmount()) {
-
                             for (int i = 0; i < giveaway.getAmount(); i++) {
-
                                 Random random = new Random();
                                 int winningNumber = random.nextInt(entrys.size());
 
@@ -73,9 +62,7 @@ public class GiveawayManager {
                                 winners.add(winner);
                                 entrys.remove(winner.getId());
                                 winmessage.append(winner.getAsMention());
-
                             }
-
                             EmbedBuilder banner = new EmbedBuilder();
                             banner.setColor(m.getEmbeds().get(0).getColor());
                             banner.setImage(m.getEmbeds().get(0).getImage().getUrl());
@@ -115,23 +102,12 @@ public class GiveawayManager {
 
                                 dm.sendMessageEmbeds(banner.build(), dmMessage.build()).queue();
                                 dm.sendMessage(Objects.requireNonNull(guild.getVanityUrl())).queue();
-
                             }
-
-                            //remove from mysql
-
-                            giveaway.removeFromMySQl();
-
+                            giveaway.removeFromMongoDB();
                         }
-
-
                     }
-
                 }
-
             }
         }, 60000, 600000);
-
     }
-
 }

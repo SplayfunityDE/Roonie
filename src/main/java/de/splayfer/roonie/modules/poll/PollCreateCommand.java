@@ -23,10 +23,7 @@ import net.dv8tion.jda.api.interactions.components.text.TextInput;
 import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
 import net.dv8tion.jda.api.interactions.modals.Modal;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class PollCreateCommand extends ListenerAdapter {
 
@@ -38,8 +35,9 @@ public class PollCreateCommand extends ListenerAdapter {
             if (!interactionMap.containsKey(event.getMember())) {
                 Poll poll = Poll.create(event.getMember());
                 interactionMap.put(event.getMember(), event.replyEmbeds(getSetupEmbed(poll)).setEphemeral(true).setComponents(getSetupActionRow(poll)).complete());
+                checkTimeout(event.getMember());
             } else
-                event.replyEmbeds(DefaultMessage.error("Umfrage bereits gestartet", "Du hast bereits eine Umfrage gestartet!")).addActionRow(Button.danger("poll.create.restart", "Neue Umfrage starten").withEmoji(Emoji.fromCustom("undo", 878590238782550076L, false)), Button.success("poll.create.resume", "Mit aktueller fortfahren").withEmoji(Emoji.fromCustom("text", 877158818088386580L, false))).setEphemeral(true).queue();
+                event.replyEmbeds(DefaultMessage.error("Vorgang bereits gestartet", "Du hast bereits eine Umfrage gestartet!")).addActionRow(Button.danger("poll.create.restart", "Neue Umfrage starten").withEmoji(Emoji.fromCustom("undo", 878590238782550076L, false)), Button.success("poll.create.resume", "Mit aktueller fortfahren").withEmoji(Emoji.fromCustom("text", 877158818088386580L, false))).setEphemeral(true).queue();
         }
     }
 
@@ -58,45 +56,37 @@ public class PollCreateCommand extends ListenerAdapter {
 
     public void onButtonInteraction(ButtonInteractionEvent event) {
         if (event.getButton().getId().startsWith("poll.create")) {
-            Modal modal;
             Button button = null;
             switch (event.getButton().getId().split("\\.")[2]) {
                 case "topic":
-                    modal = Modal.create("poll.create.topic", "Wähle das Thema!")
+                    event.replyModal(Modal.create("poll.create.topic", "Wähle das Thema!")
                             .addComponents(
                                     ActionRow.of(TextInput.create("topic", "Thema", TextInputStyle.SHORT)
-                                    .setPlaceholder("Erläutere das Thema")
-                                    .setRequiredRange(1, 50)
-                                    .build()))
-                            .build();
-
-                    event.replyModal(modal).queue();
+                                            .setPlaceholder("Erläutere das Thema")
+                                            .setRequiredRange(1, 50)
+                                            .build()))
+                            .build()).queue();
                     break;
                 case "description":
-                    modal = Modal.create("poll.create.description", "Setze die Beschreibung!")
+                    event.replyModal(Modal.create("poll.create.description", "Setze die Beschreibung!")
                             .addComponents(
                                     ActionRow.of(TextInput.create("description", "Beschreibung", TextInputStyle.PARAGRAPH)
-                                    .setPlaceholder("Beschreibe die Umfrage")
-                                    .setRequiredRange(1, 100)
-                                    .build()))
-                            .build();
-
-                    event.replyModal(modal).queue();
+                                            .setPlaceholder("Beschreibe die Umfrage")
+                                            .setRequiredRange(1, 100)
+                                            .build()))
+                            .build()).queue();
                     break;
                 case "buttonContent":
                     for (Button bt : Poll.getFromMember(event.getMember()).getButtons())
                         if (bt.getId().equals(event.getButton().getId().split("\\.")[3]))
                             button = bt;
-
-                    modal = Modal.create("poll.create.buttonContent." + button.getId(), "Inhalt bearbeiten!")
+                    event.replyModal(Modal.create("poll.create.buttonContent." + button.getId(), "Inhalt bearbeiten!")
                             .addComponents(
                                     ActionRow.of(TextInput.create("content", "Neuer Inhalt", TextInputStyle.SHORT)
-                                    .setPlaceholder("Gib den neuen Inhalt an")
-                                    .setRequiredRange(1, 25)
-                                    .build()))
-                            .build();
-
-                    event.replyModal(modal).queue();
+                                            .setPlaceholder("Gib den neuen Inhalt an")
+                                            .setRequiredRange(1, 25)
+                                            .build()))
+                            .build()).queue();
                     break;
                 case "buttonColor":
                     for (Button bt : Poll.getFromMember(event.getMember()).getButtons())
@@ -132,6 +122,7 @@ public class PollCreateCommand extends ListenerAdapter {
                         interactionMap.remove(event.getMember());
                         buttonMap.forEach((bt, hook) -> {
                             if (Arrays.asList(poll.getButtons()).contains(bt)) {
+                                hook.deleteOriginal().queue();
                                 buttonMap.remove(bt);
                             }
                         });
@@ -140,7 +131,12 @@ public class PollCreateCommand extends ListenerAdapter {
                     break;
                 case "restart":
                     interactionMap.get(event.getMember()).deleteOriginal().queue();
-                    buttonMap.forEach((bt, hook) -> {hook.deleteOriginal().queue(); buttonMap.remove(bt);});
+                    buttonMap.forEach((bt, hook) -> {
+                        if (Arrays.asList(Poll.getFromMember(event.getMember()).getButtons()).contains(bt)) {
+                            hook.deleteOriginal().queue();
+                            buttonMap.remove(bt);
+                        }
+                    });
                     Poll poll = Poll.create(event.getMember());
                     interactionMap.put(event.getMember(), event.replyEmbeds(getSetupEmbed(poll)).setEphemeral(true).setComponents(getSetupActionRow(poll)).complete());
                     event.getMessage().delete().queue();
@@ -339,5 +335,23 @@ public class PollCreateCommand extends ListenerAdapter {
             put(ButtonStyle.SECONDARY, "⚪");
         }};
         return name.get(style);
+    }
+
+    public static void checkTimeout(Member member) {
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (interactionMap.containsKey(member)) {
+                    interactionMap.get(member).editOriginalEmbeds(DefaultMessage.error("Vorgang abgebrochen!", "Aufgrund deiner Inaktivität wurde der Erstellvorgang des Giveaways abgebrochen!")).setComponents().queue();
+                    interactionMap.remove(member);
+                    buttonMap.forEach((bt, hook) -> {
+                        if (Arrays.asList(Poll.getFromMember(member).getButtons()).contains(bt)) {
+                            hook.deleteOriginal().queue();
+                            buttonMap.remove(bt);
+                        }
+                    });
+                }
+            }
+        }, 1000 * 60 * 14);
     }
 }

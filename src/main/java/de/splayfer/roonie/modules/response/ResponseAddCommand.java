@@ -166,7 +166,7 @@ public class ResponseAddCommand extends ListenerAdapter {
 
         if (event.getModalId().startsWith("response.")) {
 
-            ResponseManager.createResponse(event.getModalId().substring(12), event.getMember(), event.getModalId().substring(9, 12), event.getValue("body").getAsString());
+            Response.create(event.getModalId().substring(12), event.getMember(), event.getModalId().substring(9, 12), event.getValue("body").getAsString());
 
             EmbedBuilder bannerEmbed = new EmbedBuilder();
             bannerEmbed.setColor(0x43b480);
@@ -209,7 +209,7 @@ public class ResponseAddCommand extends ListenerAdapter {
 
                     emotes.addAll(emojis);
 
-                    ResponseManager.createResponse(commandList.get(event.getMember().getId()), event.getMember(), "reaction", emotes.get(0));
+                    Response.create(commandList.get(event.getMember().getId()), event.getMember(), "reaction", emotes.get(0));
 
                     EmbedBuilder bannerEmbed = new EmbedBuilder();
                     bannerEmbed.setColor(0x43b480);

@@ -13,31 +13,31 @@ public class ResponseListener extends ListenerAdapter {
 
             String message = event.getMessage().getContentStripped().trim();
 
-            if (ResponseManager.existsResponse(message)) {
+            if (Response.existsResponse(message)) {
 
-                ResponseManager.Response response = ResponseManager.getResponse(message);
+                Response response = Response.getResponse(message);
 
-                switch (response.type()) {
+                switch (response.getType()) {
 
                     case "msg":
 
                     case "pic":
 
                         event.getChannel().sendTyping().queue();
-                        event.getChannel().sendMessage(response.value()).queue();
+                        event.getChannel().sendMessage(response.getValue()).queue();
 
                         break;
 
                     case "reaction":
 
-                        event.getMessage().addReaction(event.getGuild().getEmojiById(response.value())).queue();
+                        event.getMessage().addReaction(event.getGuild().getEmojiById(response.getValue())).queue();
 
                         break;
 
                     case "url":
 
                         event.getChannel().sendTyping().queue();
-                        event.getChannel().sendMessage(response.value()).setActionRow(Button.secondary("link", "Schau es dir an!").withUrl(response.value()).withEmoji(Emoji.fromFormatted("\uD83D\uDD17"))).queue();
+                        event.getChannel().sendMessage(response.getValue()).setActionRow(Button.secondary("link", "Schau es dir an!").withUrl(response.getValue()).withEmoji(Emoji.fromFormatted("\uD83D\uDD17"))).queue();
 
                         break;
 

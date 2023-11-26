@@ -14,7 +14,7 @@ public class ResponseRemoveCommand extends ListenerAdapter {
 
                 String response = event.getOptionsByName("nachricht").get(0).getAsString();
 
-                ResponseManager.removeResponse(response);
+                Response.removeResponse(response);
 
                 EmbedBuilder bannerEmbed = new EmbedBuilder();
                 bannerEmbed.setColor(0x43b480);

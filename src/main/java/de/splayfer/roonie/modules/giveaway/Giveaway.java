@@ -2,6 +2,7 @@ package de.splayfer.roonie.modules.giveaway;
 
 import de.splayfer.roonie.MongoDBDatabase;
 import de.splayfer.roonie.Roonie;
+import de.splayfer.roonie.modules.level.LevelManager;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -22,6 +23,7 @@ public class Giveaway {
     private List<String> requirement;
     private Integer amount;
     private Message message;
+    private List<Long> entrys;
 
     public String getPicture() {
         return picture;
@@ -52,6 +54,9 @@ public class Giveaway {
     public Message getMessage() {
         return message;
     }
+    public List<Long> getEntrys() {
+        return entrys;
+    }
 
     public void setChannel(MessageChannel channel) {
         this.channel = channel;
@@ -80,6 +85,17 @@ public class Giveaway {
     public void setMessage(Message message) {
         this.message = message;
     }
+    public void setEntrys(List<Long> entrys) {
+        this.entrys = entrys;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Giveaway giveaway = (Giveaway) o;
+        return duration == giveaway.duration && amount == giveaway.amount && Objects.equals(channel, giveaway.channel) && Objects.equals(prize, giveaway.prize) && Objects.equals(requirement, giveaway.requirement) && Objects.equals(picture, giveaway.picture) && Objects.equals(message, giveaway.message) && Objects.equals(entrys, giveaway.entrys);
+    }
 
     @Override
     public String toString() {
@@ -89,20 +105,13 @@ public class Giveaway {
                 ", duration=" + duration +
                 ", requirement=" + requirement +
                 ", amount=" + amount +
-                ", picture='" + picture + '\'' +
                 ", message=" + message +
+                ", entrys=" + entrys +
+                ", picture='" + picture + '\'' +
                 '}';
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Giveaway giveaway = (Giveaway) o;
-        return duration == giveaway.duration && amount == giveaway.amount && Objects.equals(channel, giveaway.channel) && Objects.equals(prize, giveaway.prize) && Objects.equals(requirement, giveaway.requirement) && Objects.equals(picture, giveaway.picture) && Objects.equals(message, giveaway.message);
-    }
-
-    public Giveaway(MessageChannel channel, String prize, Long duration, List<String> requirement, Integer amount, String picture, Message message) {
+    public Giveaway(MessageChannel channel, String prize, Long duration, List<String> requirement, Integer amount, String picture, Message message, List<Long> entrys) {
         this.channel = channel;
         this.prize = prize;
         this.duration  = duration;
@@ -110,10 +119,11 @@ public class Giveaway {
         this.amount = amount;
         this.picture = picture;
         this.message = message;
+        this.entrys = entrys;
     }
 
     public static Giveaway create(Member member) {
-        Giveaway giveaway = new Giveaway(null, null, null, null, null, null, null);
+        Giveaway giveaway = new Giveaway(null, null, null, null, null, null, null, null);
         giveaways.put(member, giveaway);
         return giveaway;
     }
@@ -127,6 +137,7 @@ public class Giveaway {
             add(amount);
             add(picture);
             add(message);
+            add(entrys);
         }};
     }
 
@@ -154,7 +165,9 @@ public class Giveaway {
         return giveaways.containsKey(member);
     }
 
-    public void insertToMySQL() {
+    public void insertToMongoDB() {
+        if (entrys == null)
+            entrys = new ArrayList<>();
         mongoDB.insert("giveaway", new Document()
                 .append("channel", channel.getIdLong())
                 .append("prize", prize)
@@ -162,12 +175,15 @@ public class Giveaway {
                 .append("requirement", requirement)
                 .append("amount", amount)
                 .append("picture", picture)
-                .append("message", message.getIdLong()));
+                .append("message", message.getIdLong())
+                .append("entrys", entrys));
+        for (Member m : giveaways.keySet())
+            if (giveaways.get(m).equals(this))
+                giveaways.remove(m);
     }
 
-    public void removeFromMySQl() {
+    public void removeFromMongoDB() {
         mongoDB.drop("giveaway", "message", message.getIdLong());
-        mongoDB.drop("giveawayEntrys", "message", message.getIdLong());
         for (Member m : giveaways.keySet())
             if (giveaways.get(m).equals(Giveaway.getFromMessage(message)))
                 giveaways.remove(m);
@@ -178,45 +194,40 @@ public class Giveaway {
     }
 
     public static Giveaway getFromMessage(Message message) {
-        return selectGiveaway(Objects.requireNonNull(mongoDB.find("giveaway", "message", message.getIdLong()).first()));
+        return getFromDocument(Objects.requireNonNull(mongoDB.find("giveaway", "message", message.getIdLong()).first()));
     }
 
-    public static List<String> getEntrys(Message message) {
-        List<String> list = new ArrayList<>();
-        mongoDB.find("giveawayEntrs", "message", message.getIdLong()).forEach(document -> list.add(String.valueOf(document.getLong("message"))));
-        return list;
-
+    public void addEntry(Member member) {
+        entrys.add(member.getIdLong());
+        mongoDB.updateLine("giveaway", "message", message.getIdLong(), "entrys", entrys);
     }
 
-    public List<String> getEntrys() {
-        List<String> list = new ArrayList<>();
-        for (Document doc : mongoDB.find("giveaway", new Document("message", message.getIdLong())))
-            list.add(doc.getLong("guildMember").toString());
-        return list;
-    }
-
-    public static void addEntry(Message message, Member member) {
-        mongoDB.insert("giveawayEntrys", new Document().append("message", message.getIdLong()).append("guildMember", member.getIdLong()));
-
-    }
-
-    public static void removeEntry(Message message, Member member) {
-        mongoDB.drop("giveawayEntrys",new Document().append("message", message.getId()).append("guildMember", member.getId()));
+    public void removeEntry(Member member) {
+        entrys.remove(member.getIdLong());
+        mongoDB.updateLine("giveaway", "message", message.getIdLong(), "entrys", entrys);
     }
 
     public static List<Giveaway> getAllGiveaways() {
         List<Giveaway> gwList = new ArrayList<>();
-        mongoDB.findAll("giveaway").forEach(document -> gwList.add(selectGiveaway(document)));
+        mongoDB.findAll("giveaway").forEach(document -> gwList.add(getFromDocument(document)));
         return gwList;
     }
 
-    public void delete(Member member) {
-        giveaways.remove(member);
-    }
-
-    public static Giveaway selectGiveaway(Document document) {
+    public static Giveaway getFromDocument(Document document) {
         TextChannel channel = Roonie.mainGuild.getTextChannelById(document.getLong("channel"));
         assert channel != null;
-        return new Giveaway(channel, document.getString("prize"), document.getLong("duration"), Arrays.asList(document.getList("requirement", String.class).get(0), document.getList("requirement", String.class).get(1)), document.getInteger("amount"), document.getString("picture"), channel.getHistory().getMessageById(document.getLong("message")));
+        return new Giveaway(channel, document.getString("prize"), document.getLong("duration"), Arrays.asList(document.getList("requirement", String.class).get(0), document.getList("requirement", String.class).get(1)), document.getInteger("amount"), document.getString("picture"), channel.getHistory().getMessageById(document.getLong("message")), document.getList("entrys", Long.class));
+    }
+
+    public static Giveaway findGiveaway(Message message) {
+        return getFromDocument(mongoDB.find("giveaway", new Document("message", message.getIdLong())).first());
+    }
+
+    public boolean checkRequirement(Member member) {
+        return switch (requirement.get(0)) {
+            case "role" -> member.getRoles().contains(member.getGuild().getRoleById(requirement.get(1)));
+            case "level" -> LevelManager.getLevel(member) >= Integer.parseInt(requirement.get(1));
+            default -> true;
+        };
     }
 }

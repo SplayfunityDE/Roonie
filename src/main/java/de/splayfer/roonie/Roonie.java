@@ -16,6 +16,7 @@ import de.splayfer.roonie.modules.library.nitrogames.NitrogamesSetupCommand;
 import de.splayfer.roonie.modules.poll.PollManager;
 import de.splayfer.roonie.modules.response.ResponseAddCommand;
 import de.splayfer.roonie.modules.response.ResponseListener;
+import de.splayfer.roonie.modules.response.ResponseManager;
 import de.splayfer.roonie.modules.response.ResponseRemoveCommand;
 import de.splayfer.roonie.general.schedule.BannerCounter;
 import de.splayfer.roonie.general.schedule.BotCounter;
@@ -72,6 +73,7 @@ public class Roonie {
         PollManager.init();
         MinigamesManager.init();
         LevelManager.init();
+        ResponseManager.init();
 
         //register events
         builder.addEventListeners(new ReadyEventClass());
@@ -83,11 +85,6 @@ public class Roonie {
         builder.addEventListeners(new AutoRoleListener());
         builder.addEventListeners(new WelcomeListener());
         builder.addEventListeners(new AutoComplete());
-
-        //autoresponse
-        builder.addEventListeners(new ResponseAddCommand());
-        builder.addEventListeners(new ResponseRemoveCommand());
-        builder.addEventListeners(new ResponseListener());
 
         //commands
         builder.addEventListeners(new AutoDeleteListener());
@@ -108,10 +105,7 @@ public class Roonie {
         AutoDeleteListener.checkCommandMessages();
 
         System.out.println("[Splayfer] Bot changed Status: Online");
-
-        GiveawayCreateCommand.getDurationFromText("1h");
     }
-
 }
 
 class ReadyEventClass extends ListenerAdapter {
@@ -127,12 +121,6 @@ class ReadyEventClass extends ListenerAdapter {
         };
 
         Roonie.mainGuild.updateCommands().addCommands(
-                Commands.slash("response", "\uD83D\uDCDC │ Verwalte automatisierte Reaktionen des Bots!")
-                        .addSubcommands(new SubcommandData("add", "\uD83D\uDCDC │ Füge automatisierte Reaktionen hinzu!")
-                                .addOption(OptionType.STRING, "nachricht", "\uD83D\uDCE2 │ Nachricht, auf die der Bot reagieren soll", true),
-                                new SubcommandData("remove", "\uD83D\uDCDC │ Entferne automatisierte Reaktionen!")
-                                        .addOption(OptionType.STRING, "nachricht", "\uD83D\uDCE2 │ Nachricht, auf die der Bot reagieren soll", true))
-                                .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)),
                 Commands.slash("setup", "\uD83D\uDEE0️ │ Sende verwaltungsrelevante Nachrichten mithilfe dieses Commands")
                         .addOption(OptionType.STRING, "kategorie", "\uD83C\uDFF7️ │ Kategorie, über welche du Nachrichten versenden möchtest!", true, true)
                         .addOption(OptionType.INTEGER, "id", "⚙️ │ Id, der von dir verwendeten Kategorie (muss eine Ganzzahl sein)", false)
