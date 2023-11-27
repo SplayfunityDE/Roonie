@@ -21,6 +21,15 @@ public class Config {
         }
     }
 
+    public static void setConfigChannel(String identifier, Channel channel) {
+        if (!mongoDB.exists("config", "identifier", identifier))
+            mongoDB.insert("config", new Document()
+                    .append("identifier", identifier)
+                    .append("channel", channel.getIdLong()));
+        else
+            mongoDB.updateLine("config", "identifier", identifier, "channel", channel.getIdLong());
+    }
+
     public static void removeConfigChannel(String identifier) {
         mongoDB.drop("config", "identifier", identifier);
     }

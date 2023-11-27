@@ -216,7 +216,7 @@ public class Giveaway {
     public static Giveaway getFromDocument(Document document) {
         TextChannel channel = Roonie.mainGuild.getTextChannelById(document.getLong("channel"));
         assert channel != null;
-        return new Giveaway(channel, document.getString("prize"), document.getLong("duration"), Arrays.asList(document.getList("requirement", String.class).get(0), document.getList("requirement", String.class).get(1)), document.getInteger("amount"), document.getString("picture"), channel.getHistory().getMessageById(document.getLong("message")), document.getList("entrys", Long.class));
+        return new Giveaway(channel, document.getString("prize"), document.getLong("duration"), document.getList("requirement", String.class), document.getInteger("amount"), document.getString("picture"), channel.getHistory().getMessageById(document.getLong("message")), document.getList("entrys", Long.class));
     }
 
     public static Giveaway findGiveaway(Message message) {

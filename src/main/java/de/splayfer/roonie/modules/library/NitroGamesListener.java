@@ -1,4 +1,4 @@
-package de.splayfer.roonie.modules.library.nitrogames;
+package de.splayfer.roonie.modules.library;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
@@ -79,7 +79,6 @@ public class NitroGamesListener extends ListenerAdapter {
 
         } else if (event.getSelectMenu().getId().equals("nitrogames.select")) {
             StringBuilder links = new StringBuilder();
-
             for (String s : event.getValues()) {
                 links.append(" ").append(s);
             }

@@ -1,29 +1,16 @@
 package de.splayfer.roonie.modules.minigames;
 
-import de.splayfer.roonie.FileSystem;
+import de.splayfer.roonie.Roonie;
+import de.splayfer.roonie.config.Config;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.bspfsystems.yamlconfiguration.file.YamlConfiguration;
 
 public class DeleteListener extends ListenerAdapter {
 
-    YamlConfiguration yml = YamlConfiguration.loadConfiguration(FileSystem.EmbedStats);
-
     public void onMessageReceived (MessageReceivedEvent event) {
-
-        if (event.getAuthor().getId().equals("886209763178844212")) {
-
-            if (event.getChannel().getId().equals(yml.getString("channel"))) {
-
-                if (event.getMessage().getContentRaw().equals("\uD83C\uDFB2│game")) {
-
+        if (event.getGuild().equals(Roonie.mainGuild))
+            if (Config.isConfigChannel(event.getChannel(), "minigames"))
+                if (event.getMessage().getContentRaw().equals("\\uD83C\\uDFB2│game"))
                     event.getMessage().delete().queue();
-
-                }
-
-            }
-
-        }
     }
-
 }

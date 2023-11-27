@@ -2,8 +2,6 @@ package de.splayfer.roonie.modules.library;
 
 import de.splayfer.roonie.MongoDBDatabase;
 import de.splayfer.roonie.Roonie;
-import de.splayfer.roonie.modules.library.nitrogames.NitroGamesListener;
-import de.splayfer.roonie.modules.library.nitrogames.NitrogamesSetupCommand;
 import org.bson.Document;
 
 import java.util.ArrayList;

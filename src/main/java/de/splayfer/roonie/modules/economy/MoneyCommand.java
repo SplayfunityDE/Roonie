@@ -82,7 +82,7 @@ public class MoneyCommand extends ListenerAdapter {
 
             Member member = event.getMember();
 
-            Map<Integer, String> list = EconomyManager.top(5);
+            Map<Integer, Long> list = EconomyManager.top(5);
 
             EmbedBuilder banner = new EmbedBuilder();
             EmbedBuilder builder = new EmbedBuilder();
@@ -103,7 +103,7 @@ public class MoneyCommand extends ListenerAdapter {
                 coins.append("\n **").append(num).append("**");
                 i++;
             }
-            if (!list.containsValue(member.getId())) {
+            if (!list.containsValue(member.getIdLong())) {
                 name.append("\n **...** \n \n <:people:1001082477537935501> <@").append(member.getId()).append(">: ");
                 coins.append("\n **...** \n \n **").append(EconomyManager.getMoney(member)).append("**");
             }
@@ -175,7 +175,7 @@ public class MoneyCommand extends ListenerAdapter {
     }
 
     public static MessageEditData getLeaderboardEmbed(Member m) {
-        Map<Integer, String> list = EconomyManager.top(5);
+        Map<Integer, Long> list = EconomyManager.top(5);
 
         MessageEditBuilder mb = new MessageEditBuilder();
         EmbedBuilder banner = new EmbedBuilder();
@@ -198,7 +198,7 @@ public class MoneyCommand extends ListenerAdapter {
             i++;
         }
 
-        if (!list.containsValue(m.getId())) {
+        if (!list.containsValue(m.getIdLong())) {
             name.append("\n **...** \n \n <:people:1001082477537935501> <@").append(m.getId()).append(">: ");
             coins.append("\n **...** \n \n **").append(EconomyManager.getMoney(m)).append("**");
         }

@@ -40,5 +40,4 @@ public class SetupCommand extends ListenerAdapter {
             Config.setConfigChannel("commands", event.getChannel(), commandMessage);
         }
     }
-
 }

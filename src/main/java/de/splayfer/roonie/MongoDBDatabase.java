@@ -2,10 +2,7 @@ package de.splayfer.roonie;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoException;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
@@ -92,7 +89,7 @@ public class MongoDBDatabase {
     }
 
     public FindIterable<Document> top(String collection, String key, int amount) {
-        return mongoDatabase.getCollection(collection).find().sort(new BasicDBObject(key, -1)).limit(3);
+        return mongoDatabase.getCollection(collection).find().sort(new BasicDBObject(key, -1)).limit(amount);
     }
 
 }

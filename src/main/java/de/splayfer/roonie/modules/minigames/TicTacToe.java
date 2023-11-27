@@ -1,6 +1,7 @@
 package de.splayfer.roonie.modules.minigames;
 
 import de.splayfer.roonie.FileSystem;
+import de.splayfer.roonie.MongoDBDatabase;
 import de.splayfer.roonie.Roonie;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -32,6 +33,7 @@ public class TicTacToe extends ListenerAdapter {
     protected static int circleAbstand = 179;
 
     protected static YamlConfiguration yml = YamlConfiguration.loadConfiguration(FileSystem.GameLog);
+    MongoDBDatabase mongoDB = new MongoDBDatabase("minigames");
 
     public void onStringSelectInteraction (StringSelectInteractionEvent event) {
 

@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import org.bson.Document;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class EconomyManager {
@@ -53,9 +54,9 @@ public class EconomyManager {
         mongoDB.updateLine("money", new Document("guildMember", member.getIdLong()), "amount", amount);
     }
 
-    public static Map<Integer, String> top(int top) {
-        HashMap<Integer, String> list = new HashMap<>();
-        mongoDB.top("money", "amount", 3).forEach(document -> list.put(document.getInteger("amount"), String.valueOf(document.getLong("guildMember"))));
+    public static Map<Integer, Long> top(int top) {
+        LinkedHashMap<Integer, Long> list = new LinkedHashMap<>();
+        mongoDB.top("money", "amount", top).forEach(document -> list.put(document.getInteger("amount"), document.getLong("guildMember")));
         return list;
     }
 
@@ -69,5 +70,4 @@ public class EconomyManager {
                     .append("guildMember", member.getIdLong())
                     .append("amount", 0));
     }
-
 }
