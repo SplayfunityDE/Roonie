@@ -68,9 +68,6 @@ public class Roonie {
         //register events
         builder.addEventListeners(new ReadyEventClass());
 
-        //profil
-        builder.addEventListeners(new NitrogamesSetupCommand());
-
         //general
         builder.addEventListeners(new AutoRoleListener());
         builder.addEventListeners(new WelcomeListener());

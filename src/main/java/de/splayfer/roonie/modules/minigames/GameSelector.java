@@ -1,6 +1,5 @@
 package de.splayfer.roonie.modules.minigames;
 
-import de.splayfer.roonie.FileSystem;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -11,17 +10,14 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
-import org.bspfsystems.yamlconfiguration.file.YamlConfiguration;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 public class GameSelector extends ListenerAdapter {
-
-    YamlConfiguration yml = YamlConfiguration.loadConfiguration(FileSystem.GameLog);
 
     @Override
     public void onStringSelectInteraction (StringSelectInteractionEvent event) {
@@ -167,24 +163,16 @@ public class GameSelector extends ListenerAdapter {
                             "853618861294485534", false);
 
                     threadChannel.sendMessageEmbeds(mainEmbed.build()).queue();
-
                     threadChannel.addThreadMember(event.getMember()).queue();
 
-                    yml = YamlConfiguration.loadConfiguration(FileSystem.GameLog);
-
                     //save to yml
-
+                    TicTacToeGame.create(threadChannel, "request", event.getMember()).insertToMongoDB();
+                    /*
                     yml.set(threadChannel.getId() + ".game", event.getValues().get(0));
                     yml.set(threadChannel.getId() + ".status", "waiting");
                     yml.set(threadChannel.getId() + ".type", "request");
                     yml.set(threadChannel.getId() + ".player1", event.getMember().getId());
-
-                    try {
-                        yml.save(FileSystem.GameLog);
-                    } catch (IOException exception) {
-                        exception.printStackTrace();
-                    }
-
+                     */
                     break;
 
             }
@@ -198,7 +186,7 @@ public class GameSelector extends ListenerAdapter {
 
                 //game found
 
-                String gameID = Queue.getQueueGame();
+                TicTacToeGame game = Queue.getQueueGame();
 
                 bannerEmbed = new EmbedBuilder();
                 bannerEmbed.setColor(0x43b480);
@@ -210,45 +198,36 @@ public class GameSelector extends ListenerAdapter {
                 mainEmbed.setDescription("Das Minigame wurde erfolgreich geladen und es wird nun auf einen Mitspieler gewartet! Klicke auf den Button unter dieser Nachricht um das Game zu aktivieren");
                 mainEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
 
-                event.replyEmbeds(bannerEmbed.build(), mainEmbed.build()).setEphemeral(true).addActionRow(Button.secondary("link", "Tritt dem Game bei!").withUrl("https://discord.com/channels/" + event.getGuild().getId() + "/" + gameID).withEmoji(Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false))).queue();
+                event.replyEmbeds(bannerEmbed.build(), mainEmbed.build()).setEphemeral(true).addActionRow(Button.secondary("link", "Tritt dem Game bei!").withUrl("https://discord.com/channels/" + event.getGuild().getId() + "/" + game).withEmoji(Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false))).queue();
 
                 //save to yml
+                game.setPlayer2(event.getMember());
+                game.setStatus("playing");
+                game.insertToMongoDB();
+                /*
+                yml.set(game + ".player2", event.getMember().getId());
+                yml.set(game + ".status", "playing");
 
-                yml = YamlConfiguration.loadConfiguration(FileSystem.GameLog);
+                 */
 
-                yml.set(gameID + ".player2", event.getMember().getId());
-                yml.set(gameID + ".status", "playing");
-
-                try {
-                    yml.save(FileSystem.GameLog);
-                } catch (IOException exception) {
-                    exception.printStackTrace();
-                }
-
-                Member player1 = event.getGuild().getMemberById(yml.getString(gameID + ".player1"));
-                Member player2 = event.getGuild().getMemberById(yml.getString(gameID + ".player2"));
-                ThreadChannel channel = event.getGuild().getThreadChannelById(gameID);
-
+                Member player1 = game.getPlayer1();
+                Member player2 = game.getPlayer2();
+                ThreadChannel channel = game.getChannel();
                 channel.addThreadMember(player2).queue();
 
                 Timer t = new Timer();
                 t.schedule(new TimerTask() {
                     @Override
                     public void run() {
-
                         TicTacToe.startGame(player1, player2, channel);
-
                     }
                 }, 5000);
-
             } else {
 
                 //no game found
 
                 switch (event.getValues().get(0)) {
-
                     case "tictactoe":
-
                         ThreadChannel threadChannel = event.getChannel().asTextChannel().createThreadChannel("\uD83C\uDFB2│" + "game", false).complete();
 
                         bannerEmbed = new EmbedBuilder();
@@ -277,421 +256,152 @@ public class GameSelector extends ListenerAdapter {
                         List<Button> buttons = new ArrayList<>();
                         buttons.add(Button.secondary("minigames.tutorial", "Lies dir die Spielregeln durch!").withEmoji(Emoji.fromCustom("text", Long.parseLong("886623802954498069"), false)));
 
-                        threadChannel.sendTyping().queue();
                         threadChannel.sendMessageEmbeds(bannerEmbed.build(), mainEmbed.build()).setActionRow(buttons).queue();
-
                         threadChannel.addThreadMember(event.getMember()).queue();
 
                         //save to yml
 
-                        yml = YamlConfiguration.loadConfiguration(FileSystem.GameLog);
-
+                        TicTacToeGame.create(threadChannel, "queue", event.getMember()).insertToMongoDB();
+                        /*
                         yml.set(threadChannel.getId() + ".game", event.getValues().get(0));
                         yml.set(threadChannel.getId() + ".status", "waiting");
                         yml.set(threadChannel.getId() + ".type", "queue");
                         yml.set(threadChannel.getId() + ".player1", event.getMember().getId());
 
-                        try {
-                            yml.save(FileSystem.GameLog);
-                        } catch (IOException exception) {
-                            exception.printStackTrace();
-                        }
-
+                         */
                         break;
-
                 }
-
             }
-
         }
-
     }
 
     public void onMessageReceived (MessageReceivedEvent event) {
-
-        if (yml.getKeys(false).contains(event.getChannel().getId())) {
-
-            if (yml.getString(event.getChannel().getId() + ".player1").equals(event.getAuthor().getId())) {
-
-                if (!yml.contains(event.getChannel().getId() + ".player2")) {
-
+        if (TicTacToeGame.isGameChannel(event.getChannel())) {
+            TicTacToeGame game = TicTacToeGame.getFromMongoDB(event.getChannel().asThreadChannel());
+            if (game.getPlayer1() == event.getMember()) {
+                if (game.getPlayer2() == null) {
                     String[] args = event.getMessage().getContentStripped().split(" ");
-
                     if (args.length == 1) {
-
                         //getting user
-
                         if (!event.getMessage().getMentions().getMembers().isEmpty()) {
-
                             if (event.getMessage().getMentions().getMembers().size() == 1) {
-
                                 if (!event.getMessage().getMentions().getMembers().get(0).getUser().isBot()) {
-
                                     if (!event.getMessage().getMentions().getMembers().get(0).getId().equals(event.getAuthor().getId())) {
-
-                                        if (PlayerChecker.checkPlayer(event.getMessage().getMentions().getMembers().get(0))) {
-
-                                            yml.set(event.getChannel().getId() + ".player2", event.getMessage().getMentions().getMembers().get(0).getId());
-
-                                            try {
-                                                yml.save(FileSystem.GameLog);
-                                            } catch (IOException exception) {
-                                                exception.printStackTrace();
-                                            }
-
+                                        if (TicTacToeGame.checkPlayer(event.getMessage().getMentions().getMembers().get(0))) {
+                                            game.setPlayer2(event.getMessage().getMentions().getMembers().get(0));
+                                            game.insertToMongoDB();
                                             RequestManager.sendGameRequest(event.getMessage().getMentions().getMembers().get(0).getUser(), event.getChannel().getId());
                                             RequestManager.setWaitingStatus(event.getChannel().asThreadChannel());
-
                                         } else {
-
                                             //building Embed
-
                                             EmbedBuilder error = new EmbedBuilder();
                                             error.setTitle(":exclamation: **Der Nutzer befindet sich bereits in einem Game!**");
                                             error.setColor(0xc01c34);
-
                                             Message m = event.getChannel().sendMessageEmbeds(error.build()).complete();
-                                            error.clear();
-
-                                            Timer t = new Timer();
-                                            t.schedule(new TimerTask() {
-                                                @Override
-                                                public void run() {
-
-                                                    m.delete().queue();
-
-                                                    t.cancel();
-
-                                                }
-                                            }, 8000);
-
+                                            m.delete().queueAfter(8, TimeUnit.SECONDS);
                                         }
-
                                     } else {
-
-                                        //building Embed
-
                                         EmbedBuilder error = new EmbedBuilder();
                                         error.setTitle(":exclamation: **Du kannst dich nicht selbst herausfordern!**");
                                         error.setColor(0xc01c34);
-
                                         Message m = event.getChannel().sendMessageEmbeds(error.build()).complete();
-                                        error.clear();
-
-                                        Timer t = new Timer();
-                                        t.schedule(new TimerTask() {
-                                            @Override
-                                            public void run() {
-
-                                                m.delete().queue();
-
-                                                t.cancel();
-
-                                            }
-                                        }, 8000);
-
+                                        m.delete().queueAfter(8, TimeUnit.SECONDS);
                                     }
-
                                 } else {
-
-                                    //building Embed
-
                                     EmbedBuilder error = new EmbedBuilder();
                                     error.setTitle(":exclamation: **Du kannst keinen Bot herausfordern!**");
                                     error.setColor(0xc01c34);
-
                                     Message m = event.getChannel().sendMessageEmbeds(error.build()).complete();
-                                    error.clear();
-
-                                    Timer t = new Timer();
-                                    t.schedule(new TimerTask() {
-                                        @Override
-                                        public void run() {
-
-                                            m.delete().queue();
-
-                                            t.cancel();
-
-                                        }
-                                    }, 8000);
-
+                                    m.delete().queueAfter(8, TimeUnit.SECONDS);
                                 }
-
                             } else {
-
-                                //building Embed
-
                                 EmbedBuilder error = new EmbedBuilder();
                                 error.setTitle(":exclamation: **Du kannst nur einen Nutzer herausfordern!**");
                                 error.setColor(0xc01c34);
-
                                 Message m = event.getChannel().sendMessageEmbeds(error.build()).complete();
-                                error.clear();
-
-                                Timer t = new Timer();
-                                t.schedule(new TimerTask() {
-                                    @Override
-                                    public void run() {
-
-                                        m.delete().queue();
-
-                                        t.cancel();
-
-                                    }
-                                }, 8000);
-
+                                m.delete().queueAfter(8, TimeUnit.SECONDS);
                             }
-
                         } else if (!event.getMessage().getMentions().getUsers().isEmpty()) {
-
                             if (event.getMessage().getMentions().getUsers().size() == 1) {
-
                                 if (!event.getMessage().getMentions().getUsers().get(0).isBot()) {
-
                                     if (!event.getMessage().getMentions().getUsers().get(0).getId().equals(event.getAuthor().getId())) {
-
-                                        if (PlayerChecker.checkPlayer(event.getGuild().getMember(event.getMessage().getMentions().getUsers().get(0))) == true) {
-
-                                            yml.set(event.getChannel().getId() + ".player2", event.getMessage().getMentions().getUsers().get(0).getId());
-
-                                            try {
-                                                yml.save(FileSystem.GameLog);
-                                            } catch (IOException exception) {
-                                                exception.printStackTrace();
-                                            }
-
+                                        if (TicTacToeGame.checkPlayer(event.getGuild().getMember(event.getMessage().getMentions().getUsers().get(0)))) {
+                                            game.setPlayer2(event.getMember());
+                                            game.insertToMongoDB();
                                             RequestManager.sendGameRequest(event.getMessage().getMentions().getUsers().get(0), event.getChannel().getId());
                                             RequestManager.setWaitingStatus(event.getChannel().asThreadChannel());
-
                                         } else {
-
-                                            //building Embed
-
                                             EmbedBuilder error = new EmbedBuilder();
                                             error.setTitle(":exclamation: **Der Nutzer befindet sich bereits in einem Game!**");
                                             error.setColor(0xc01c34);
-
                                             Message m = event.getChannel().sendMessageEmbeds(error.build()).complete();
-                                            error.clear();
-
-                                            Timer t = new Timer();
-                                            t.schedule(new TimerTask() {
-                                                @Override
-                                                public void run() {
-
-                                                    m.delete().queue();
-
-                                                    t.cancel();
-
-                                                }
-                                            }, 8000);
-
+                                            m.delete().queueAfter(8, TimeUnit.SECONDS);
                                         }
-
                                     } else {
-
-                                        //building Embed
-
                                         EmbedBuilder error = new EmbedBuilder();
                                         error.setTitle(":exclamation: **Du kannst keinen Bot herausfordern!**");
                                         error.setColor(0xc01c34);
-
                                         Message m = event.getChannel().sendMessageEmbeds(error.build()).complete();
-                                        error.clear();
-
-                                        Timer t = new Timer();
-                                        t.schedule(new TimerTask() {
-                                            @Override
-                                            public void run() {
-
-                                                m.delete().queue();
-
-                                                t.cancel();
-
-                                            }
-                                        }, 8000);
-
+                                        m.delete().queueAfter(8, TimeUnit.SECONDS);
                                     }
-
                                 } else {
-
-                                    //building Embed
-
                                     EmbedBuilder error = new EmbedBuilder();
                                     error.setTitle(":exclamation: **Du kannst keinen Bot herausfordern!**");
                                     error.setColor(0xc01c34);
-
                                     Message m = event.getChannel().sendMessageEmbeds(error.build()).complete();
-                                    error.clear();
-
-                                    Timer t = new Timer();
-                                    t.schedule(new TimerTask() {
-                                        @Override
-                                        public void run() {
-
-                                            m.delete().queue();
-
-                                            t.cancel();
-
-                                        }
-                                    }, 8000);
-
+                                    m.delete().queueAfter(8, TimeUnit.SECONDS);
                                 }
-
                             } else {
-
-                                //building Embed
-
                                 EmbedBuilder error = new EmbedBuilder();
                                 error.setTitle(":exclamation: **Du kannst nur einen Nutzer herausfordern!**");
                                 error.setColor(0xc01c34);
-
                                 Message m = event.getChannel().sendMessageEmbeds(error.build()).complete();
-                                error.clear();
-
-                                Timer t = new Timer();
-                                t.schedule(new TimerTask() {
-                                    @Override
-                                    public void run() {
-
-                                        m.delete().queue();
-
-                                        t.cancel();
-
-                                    }
-                                }, 8000);
-
+                                m.delete().queueAfter(8, TimeUnit.SECONDS);
                             }
-
                         } else {
-
                             boolean checkID = false;
-                            Member m = null;
-
+                            Member member = null;
                             try {
-
                                 Double d = Double.parseDouble(args[0]);
-                                m = event.getGuild().getMemberById(args[0]);
-
-                                if (!m.getUser().isBot()) {
-
-                                    if (!m.getId().equals(event.getAuthor().getId())) {
-
+                                member = event.getGuild().getMemberById(args[0]);
+                                if (!member.getUser().isBot()) {
+                                    if (!member.getId().equals(event.getAuthor().getId()))
                                         checkID = true;
-
-                                    } else {
-
-
-
-                                    }
-
                                 } else {
-
-                                    //building Embed
-
                                     EmbedBuilder error = new EmbedBuilder();
                                     error.setTitle(":exclamation: **Du kannst keinen Bot herausfordern!**");
                                     error.setColor(0xc01c34);
-
-                                    Message me = event.getChannel().sendMessageEmbeds(error.build()).complete();
-                                    error.clear();
-
-                                    Timer t = new Timer();
-                                    t.schedule(new TimerTask() {
-                                        @Override
-                                        public void run() {
-
-                                            me.delete().queue();
-
-                                            t.cancel();
-
-                                        }
-                                    }, 8000);
-
+                                    Message m = event.getChannel().sendMessageEmbeds(error.build()).complete();
+                                    m.delete().queueAfter(8, TimeUnit.SECONDS);
                                 }
-
                             } catch (Exception exception) {
-
-                                //building Embed
-
                                 EmbedBuilder error = new EmbedBuilder();
                                 error.setTitle(":exclamation: **Bitte erwähne den Nutzer oder gib seine ID an!**");
                                 error.setColor(0xc01c34);
-
                                 Message me = event.getChannel().sendMessageEmbeds(error.build()).complete();
                                 error.clear();
-
                                 checkID = false;
-
-                                Timer t = new Timer();
-                                t.schedule(new TimerTask() {
-                                    @Override
-                                    public void run() {
-
-                                        me.delete().queue();
-
-                                        t.cancel();
-
-                                    }
-                                }, 8000);
-
+                                me.delete().queueAfter(8, TimeUnit.SECONDS);
                             }
-
-                            if (checkID == true) {
-
-                                if (PlayerChecker.checkPlayer(m) == true) {
-
-                                    yml.set(event.getChannel().getId() + ".player2", args[0]);
-
-                                    try {
-                                        yml.save(FileSystem.GameLog);
-                                    } catch (IOException exception) {
-                                        exception.printStackTrace();
-                                    }
-
-                                    RequestManager.sendGameRequest(m.getUser(), event.getChannel().getId());
+                            if (checkID) {
+                                if (TicTacToeGame.checkPlayer(member)) {
+                                    game.setPlayer2(member);
+                                    game.insertToMongoDB();
+                                    RequestManager.sendGameRequest(member.getUser(), event.getChannel().getId());
                                     RequestManager.setWaitingStatus(event.getChannel().asThreadChannel());
-
                                 } else {
-
-                                    //building Embed
-
                                     EmbedBuilder error = new EmbedBuilder();
                                     error.setTitle(":exclamation: **Der Nutzer befindet sich bereits in einem Game!**");
                                     error.setColor(0xc01c34);
-
-                                    Message m1 = event.getChannel().sendMessageEmbeds(error.build()).complete();
-                                    error.clear();
-
-                                    Timer t = new Timer();
-                                    t.schedule(new TimerTask() {
-                                        @Override
-                                        public void run() {
-
-                                            m1.delete().queue();
-
-                                            t.cancel();
-
-                                        }
-                                    }, 8000);
-
+                                    Message m = event.getChannel().sendMessageEmbeds(error.build()).complete();
+                                    m.delete().queueAfter(8, TimeUnit.SECONDS);
                                 }
-
                             }
-
                         }
-
                         event.getMessage().delete().queue();
-
                     }
-
                 }  //do nothing
-
-
             }
-
         }
-
     }
-
 }

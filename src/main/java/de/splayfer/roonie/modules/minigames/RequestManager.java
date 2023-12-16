@@ -1,30 +1,32 @@
 package de.splayfer.roonie.modules.minigames;
 
-import de.splayfer.roonie.FileSystem;
+import de.splayfer.roonie.MongoDBDatabase;
 import de.splayfer.roonie.Roonie;
+import de.splayfer.roonie.utils.DefaultMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import org.bspfsystems.yamlconfiguration.file.YamlConfiguration;
+import org.bson.Document;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class RequestManager extends ListenerAdapter {
 
-    protected static YamlConfiguration yml = YamlConfiguration.loadConfiguration(FileSystem.GameLog);
+    MongoDBDatabase mongoDB = new MongoDBDatabase("minigames");
 
     public static void sendGameRequest(User user, String id) {
 
-        yml = YamlConfiguration.loadConfiguration(FileSystem.GameLog);
-
         PrivateChannel dm = user.openPrivateChannel().complete();
+        TicTacToeGame game = TicTacToeGame.getFromMongoDB(Roonie.mainGuild.getThreadChannelById(id));
 
         EmbedBuilder bannerEmbed = new EmbedBuilder();
         bannerEmbed.setColor(0x28346d);
@@ -37,8 +39,8 @@ public class RequestManager extends ListenerAdapter {
         mainEmbed.setImage("https://cdn.discordapp.com/attachments/906251556637249547/925055440436477982/auto_faqw.png");
 
 
-            mainEmbed.addField("Details", ":busts_in_silhouette:│Nutzer: " + Roonie.shardMan.getUserById(yml.getString(id + ".player1")).getAsMention() + "\n" +
-                    ":game_die:│Game: " + yml.getString(id + ".game"), false);
+        mainEmbed.addField("Details", ":busts_in_silhouette:│Nutzer: " + game.getPlayer1().getAsMention() + "\n" +
+                ":game_die:│Game: " + "TicTacToe", false);
 
 
         List<Button> buttons = new ArrayList<>();
@@ -50,9 +52,7 @@ public class RequestManager extends ListenerAdapter {
     }
 
     public static void setWaitingStatus(ThreadChannel channel) {
-
         List<Message> messages = channel.getHistory().retrievePast(100).complete();
-
         channel.deleteMessages(messages).queue();
 
         EmbedBuilder bannerEmbed = new EmbedBuilder();
@@ -76,176 +76,58 @@ public class RequestManager extends ListenerAdapter {
     }
 
     public void onButtonInteraction (ButtonInteractionEvent event) {
-
-        if (event.getButton().getId().equals("minigames.tutorial")) {
-
-
-
-        } else if (event.getButton().getId().equals("minigames.cancel")) {
-
-            yml = YamlConfiguration.loadConfiguration(FileSystem.GameLog);
-
-            if (yml.getString(event.getChannel().getId() + ".status").equals("waiting")) {
-
-                event.getChannel().delete().queue();
-
-                yml.set(event.getChannel().getId(), null);
-                try {
-                    yml.save(FileSystem.GameLog);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
-            } else {
-
-                EmbedBuilder banner = new EmbedBuilder();
-                banner.setColor(0xed4245);
-                banner.setImage("https://cdn.discordapp.com/attachments/880725442481520660/914518380353040384/banner_fehler.png");
-
-                EmbedBuilder main = new EmbedBuilder();
-                main.setColor(0xed4245);
-                main.setTitle(":no_entry_sign: **GAME BEREITS GESTARTET**");
-                main.setDescription("> Es scheint als ist das Game bereits gestartet! Du kannst nur Runden im Wartemodus vorzeitig beenden!");
-                main.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
-
-                event.replyEmbeds(banner.build(), main.build()).setEphemeral(true).queue();
-
+        if (event.getButton().getId().startsWith("minigames.")) {
+            TicTacToeGame game = TicTacToeGame.getFromMongoDB(event.getChannel().asThreadChannel());
+            switch (event.getButton().getId().split("\\.")[1]) {
+                case "tutorial":
+                    break;
+                case "cancel":
+                    if (Objects.equals(game.getStatus(), "waiting")) {
+                        event.getChannel().delete().queue();
+                        game.removeFromMongoDB();
+                    } else
+                        event.replyEmbeds(DefaultMessage.error("Game bereits gestartet", "Es scheint als ist das Game bereits gestartet! Du kannst nur Runden im Wartemodus vorzeitig beenden!")).setEphemeral(true).queue();
+                    break;
             }
-
         } else if (event.getButton().getId().startsWith("join.")) {
-
-            yml = YamlConfiguration.loadConfiguration(FileSystem.GameLog);
-
-            String id = event.getButton().getId().substring(5);
-
-            if (yml.getKeys(false).contains(id)) {
-
-                if (yml.getString(id + ".player2").equals(event.getUser().getId())) {
-
-                if (yml.get(id + ".status").equals("waiting")) {
-
-                    //get guild
-
-                    Guild guild = null;
-
-                    for (Guild g : Roonie.shardMan.getGuilds()) {
-
-                        for (ThreadChannel threadChannel : g.getThreadChannels()) {
-
-                            if (threadChannel.getId().equals(id)) {
-
-                                guild = g;
-
+            TicTacToeGame game = TicTacToeGame.getFromMongoDB(event.getChannel().asThreadChannel());
+            long id = Long.parseLong(event.getButton().getId().substring(5));
+            boolean check = false;
+            for (Document document : mongoDB.findAll("tictactoe"))
+                if (document.getLong("channel").equals(id))
+                    check = true;
+            if (check) {
+                if (game.getPlayer2().equals(event.getMember())) {
+                    if (game.getStatus().equals("waiting")) {
+                        //get guild
+                        Guild guild = null;
+                        for (Guild g : Roonie.shardMan.getGuilds()) {
+                            for (ThreadChannel threadChannel : g.getThreadChannels()) {
+                                if (threadChannel.getId().equals(id)) {
+                                    guild = g;
+                                }
                             }
-
                         }
+                        game.getChannel().addThreadMember(game.getPlayer2()).queue();
+                            TicTacToe.startGame(game.getPlayer1(), game.getPlayer2(), game.getChannel());
 
+                        game.setStatus("playing");
+                        game.insertToMongoDB();
+                        event.replyEmbeds(DefaultMessage.success("Einladung erfolgreich angenommen!", "Du hast die Einladung erfolgreich angenommen und kannst nun dem Game beitreten. Klicke dazu einfach auf den Button unter dieser Nachricht!")).setEphemeral(true).addActionRow(Button.secondary("link", "Trete dem Game jetzt bei!").withUrl("https://discord.com/channels/" + guild.getId() + "/" + id).withEmoji(Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false))).queue();
+                    } else {
+                        //get guild
+                        Guild guild = null;
+                        for (Guild g : Roonie.shardMan.getGuilds())
+                            for (ThreadChannel threadChannel : g.getThreadChannels())
+                                if (threadChannel.getId().equals(id))
+                                    guild = g;
+                        event.replyEmbeds(DefaultMessage.error("Herausforderung bereits angenommen!", "Du hast die folgende Herausforderung bereits angenommen. Über den Button unter dieser Nachricht kannst du dem Game beitreten!")).setEphemeral(true).addActionRow(Button.secondary("link", "Trete dem Game jetzt bei!").withUrl("https://discord.com/channels/" + guild.getId() + "/" + id).withEmoji(Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false))).queue();
                     }
+                } else
+                    event.replyEmbeds(DefaultMessage.error("Anfrage zurückgezogen", "Der Nutzer hat die Herausforderung zurückgezogen.")).setEphemeral(true).queue();
 
-                    Member player1 = guild.getMemberById(yml.getString(id + ".player1"));
-                    Member player2 = guild.getMemberById(yml.getString(id + ".player2"));
-                    ThreadChannel channel = guild.getThreadChannelById(id);
-
-                    channel.addThreadMember(player2).queue();
-
-                    if (yml.getString(id + ".game").equals("tictactoe")) {
-
-                        TicTacToe.startGame(player1, player2, channel);
-
-                    }
-
-                    yml.set(id + ".status", "playing");
-                    try {
-                        yml.save(FileSystem.GameLog);
-                    } catch (IOException exception) {
-                    }
-
-                    EmbedBuilder bannerEmbed = new EmbedBuilder();
-                    bannerEmbed.setColor(0x43b480);
-                    bannerEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/914518380088819742/banner_erfolg.png");
-
-                    EmbedBuilder mainEmbed = new EmbedBuilder();
-                    mainEmbed.setColor(0x43b480);
-                    mainEmbed.setTitle(":white_check_mark: Einladung erfolgreich angenommen!");
-                    mainEmbed.setDescription("> Du hast die Einladung erfolgreich angenommen und kannst nun dem Game beitreten. Klicke dazu einfach auf den Button unter dieser Nachricht!");
-                    mainEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
-
-                    List<Button> buttons = new ArrayList<>();
-                    buttons.add(Button.secondary("link", "Trete dem Game jetzt bei!").withUrl("https://discord.com/channels/" + guild.getId() + "/" + id).withEmoji(Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false)));
-
-                    event.replyEmbeds(bannerEmbed.build(), mainEmbed.build()).setEphemeral(true).addActionRow(buttons).queue();
-
-                } else {
-
-                    EmbedBuilder bannerEmbed = new EmbedBuilder();
-                    bannerEmbed.setColor(0xed4245);
-                    bannerEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/914518380353040384/banner_fehler.png");
-
-                    EmbedBuilder entryEmbed = new EmbedBuilder();
-                    entryEmbed.setColor(0xed4245);
-                    entryEmbed.setTitle(":no_entry_sign: Herausforderung bereits angenommen!");
-                    entryEmbed.setDescription("> Du hast die folgende Herausforderung bereits angenommen. Über den Button unter dieser Nachricht kannst du dem Game beitreten!");
-                    entryEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
-
-                    //get guild
-
-                    Guild guild = null;
-
-                    for (Guild g : Roonie.shardMan.getGuilds()) {
-
-                        for (ThreadChannel threadChannel : g.getThreadChannels()) {
-
-                            if (threadChannel.getId().equals(id)) {
-
-                                guild = g;
-
-                            }
-
-                        }
-
-                    }
-
-                    List<Button> buttons = new ArrayList<>();
-                    buttons.add(Button.secondary("link", "Trete dem Game jetzt bei!").withUrl("https://discord.com/channels/" + guild.getId() + "/" + id).withEmoji(Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false)));
-
-                    event.replyEmbeds(bannerEmbed.build(), entryEmbed.build()).setEphemeral(true).addActionRow(buttons).queue();
-
-                }
-
-                } else {
-
-                    EmbedBuilder bannerEmbed = new EmbedBuilder();
-                    bannerEmbed.setColor(0xed4245);
-                    bannerEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/914518380353040384/banner_fehler.png");
-
-                    EmbedBuilder entryEmbed = new EmbedBuilder();
-                    entryEmbed.setColor(0xed4245);
-                    entryEmbed.setTitle(":no_entry_sign: Anfrage zurückgezogen!");
-                    entryEmbed.setDescription("> Der Nutzer hat die Herausforderung zurückgezogen.");
-                    entryEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
-
-                    event.replyEmbeds(bannerEmbed.build(), entryEmbed.build()).setEphemeral(true).queue();
-
-                }
-
-            } else {
-
-                EmbedBuilder bannerEmbed = new EmbedBuilder();
-                bannerEmbed.setColor(0xed4245);
-                bannerEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/914518380353040384/banner_fehler.png");
-
-                EmbedBuilder entryEmbed = new EmbedBuilder();
-                entryEmbed.setColor(0xed4245);
-                entryEmbed.setTitle(":no_entry_sign: Game bereits beendet!");
-                entryEmbed.setDescription("> Das Game zu dem du eingeladen wurdest, ist inzwischen leider schon beendet!");
-                entryEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
-
-                event.replyEmbeds(bannerEmbed.build(), entryEmbed.build()).setEphemeral(true).queue();
-
-            }
-
+            } else
+                event.replyEmbeds(DefaultMessage.error("Game bereits gestartet", "Das Game zu dem du eingeladen wurdest, ist inzwischen leider schon beendet!")).setEphemeral(true).queue();
         }
-
     }
-
 }

@@ -6,6 +6,7 @@ import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
+import org.bson.BsonDocument;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -92,4 +93,14 @@ public class MongoDBDatabase {
         return mongoDatabase.getCollection(collection).find().sort(new BasicDBObject(key, -1)).limit(amount);
     }
 
+    public ListCollectionsIterable<Document> getCollections() {
+        return mongoDatabase.listCollections();
+    }
+
+    public String getCollectionName(Document document) {
+        for (String s : mongoClient.listDatabaseNames())
+            if (find(s, document) != null)
+                return s;
+        return null;
+    }
 }

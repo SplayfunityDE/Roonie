@@ -23,7 +23,7 @@ public class GiveawayManager {
     public static void init() {
         Roonie.builder.addEventListeners(new GiveawayEnterListener(), new GiveawayCreateCommand());
 
-        CommandManager.addCommand(Guilds.MAIN,
+        CommandManager.addCommands(Guilds.MAIN,
                 Commands.slash("giveaway", "\uD83C\uDF89 │ Verwalte die gesamten Giveaways des Servers!")
                         .addSubcommands(new SubcommandData("create", "➕ │ Erstelle ein neues Giveaway!"))
                         .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)));

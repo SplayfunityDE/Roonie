@@ -9,7 +9,6 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import org.bson.Document;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -20,12 +19,10 @@ public class EconomyManager {
     public static void init() {
         Roonie.builder.addEventListeners(new CoinBomb(), new MoneyCommand(), new DailyCommand());
 
-        CommandManager.addCommand(Guilds.MAIN,
+        CommandManager.addCommands(Guilds.MAIN,
                 Commands.slash("money", "\uD83D\uDCB3 │ Zeigt dir den aktuellen Kontostand an!")
-                        .addOption(OptionType.USER, "nutzer", "\uD83D\uDC65 │ Nutzer, welchen du anzeigen möchtest!", false));
-        CommandManager.addCommand(Guilds.MAIN,
-                Commands.slash("leaderboard", "\uD83D\uDCCA │ Zeigt dir die Rangliste mit den aktuell besten Casino Spielern an!"));
-        CommandManager.addCommand(Guilds.MAIN,
+                        .addOption(OptionType.USER, "nutzer", "\uD83D\uDC65 │ Nutzer, welchen du anzeigen möchtest!", false),
+                Commands.slash("leaderboard", "\uD83D\uDCCA │ Zeigt dir die Rangliste mit den aktuell besten Casino Spielern an!"),
                 Commands.slash("daily", "\uD83D\uDCC5 │ Hole dir deine tägliche Menge an Coins!"));
     }
 
@@ -60,12 +57,12 @@ public class EconomyManager {
         return list;
     }
 
-    public static boolean existsUser(Member member){
+    public static boolean existsUser(Member member) {
         return mongoDB.exists("money", "guildMember", member.getIdLong());
     }
 
     public static void insertUser(Member member) {
-        if(!existsUser(member))
+        if (!existsUser(member))
             mongoDB.insert("money", new Document()
                     .append("guildMember", member.getIdLong())
                     .append("amount", 0));

@@ -13,7 +13,6 @@ public class LibraryManager {
 
     public static void init() {
         Roonie.builder.addEventListeners(new LibrarySetupCommand(), new BannerListener(), new AddBannerCommand(), new RemoveBannerCommand(), new TemplateListener(), new AddTemplateCommand(), new RemoveTemplateCommand());
-
         //NitroGames
         Roonie.builder.addEventListeners(new NitroGamesListener(), new NitrogamesSetupCommand());
     }

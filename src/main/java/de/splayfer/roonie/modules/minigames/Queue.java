@@ -1,65 +1,24 @@
 package de.splayfer.roonie.modules.minigames;
 
-import de.splayfer.roonie.FileSystem;
-import org.bspfsystems.yamlconfiguration.file.YamlConfiguration;
+import de.splayfer.roonie.MongoDBDatabase;
+import org.bson.Document;
 
 public class Queue {
 
-    protected static YamlConfiguration yml = YamlConfiguration.loadConfiguration(FileSystem.GameLog);
-
-    public static boolean queue = false;
+    static MongoDBDatabase mongoDB = new MongoDBDatabase("minigames");
 
     public static boolean checkForGame() {
-
-        yml = YamlConfiguration.loadConfiguration(FileSystem.GameLog);
-
-        boolean check = false;
-
-        if (!yml.getKeys(false).isEmpty()) {
-
-            for (String s : yml.getKeys(false)) {
-
-                if (yml.get(s + ".type").equals("queue")) {
-
-                    if (yml.get(s + ".status").equals("waiting")) {
-
-                        check = true;
-
-                    }
-                }
-
-            }
-
-        }
-
-        return check;
-
+            for (Document doc : mongoDB.findAll("tictactoe"))
+                if (doc.getString("type").equals("queue"))
+                    if (doc.getString("status").equals("waiting"))
+                        return true;
+        return false;
     }
 
-    public static String getQueueGame() {
-
-        yml = YamlConfiguration.loadConfiguration(FileSystem.GameLog);
-
-        String gameID = "";
-
-        if (!yml.getKeys(false).isEmpty()) {
-
-            for (String s : yml.getKeys(false)) {
-
-                if (yml.get(s + ".type").equals("queue")) {
-
-                    if (yml.get(s + ".status").equals("waiting")) {
-
-                        gameID = s;
-
-                    }
-                }
-
-            }
-
-        }
-
-        return gameID;
-
+    public static TicTacToeGame getQueueGame() {
+        for (Document doc : mongoDB.findAll("tictactoe"))
+            if (doc.getString("status").equals("waiting"))
+                return TicTacToeGame.getFromDocument(doc);
+        return null;
     }
 }

@@ -5,7 +5,9 @@ import de.splayfer.roonie.utils.enums.Guilds;
 import de.splayfer.roonie.utils.enums.Param;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.interactions.commands.CommandInteraction;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 
 import java.util.ArrayList;
@@ -14,19 +16,21 @@ import java.util.List;
 
 public class CommandManager {
 
-    private static HashMap<Long, List<SlashCommandData>> commands = new HashMap<>();
+    private static HashMap<Long, List<CommandData>> commands = new HashMap<>();
 
-    public static void addCommand(SlashCommandData data) {
-        addCommand(Guilds.GLOBAL, data);
+    public static void addCommands(CommandData... data) {
+            addCommands(Guilds.GLOBAL, data);
     }
-    public static void addCommand(Guilds guild, SlashCommandData data) {
+
+    public static void addCommands(Guilds guild, CommandData... data) {
         if (!commands.containsKey(guild.getId()))
             commands.put(guild.getId(), new ArrayList<>());
-        commands.get(guild.getId()).add(data);
+        for (CommandData d : data)
+            commands.get(guild.getId()).add(d);
     }
     public static void initCommands(JDA shardman) {
         for(Long id : commands.keySet()) {
-            for(SlashCommandData data : commands.get(id)) {
+            for(CommandData data : commands.get(id)) {
                 if(id == -1) {
                     shardman.upsertCommand(data).queue();
                 } else {
@@ -37,7 +41,7 @@ public class CommandManager {
         }
     }
 
-    public static boolean checkCommand(SlashCommandInteraction interaction, String name, Param... parameters) {
+    public static boolean checkCommand(CommandInteraction interaction, String name, Param... parameters) {
         if(interaction.getName().equals(name)) {
             for(Param p : parameters) {
                 switch(p) {

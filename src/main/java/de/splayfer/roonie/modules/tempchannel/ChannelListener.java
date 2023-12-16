@@ -54,9 +54,7 @@ public class ChannelListener extends ListenerAdapter {
     }
 
     private void createNewChannel(Guild guild, Member member) {
-
         new Tempchannel(guild, member);
-
     }
 
     public boolean delete(VoiceChannel voiceChannel) {
@@ -106,16 +104,10 @@ public class ChannelListener extends ListenerAdapter {
             }
 
         }
-
         if(canSpeak) {
             member.mute(false).queue();
         }else {
             member.mute(true).queue();
         }
-
-
     }
-
-
-
 }
