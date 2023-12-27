@@ -29,7 +29,6 @@ public class BannerListener extends ListenerAdapter {
     public void onStringSelectInteraction (StringSelectInteractionEvent event) {
 
         if (event.getSelectMenu().getId().equals("serverbanner")) {
-
             EmbedBuilder bannerEmbed;
             EmbedBuilder reply;
 
@@ -226,11 +225,9 @@ public class BannerListener extends ListenerAdapter {
                                 try {
 
                                     ImageIO.write(container, "png", new File(cache.getAbsolutePath() + File.separator + "bannerCache.png"));
-
                                 } catch (IOException exception) {
                                     exception.printStackTrace();
                                 }
-
                                 File tempFile = new File(cache.getAbsolutePath() + File.separator + "bannerCache.png");
 
                                 Message m = Roonie.shardMan.getTextChannelById("906251556637249547").sendFiles(FileUpload.fromData(tempFile)).complete();

@@ -18,5 +18,4 @@ public class PollManager {
                         .addSubcommands(new SubcommandData("create", "➕ │ Erstelle eine neue Umfrage!"))
                         .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)));
     }
-
 }

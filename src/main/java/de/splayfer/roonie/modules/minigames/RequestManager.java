@@ -3,6 +3,7 @@ package de.splayfer.roonie.modules.minigames;
 import de.splayfer.roonie.MongoDBDatabase;
 import de.splayfer.roonie.Roonie;
 import de.splayfer.roonie.utils.DefaultMessage;
+import de.splayfer.roonie.utils.enums.Embeds;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
@@ -28,10 +29,6 @@ public class RequestManager extends ListenerAdapter {
         PrivateChannel dm = user.openPrivateChannel().complete();
         TicTacToeGame game = TicTacToeGame.getFromMongoDB(Roonie.mainGuild.getThreadChannelById(id));
 
-        EmbedBuilder bannerEmbed = new EmbedBuilder();
-        bannerEmbed.setColor(0x28346d);
-        bannerEmbed.setImage("https://cdn.discordapp.com/attachments/906251556637249547/937036676239347812/banner_minigames.png");
-
         EmbedBuilder mainEmbed = new EmbedBuilder();
         mainEmbed.setColor(0x28346d);
         mainEmbed.setTitle(":crossed_swords: Du wurdest herausgefordert!");
@@ -47,17 +44,13 @@ public class RequestManager extends ListenerAdapter {
         buttons.add(Button.primary("join." + id, "Nimm die Herausforderung an!").withEmoji(Emoji.fromFormatted("⚔")));
 
         dm.sendTyping().queue();
-        dm.sendMessageEmbeds(bannerEmbed.build(), mainEmbed.build()).setActionRow(buttons).queue();
+        dm.sendMessageEmbeds(Embeds.BANNER_MINIGAME, mainEmbed.build()).setActionRow(buttons).queue();
 
     }
 
     public static void setWaitingStatus(ThreadChannel channel) {
         List<Message> messages = channel.getHistory().retrievePast(100).complete();
         channel.deleteMessages(messages).queue();
-
-        EmbedBuilder bannerEmbed = new EmbedBuilder();
-        bannerEmbed.setColor(0x28346d);
-        bannerEmbed.setImage("https://cdn.discordapp.com/attachments/906251556637249547/937416756547452938/banner_warten.png");
 
         EmbedBuilder mainEmbed = new EmbedBuilder();
         mainEmbed.setColor(0x28346d);
@@ -70,8 +63,7 @@ public class RequestManager extends ListenerAdapter {
         buttons.add(Button.secondary("minigames.tutorial", "Lies dir die Spielregeln durch!").withEmoji(Emoji.fromCustom("text", Long.parseLong("886623802954498069"), false)));
         buttons.add(Button.danger("minigames.cancel", "Spiel abbrechen").withEmoji(Emoji.fromCustom("cross", 880711722288169032L, true)));
 
-        channel.sendTyping().queue();
-        channel.sendMessageEmbeds(bannerEmbed.build(), mainEmbed.build()).setActionRow(buttons).queue();
+        channel.sendMessageEmbeds(Embeds.BANNER_WAITING, mainEmbed.build()).setActionRow(buttons).queue();
 
     }
 

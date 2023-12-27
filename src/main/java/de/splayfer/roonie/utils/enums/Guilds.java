@@ -1,5 +1,8 @@
 package de.splayfer.roonie.utils.enums;
 
+import de.splayfer.roonie.Roonie;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
+
 public enum Guilds {
 
     MAIN(873506353551925308L),

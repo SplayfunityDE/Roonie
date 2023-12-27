@@ -1,25 +1,17 @@
 package de.splayfer.roonie.modules.minigames;
 
-import de.splayfer.roonie.FileSystem;
 import de.splayfer.roonie.config.Config;
+import de.splayfer.roonie.utils.enums.Embeds;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
-import org.bspfsystems.yamlconfiguration.file.YamlConfiguration;
-
-import java.io.IOException;
 
 public class SetupCommand extends ListenerAdapter {
 
     public static void setup(SlashCommandInteractionEvent event) {
-        EmbedBuilder bannerEmbed = new EmbedBuilder();
-        bannerEmbed.setColor(0x28346d);
-        bannerEmbed.setImage("https://cdn.discordapp.com/attachments/906251556637249547/937036676239347812/banner_minigames.png");
         EmbedBuilder mainEmbed = new EmbedBuilder();
         mainEmbed.setColor(0x28346d);
         mainEmbed.setThumbnail("https://cdn.discordapp.com/attachments/906251556637249547/937036898151583794/1f3b3.png");
@@ -33,7 +25,7 @@ public class SetupCommand extends ListenerAdapter {
                 .addOption("Statistiken ansehen", "stats", "Schau dir deine aktuellen Statistiken an", Emoji.fromCustom("stats", Long.parseLong("937041708967927818"), false))
                 .build();
         event.getChannel().sendTyping().queue();
-        event.getChannel().sendMessageEmbeds(bannerEmbed.build(), mainEmbed.build()).setActionRow(test).complete();
+        event.getChannel().sendMessageEmbeds(Embeds.BANNER_MINIGAME, mainEmbed.build()).setActionRow(test).complete();
         Config.setConfigChannel("minigames", event.getChannel());
     }
 }

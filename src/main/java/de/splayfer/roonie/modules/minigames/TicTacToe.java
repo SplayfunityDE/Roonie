@@ -1,6 +1,7 @@
 package de.splayfer.roonie.modules.minigames;
 
 import de.splayfer.roonie.MongoDBDatabase;
+import de.splayfer.roonie.utils.enums.Embeds;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -51,10 +52,6 @@ public class TicTacToe extends ListenerAdapter {
 
                             MinigamesManager.addWinToMember(winner, "tictactoe");
 
-                            EmbedBuilder bannerEmbed = new EmbedBuilder();
-                            bannerEmbed.setColor(0xffcf55);
-                            bannerEmbed.setImage("https://cdn.discordapp.com/attachments/906251556637249547/938483513970262136/banner_winner.png");
-
                             EmbedBuilder mainEmbed = new EmbedBuilder();
                             mainEmbed.setColor(0xffcf55);
                             mainEmbed.setThumbnail("https://cdn.discordapp.com/attachments/906251556637249547/938694173685612594/2004881.png");
@@ -66,7 +63,7 @@ public class TicTacToe extends ListenerAdapter {
                             mainEmbed.setImage("https://cdn.discordapp.com/attachments/906251556637249547/925055440436477982/auto_faqw.png");
 
                             event.getChannel().sendTyping().queue();
-                            event.getChannel().sendMessageEmbeds(bannerEmbed.build(), mainEmbed.build()).queue();
+                            event.getChannel().sendMessageEmbeds(Embeds.BANNER_MINIGAME_ENDING, mainEmbed.build()).queue();
                             Timer t = new Timer();
                             t.schedule(new TimerTask() {
                                 @Override

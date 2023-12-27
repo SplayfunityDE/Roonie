@@ -204,10 +204,6 @@ public class GiveawayCreateCommand extends ListenerAdapter {
     }
 
     public List<MessageEmbed> getSetupEmbed(Giveaway giveaway) {
-        EmbedBuilder bannerEmbed = new EmbedBuilder();
-        bannerEmbed.setColor(0x28346d);
-        bannerEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/910194455494144021/banner_umfrage.png");
-
         EmbedBuilder embed = new EmbedBuilder();
         embed.setColor(0x28346d);
         if (giveaway.getChannel() != null)
@@ -236,7 +232,7 @@ public class GiveawayCreateCommand extends ListenerAdapter {
         if (giveaway.getPicture() != null)
             embed.setThumbnail(giveaway.getPicture());
         embed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
-        return List.of(bannerEmbed.build(), embed.build());
+        return List.of(Embeds.BANNER_GIVEAWAY, embed.build());
     }
 
     public List<ActionRow> getSetupActionRow(Giveaway giveaway) {

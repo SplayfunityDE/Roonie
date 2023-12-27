@@ -10,7 +10,6 @@ import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 
 public class NitrogamesSetupCommand extends ListenerAdapter {
 
-
     public static void setup(SlashCommandInteractionEvent event) {
         EmbedBuilder bannerEmbed = new EmbedBuilder();
         bannerEmbed.setColor(0x28346d);

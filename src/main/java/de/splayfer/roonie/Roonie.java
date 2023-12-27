@@ -1,5 +1,6 @@
 package de.splayfer.roonie;
 
+import de.splayfer.roonie.config.ConfigManager;
 import de.splayfer.roonie.modules.economy.EconomyManager;
 import de.splayfer.roonie.modules.management.commands.AutoDeleteListener;
 import de.splayfer.roonie.modules.management.commands.CommandInfoListener;
@@ -18,6 +19,7 @@ import de.splayfer.roonie.general.schedule.BannerCounter;
 import de.splayfer.roonie.general.schedule.BotCounter;
 import de.splayfer.roonie.general.schedule.MessageCounter;
 import de.splayfer.roonie.modules.tempchannel.*;
+import de.splayfer.roonie.modules.ticket.TicketManager;
 import de.splayfer.roonie.utils.CommandManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -46,15 +48,14 @@ public class Roonie {
     public static JDA shardMan;
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        FileSystem.loadFileSystem();
 
-        builder = JDABuilder.createDefault("ODg2MjA5NzYzMTc4ODQ0MjEy.G6jBkR.Wr_hOGdDVLscXvI1hfvo1nks9bedkcSDA87guw");
-        builder.setActivity(Activity.streaming("auf 🌀SPLΛYFUNITY🌀", "https://twitch.tv/splayfer"));
-        builder.setStatus(OnlineStatus.ONLINE);
-        builder.setChunkingFilter(ChunkingFilter.ALL);
-        builder.setMemberCachePolicy(MemberCachePolicy.ALL);
-        builder.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_VOICE_STATES, GatewayIntent.DIRECT_MESSAGE_TYPING, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.MESSAGE_CONTENT);
-        builder.enableCache(EnumSet.of(CacheFlag.ONLINE_STATUS, CacheFlag.CLIENT_STATUS, CacheFlag.EMOJI, CacheFlag.VOICE_STATE));
+        builder = JDABuilder.createDefault("ODg2MjA5NzYzMTc4ODQ0MjEy.G6jBkR.Wr_hOGdDVLscXvI1hfvo1nks9bedkcSDA87guw")
+        .setActivity(Activity.streaming("auf 🌀SPLΛYFUNITY🌀", "https://twitch.tv/splayfer"))
+        .setStatus(OnlineStatus.ONLINE)
+        .setChunkingFilter(ChunkingFilter.ALL)
+        .setMemberCachePolicy(MemberCachePolicy.ALL)
+        .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_VOICE_STATES, GatewayIntent.DIRECT_MESSAGE_TYPING, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.MESSAGE_CONTENT)
+        .enableCache(EnumSet.of(CacheFlag.ONLINE_STATUS, CacheFlag.CLIENT_STATUS, CacheFlag.EMOJI, CacheFlag.VOICE_STATE));
 
         EconomyManager.init();
         GiveawayManager.init();
@@ -64,6 +65,8 @@ public class Roonie {
         MinigamesManager.init();
         LevelManager.init();
         ResponseManager.init();
+        TicketManager.init();
+        ConfigManager.init();
 
         //register events
         builder.addEventListeners(new ReadyEventClass());
@@ -77,9 +80,6 @@ public class Roonie {
         builder.addEventListeners(new AutoDeleteListener());
         builder.addEventListeners(new CommandInfoListener());
         builder.addEventListeners(new de.splayfer.roonie.modules.management.commands.SetupCommand());
-
-        //config
-        builder.addEventListeners(new SetupCommand());
 
         shardMan = builder.build();
         CommandManager.initCommands(shardMan.awaitReady());

@@ -1,5 +1,6 @@
 package de.splayfer.roonie.modules.economy;
 
+import de.splayfer.roonie.utils.enums.Embeds;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
@@ -84,12 +85,7 @@ public class MoneyCommand extends ListenerAdapter {
 
             Map<Integer, Long> list = EconomyManager.top(5);
 
-            EmbedBuilder banner = new EmbedBuilder();
             EmbedBuilder builder = new EmbedBuilder();
-
-            banner.setColor(0xffcc4d);
-            banner.setImage("https://cdn.discordapp.com/attachments/985551183479463998/1003009248562782289/banner_rangliste.png");
-
             builder.setColor(0xffcc4d);
             builder.setTitle(":coin: **SPLΛYFUNITY Economy Rangliste**");
             builder.setDescription("> Hier siehst du die besten Nutzer aus dem gesamten Economy System!");
@@ -113,7 +109,7 @@ public class MoneyCommand extends ListenerAdapter {
             builder.setImage("https://cdn.discordapp.com/attachments/985551183479463998/986627378417655858/auto_faqw.png");
             builder.setFooter("ID: " + member.getId());
 
-            event.replyEmbeds(banner.build(), builder.build()).addActionRow(getMenuActionrow("m_leaderboard")).setEphemeral(true).queue();
+            event.replyEmbeds(Embeds.BANNER_ECONOMY_RANKING, builder.build()).addActionRow(getMenuActionrow("m_leaderboard")).setEphemeral(true).queue();
         }
 
     }
@@ -147,12 +143,6 @@ public class MoneyCommand extends ListenerAdapter {
 
         MessageEditBuilder mb = new MessageEditBuilder();
 
-        //building Embed
-
-        EmbedBuilder bannerEmbed = new EmbedBuilder();
-        bannerEmbed.setColor(0xffcc4d);
-        bannerEmbed.setImage("https://cdn.discordapp.com/attachments/985551183479463998/1002579047609548860/banner_konto.png");
-
         EmbedBuilder embedBuilder = new EmbedBuilder();
         if (other) {
             embedBuilder.setTitle(":coin: **KONTOINFORMATIONEN VON " + m.getEffectiveName() + "**");
@@ -168,7 +158,7 @@ public class MoneyCommand extends ListenerAdapter {
         embedBuilder.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
         embedBuilder.setFooter("ID: " + m.getId());
 
-        mb.setEmbeds(bannerEmbed.build(), embedBuilder.build());
+        mb.setEmbeds(Embeds.BANNER_ECONOMY_ACCOUNT, embedBuilder.build());
         mb.setActionRow(getMenuActionrow("m_overview"));
 
         return mb.build();
@@ -178,11 +168,7 @@ public class MoneyCommand extends ListenerAdapter {
         Map<Integer, Long> list = EconomyManager.top(5);
 
         MessageEditBuilder mb = new MessageEditBuilder();
-        EmbedBuilder banner = new EmbedBuilder();
         EmbedBuilder builder = new EmbedBuilder();
-
-        banner.setColor(0xffcc4d);
-        banner.setImage("https://cdn.discordapp.com/attachments/985551183479463998/1003009248562782289/banner_rangliste.png");
 
         builder.setColor(0xffcc4d);
         builder.setTitle(":coin: **SPLΛYFUNITY Economy Rangliste**");
@@ -208,10 +194,9 @@ public class MoneyCommand extends ListenerAdapter {
         builder.setImage("https://cdn.discordapp.com/attachments/985551183479463998/986627378417655858/auto_faqw.png");
         builder.setFooter("ID: " + m.getId());
 
-        mb.setEmbeds(banner.build(), builder.build());
+        mb.setEmbeds(Embeds.BANNER_ECONOMY_RANKING, builder.build());
         mb.setActionRow(getMenuActionrow("m_leaderboard"));
 
         return mb.build();
     }
-
 }

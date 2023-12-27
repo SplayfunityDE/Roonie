@@ -1,6 +1,7 @@
 package de.splayfer.roonie.modules.management.commands;
 
 import de.splayfer.roonie.config.Config;
+import de.splayfer.roonie.utils.enums.Embeds;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
@@ -12,10 +13,6 @@ public class SetupCommand extends ListenerAdapter {
 
     public static void setup(SlashCommandInteractionEvent event) {
         if (event.isFromGuild()) {
-
-            EmbedBuilder bannerEmbed = new EmbedBuilder();
-            bannerEmbed.setColor(0x28346d);
-            bannerEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/909071872723935292/banner_commands.png");
 
             EmbedBuilder commandEmbed = new EmbedBuilder();
             commandEmbed.setColor(0x28346d);
@@ -30,13 +27,12 @@ public class SetupCommand extends ListenerAdapter {
             deleteEmbed.setTitle(":warning: Alle Nachrichten werden nach 30 Sekunden gelöscht!");
 
             event.getChannel().sendTyping().queue();
-            Message commandMessage = event.getChannel().sendMessageEmbeds(bannerEmbed.build(), commandEmbed.build(), deleteEmbed.build()).setActionRow(StringSelectMenu.create("selectCommandInfo")
+            Message commandMessage = event.getChannel().sendMessageEmbeds(Embeds.BANNER_COMMANDS, commandEmbed.build(), deleteEmbed.build()).setActionRow(StringSelectMenu.create("selectCommandInfo")
                     .addOption("Level Commands", "levelcommands", "Klicke hier, um diese Commands anzeigen zu lassen!", Emoji.fromCustom("level", Long.parseLong("909085962934562896"), false))
                     .addOption("Musik Commands", "musiccommands", "Klicke hier, um diese Commands anzeigen zu lassen!", Emoji.fromCustom("music", Long.parseLong("886624918983278622"), true))
                     .addOption("Sonstige", "sonstige", "Klicke hier, um diese Commands anzeigen zu lassen!", Emoji.fromFormatted("\uD83D\uDDD2"))
                     .build()).complete();
 
-            //save to config
             Config.setConfigChannel("commands", event.getChannel(), commandMessage);
         }
     }

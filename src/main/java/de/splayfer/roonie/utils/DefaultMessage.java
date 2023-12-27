@@ -140,5 +140,4 @@ public class DefaultMessage {
         }
         return List.of(bannerEmbed.build(), reply.build());
     }
-
 }
