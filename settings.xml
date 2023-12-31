@@ -17,7 +17,7 @@
         </repository>
         <repository>
           <id>github</id>
-          <url>https://maven.pkg.github.com/splayfunityde/old-roonie</url>
+          <url>https://maven.pkg.github.com/splayfunityde/new-clyde</url>
           <snapshots>
             <enabled>true</enabled>
           </snapshots>
