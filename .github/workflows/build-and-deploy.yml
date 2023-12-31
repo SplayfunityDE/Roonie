@@ -5,9 +5,9 @@ name: Build and Deploy to Staging server
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   build-and-deploy:
@@ -27,10 +27,10 @@ jobs:
         package-name: 'de.splayfunityde.roonie'
         min-versions-to-keep: 0
        
-    - name: Set up JDK 19
+    - name: Set up Coretto 21
       uses: actions/setup-java@v3
       with:
-        java-version: '19'
+        java-version: '21'
         distribution: 'corretto'
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file
@@ -53,4 +53,4 @@ jobs:
       run: ssh-keyscan -p ${{ secrets.PORT }} -H ${{ secrets.HOST }}  >> ~/.ssh/known_hosts
       
     - name: Deploy with rsync
-      run: rsync -avz /home/runner/work/Old-Roonie/Old-Roonie/target/roonie-1.0-SNAPSHOT.jar ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/root/bots/splayfunity/
+      run: rsync -avz /home/runner/work/New-Clyde/New-Clyde/target/new-clyde-1.0-SNAPSHOT.jar ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/root/bots/
