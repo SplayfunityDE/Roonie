@@ -31,7 +31,8 @@ public class AutoComplete extends ListenerAdapter {
     }
 
     public String[] getWords(String command) {
-        return (String[]) mongoDB.find("autocomplete", "command", command).first().getList("words", String.class).toArray();
+        List<String> list = mongoDB.find("autocomplete", "command", command).first().getList("words", String.class);
+        return list.toArray(new String[0]);
     }
 
     public void createAutoComplete(String command, String[] words) {

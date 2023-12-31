@@ -8,9 +8,11 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 public class DeleteListener extends ListenerAdapter {
 
     public void onMessageReceived (MessageReceivedEvent event) {
-        if (event.getGuild().equals(Roonie.mainGuild))
-            if (Config.isConfigChannel(event.getChannel(), "minigames"))
-                if (event.getMessage().getContentRaw().equals("\\uD83C\\uDFB2│game"))
-                    event.getMessage().delete().queue();
+        if (event.isFromGuild()) {
+            if (event.getGuild().equals(Roonie.mainGuild))
+                if (Config.isConfigChannel(event.getChannel(), "minigames"))
+                    if (event.getMessage().getContentRaw().equals("\\uD83C\\uDFB2│game"))
+                        event.getMessage().delete().queue();
+        }
     }
 }

@@ -27,29 +27,13 @@ public class BannerCounter {
         t.schedule(new TimerTask() {
             @Override
             public void run() {
-
-                try {
-
-                    guild = Roonie.shardMan.awaitReady().getGuildById("873506353551925308");
-
-                } catch (InterruptedException interruptedException) {
-                    interruptedException.printStackTrace();
-                }
-
                 String membercount = String.valueOf(guild.getMemberCount());
-
                 int onlineMemberCountInt = 0;
-
                 for (Member m: guild.getMembers()) {
-
                     if (!m.getOnlineStatus().equals(OnlineStatus.OFFLINE)) {
-
                         onlineMemberCountInt = onlineMemberCountInt + 1;
-
                     }
-
                 }
-
                 String onlinecount = String.valueOf(onlineMemberCountInt);
 
                 Font doctorGlitch = null;
@@ -181,8 +165,7 @@ public class BannerCounter {
 
                 try {
                     guild.getManager().setBanner(Icon.from(finalBanner)).queue();
-                } catch (IOException exception) {
-                    exception.printStackTrace();
+                } catch (Exception exception) {
                 }
 
                 try {

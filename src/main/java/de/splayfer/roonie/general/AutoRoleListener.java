@@ -14,11 +14,14 @@ public class AutoRoleListener extends ListenerAdapter {
     }
 
     public static void fixMemberRoles() {
-        for (Member m : Roonie.mainGuild.getMembers()) {
-            if (!m.getUser().isBot()) {
-                for (Role role : Roonie.autoRoles)
-                    Roonie.mainGuild.addRoleToMember(m.getUser(), role).queue();
+        try {
+            for (Member m : Roonie.mainGuild.getMembers()) {
+                if (!m.getUser().isBot()) {
+                    for (Role role : Roonie.autoRoles)
+                        Roonie.mainGuild.addRoleToMember(m.getUser(), role).queue();
+                }
             }
+        } catch (Exception e) {
         }
     }
 }

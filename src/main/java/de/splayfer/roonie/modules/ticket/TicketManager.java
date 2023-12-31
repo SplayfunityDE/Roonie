@@ -7,5 +7,4 @@ public class TicketManager {
     public static void init() {
         Roonie.builder.addEventListeners(new TicketSetupCommand(), new TicketListener());
     }
-
 }

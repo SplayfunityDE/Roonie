@@ -78,7 +78,7 @@ public class MongoDBDatabase {
     }
 
     public void update(String collection, Document source, Document replace) {
-        mongoDatabase.getCollection(collection).updateOne(source, replace, new UpdateOptions().upsert(true));
+        mongoDatabase.getCollection(collection).replaceOne(source, replace);
     }
 
     public void drop(String collection, String key, Object value) {

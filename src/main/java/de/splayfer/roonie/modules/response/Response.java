@@ -75,6 +75,6 @@ public class Response {
     }
 
     public static boolean existsResponse(String message){
-        return mongoDB.exists("repsonse", "message", message);
+        return mongoDB.exists("response", "message", message);
     }
 }

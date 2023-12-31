@@ -41,8 +41,10 @@ public class WelcomeListener extends ListenerAdapter {
             buttons.add(Button.success("welcome.features", "Schau dir unsere Features an!").withEmoji(Emoji.fromCustom("level", Long.parseLong("909085962934562896"), false)));
             buttons.add(Button.secondary("welcome.question", "Stelle eine Frage!").withEmoji(Emoji.fromFormatted("❓")));
 
-            event.getUser().openPrivateChannel().complete().sendTyping().queue();
-            event.getUser().openPrivateChannel().complete().sendMessageEmbeds(bannerEmbed.build(), mainEmbed.build()).setActionRow(buttons).queue();
+            try {
+                event.getUser().openPrivateChannel().complete().sendMessageEmbeds(bannerEmbed.build(), mainEmbed.build()).setActionRow(buttons).queue();
+            } catch (Exception e) {
+            }
 
         }
 

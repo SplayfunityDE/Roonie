@@ -20,6 +20,7 @@ import de.splayfer.roonie.general.schedule.BotCounter;
 import de.splayfer.roonie.general.schedule.MessageCounter;
 import de.splayfer.roonie.modules.tempchannel.*;
 import de.splayfer.roonie.modules.ticket.TicketManager;
+import de.splayfer.roonie.modules.ticket.TicketRestoreListener;
 import de.splayfer.roonie.utils.CommandManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -47,15 +48,17 @@ public class Roonie {
     public static JDABuilder builder;
     public static JDA shardMan;
 
+    public static final long BOTID = 886209763178844212L;
+
     public static void main(String[] args) throws IOException, InterruptedException {
 
         builder = JDABuilder.createDefault("ODg2MjA5NzYzMTc4ODQ0MjEy.G6jBkR.Wr_hOGdDVLscXvI1hfvo1nks9bedkcSDA87guw")
-        .setActivity(Activity.streaming("auf 🌀SPLΛYFUNITY🌀", "https://twitch.tv/splayfer"))
-        .setStatus(OnlineStatus.ONLINE)
-        .setChunkingFilter(ChunkingFilter.ALL)
-        .setMemberCachePolicy(MemberCachePolicy.ALL)
-        .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_VOICE_STATES, GatewayIntent.DIRECT_MESSAGE_TYPING, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.MESSAGE_CONTENT)
-        .enableCache(EnumSet.of(CacheFlag.ONLINE_STATUS, CacheFlag.CLIENT_STATUS, CacheFlag.EMOJI, CacheFlag.VOICE_STATE));
+                .setActivity(Activity.streaming("auf 🌀SPLΛYFUNITY🌀", "https://twitch.tv/splayfer"))
+                .setStatus(OnlineStatus.ONLINE)
+                .setChunkingFilter(ChunkingFilter.ALL)
+                .setMemberCachePolicy(MemberCachePolicy.ALL)
+                .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_VOICE_STATES, GatewayIntent.DIRECT_MESSAGE_TYPING, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.MESSAGE_CONTENT)
+                .enableCache(EnumSet.of(CacheFlag.ONLINE_STATUS, CacheFlag.CLIENT_STATUS, CacheFlag.EMOJI, CacheFlag.VOICE_STATE));
 
         EconomyManager.init();
         GiveawayManager.init();
@@ -103,5 +106,7 @@ class ReadyEventClass extends ListenerAdapter {
                 Roonie.mainGuild.getRoleById("891292965241233448"), //member-role
         };
         Roonie.mainGuild.updateCommands().addCommands(Commands.slash("letsjohannes", "Hmm :eyes:")).queue();
+
+        TicketRestoreListener.restoreTickets();
     }
 }
