@@ -24,7 +24,7 @@ jobs:
     - name: Deleteing old packages
       uses: actions/delete-package-versions@v3
       with:
-        package-name: 'de.splayfunityde.roonie'
+        package-name: 'de.splayfunityde.new-clyde'
         min-versions-to-keep: 0
        
     - name: Set up Coretto 21
