@@ -19,7 +19,7 @@ public class CommandManager {
     private static HashMap<Long, List<CommandData>> commands = new HashMap<>();
 
     public static void addCommands(CommandData... data) {
-            addCommands(Guilds.GLOBAL, data);
+        addCommands(Guilds.GLOBAL, data);
     }
 
     public static void addCommands(Guilds guild, CommandData... data) {
@@ -28,15 +28,13 @@ public class CommandManager {
         for (CommandData d : data)
             commands.get(guild.getId()).add(d);
     }
-    public static void initCommands(JDA shardman) {
+    public static void initCommands(JDA jda) {
         for(Long id : commands.keySet()) {
-            for(CommandData data : commands.get(id)) {
-                if(id == -1) {
-                    shardman.upsertCommand(data).queue();
-                } else {
-                    Guild g = shardman.getGuildById(id);
-                    g.upsertCommand(data).queue();
-                }
+            if(id == -1) {
+                jda.updateCommands().addCommands(commands.get(id)).queue();
+            } else {
+                Guild g = jda.getGuildById(id);
+                g.updateCommands().addCommands(commands.get(id)).queue();
             }
         }
     }
@@ -46,13 +44,13 @@ public class CommandManager {
             for(Param p : parameters) {
                 switch(p) {
                     case GUILD_ONLY -> {if(!interaction.isFromGuild()) {
-                                            interaction.reply("Dieser Command ist nur in Gilden verfügbar!").queue();
-                                            return false;
-                                        }}
+                        interaction.reply("Dieser Command ist nur in Gilden verfügbar!").queue();
+                        return false;
+                    }}
                     case MAIN_GUILD_ONLY -> {if(!interaction.getGuild().equals(Roonie.mainGuild)) {
-                                                interaction.reply("Dieser Command kann nur auf dem **Splayfunity Discord-Server** ausgeführt werden!").setEphemeral(true).queue();
-                                                return false;
-                                             }}
+                        interaction.reply("Dieser Command kann nur auf dem **Splayfunity Discord-Server** ausgeführt werden!").setEphemeral(true).queue();
+                        return false;
+                    }}
                 }
             }
         }

@@ -52,7 +52,7 @@ public class Roonie {
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
-        builder = JDABuilder.createDefault("ODg2MjA5NzYzMTc4ODQ0MjEy.G6jBkR.Wr_hOGdDVLscXvI1hfvo1nks9bedkcSDA87guw")
+        builder = JDABuilder.createDefault("ODg2MjA5NzYzMTc4ODQ0MjEy.G6Z85Z.s24gB6nFpVOPQkyvJaAxiVtTDRWVzoGtBjucgE")
                 .setActivity(Activity.streaming("auf 🌀SPLΛYFUNITY🌀", "https://twitch.tv/splayfer"))
                 .setStatus(OnlineStatus.ONLINE)
                 .setChunkingFilter(ChunkingFilter.ALL)
@@ -106,7 +106,6 @@ class ReadyEventClass extends ListenerAdapter {
                 Roonie.mainGuild.getRoleById("891292965241233448"), //member-role
         };
         Roonie.mainGuild.updateCommands().addCommands(Commands.slash("letsjohannes", "Hmm :eyes:")).queue();
-
         TicketRestoreListener.restoreTickets();
     }
 }
