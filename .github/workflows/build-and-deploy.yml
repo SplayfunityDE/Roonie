@@ -53,4 +53,4 @@ jobs:
       run: ssh-keyscan -p ${{ secrets.PORT }} -H ${{ secrets.HOST }}  >> ~/.ssh/known_hosts
       
     - name: Deploy with rsync
-      run: rsync -avz /home/runner/work/New-Clyde/New-Clyde/target/new-clyde-1.0-SNAPSHOT.jar ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/root/bots/
+      run: rsync -avz /home/runner/work/New-Clyde/New-Clyde/target/new-clyde-1.0-SNAPSHOT.jar ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/opt/dockerfiles/clyde
