@@ -38,7 +38,7 @@ public class RankCommand extends ListenerAdapter {
 
             String path = System.getProperty("user.dir");
             if (File.separator.equals("/"))
-                path = "/opt/dockerfiles/clyde";
+                path = "/bot";
             URLConnection urlConnection;
             try {
                 backgroundImage = ImageIO.read(new File(path + File.separator + "media" + File.separator + "rankImages" + File.separator + "card_background.png"));
@@ -149,7 +149,7 @@ public class RankCommand extends ListenerAdapter {
 
         String path = System.getProperty("user.dir");
         if (File.separator.equals("/"))
-            path = "/opt/dockerfiles/clyde";
+            path = "/bot";
 
         Font leagueGothic = null;
 
