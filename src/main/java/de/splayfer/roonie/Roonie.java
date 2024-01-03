@@ -92,6 +92,7 @@ public class Roonie {
         AutoRoleListener.fixMemberRoles();
         AutoDeleteListener.checkCommandMessages();
         System.out.println("[Splayfer] Bot changed Status: Online");
+        System.out.println("test");
     }
 }
 
