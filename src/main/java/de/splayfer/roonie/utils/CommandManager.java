@@ -45,7 +45,7 @@ public class CommandManager {
         jda.updateCommands().addCommands(list).queue();
     }
 
-    public static boolean checkCommand(CommandInteraction interaction, String name, Param...  parameters) {
+    public static boolean checkCommand(CommandInteraction interaction, String name, Param... parameters) {
         if(interaction.getName().equals(name)) {
             for(Param p : parameters) {
                 switch(p) {
