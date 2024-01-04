@@ -89,6 +89,7 @@ public class LevelListener extends ListenerAdapter {
         return check;
     }
 
+    //Todo: Der Nutzer soll xp sammeln, nur wenn 2 Leute im call sind
     public static void checkVoiceMembers() {
         new Timer().schedule(new TimerTask() {
             @Override
