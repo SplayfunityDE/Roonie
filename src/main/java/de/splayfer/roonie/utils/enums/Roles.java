@@ -26,6 +26,8 @@ public enum Roles {
     LVL50 ("lvl50", "883287013141409823"),
     LVL100 ("lvl100", "883286116474716180"),
 
+    LVLROLES(Roles.LVL5, Roles.LVL10, Roles.LVL20, Roles.LVL30, Roles.LVL40, Roles.LVL50, Roles.LVL100),
+
     //verify
 
     VERIFY1 ("verify1", "891292396288098355"),

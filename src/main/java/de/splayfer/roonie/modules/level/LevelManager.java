@@ -52,6 +52,10 @@ public class LevelManager extends ListenerAdapter {
 
     public static void addXpToUser(Member member, int amount) {
         insertUser(member);
+        while (amount >= getLevelStep(getLevel(member))) {
+            amount -= getLevelStep(getLevel(member));
+            addLevelToUser(member, 1);
+        }
         mongoDB.updateLine("level", new Document("guildMember", member.getIdLong()), "xp", getXp(member) + amount);
     }
 
@@ -111,5 +115,4 @@ public class LevelManager extends ListenerAdapter {
     public static int getLevelStep(int level) {
         return mongoDB.find("levelsteps", "level", level).first().getInteger("xp");
     }
-
 }

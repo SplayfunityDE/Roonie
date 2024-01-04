@@ -18,7 +18,6 @@ import java.util.TimerTask;
 
 public class BannerCounter {
 
-    protected static Guild guild;
     protected static BufferedImage background;
 
     public static void updateBannerMemberCount() throws IOException {
@@ -27,9 +26,9 @@ public class BannerCounter {
         t.schedule(new TimerTask() {
             @Override
             public void run() {
-                String membercount = String.valueOf(guild.getMemberCount());
+                String membercount = String.valueOf(Roonie.mainGuild.getMemberCount());
                 int onlineMemberCountInt = 0;
-                for (Member m: guild.getMembers()) {
+                for (Member m: Roonie.mainGuild.getMembers()) {
                     if (!m.getOnlineStatus().equals(OnlineStatus.OFFLINE)) {
                         onlineMemberCountInt = onlineMemberCountInt + 1;
                     }
@@ -164,7 +163,7 @@ public class BannerCounter {
                 File finalBanner = new File(System.getProperty("user.dir") + File.separator + "media" + File.separator + "bannerMemberCountimages" + File.separator + "cache" + File.separator + "banner.png");
 
                 try {
-                    guild.getManager().setBanner(Icon.from(finalBanner)).queue();
+                    Roonie.mainGuild.getManager().setBanner(Icon.from(finalBanner)).queue();
                 } catch (Exception exception) {
                 }
 

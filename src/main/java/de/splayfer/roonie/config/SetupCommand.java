@@ -1,5 +1,6 @@
 package de.splayfer.roonie.config;
 
+import de.splayfer.roonie.modules.booster.BoosterSetupCommand;
 import de.splayfer.roonie.modules.library.LibrarySetupCommand;
 import de.splayfer.roonie.modules.library.NitrogamesSetupCommand;
 import de.splayfer.roonie.modules.ticket.TicketSetupCommand;
@@ -15,6 +16,7 @@ public class SetupCommand extends ListenerAdapter {
                 case "nitrogames" -> NitrogamesSetupCommand.setup(event);
                 case "library" -> LibrarySetupCommand.setup(event);
                 case "ticket" -> TicketSetupCommand.setup(event);
+                case "booster" -> BoosterSetupCommand.setup(event);
             }
             event.reply("Setup für `" + event.getOption("kategorie").getAsString() + "` erfolgreich ausgeführt!").setEphemeral(true).queue();
         }

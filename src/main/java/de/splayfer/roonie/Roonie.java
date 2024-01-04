@@ -1,24 +1,24 @@
 package de.splayfer.roonie;
 
 import de.splayfer.roonie.config.ConfigManager;
-import de.splayfer.roonie.modules.economy.EconomyManager;
-import de.splayfer.roonie.modules.management.commands.AutoDeleteListener;
-import de.splayfer.roonie.modules.management.commands.CommandInfoListener;
-import de.splayfer.roonie.config.SetupCommand;
 import de.splayfer.roonie.general.AutoComplete;
 import de.splayfer.roonie.general.AutoRoleListener;
 import de.splayfer.roonie.general.WelcomeListener;
-import de.splayfer.roonie.modules.giveaway.GiveawayManager;
-import de.splayfer.roonie.modules.level.*;
-import de.splayfer.roonie.modules.library.*;
-import de.splayfer.roonie.modules.minigames.*;
-import de.splayfer.roonie.modules.library.NitrogamesSetupCommand;
-import de.splayfer.roonie.modules.poll.PollManager;
-import de.splayfer.roonie.modules.response.ResponseManager;
 import de.splayfer.roonie.general.schedule.BannerCounter;
 import de.splayfer.roonie.general.schedule.BotCounter;
 import de.splayfer.roonie.general.schedule.MessageCounter;
-import de.splayfer.roonie.modules.tempchannel.*;
+import de.splayfer.roonie.modules.booster.BoosterManager;
+import de.splayfer.roonie.modules.booster.BoosterWall;
+import de.splayfer.roonie.modules.economy.EconomyManager;
+import de.splayfer.roonie.modules.giveaway.GiveawayManager;
+import de.splayfer.roonie.modules.level.LevelManager;
+import de.splayfer.roonie.modules.library.LibraryManager;
+import de.splayfer.roonie.modules.management.commands.AutoDeleteListener;
+import de.splayfer.roonie.modules.management.commands.CommandInfoListener;
+import de.splayfer.roonie.modules.minigames.MinigamesManager;
+import de.splayfer.roonie.modules.poll.PollManager;
+import de.splayfer.roonie.modules.response.ResponseManager;
+import de.splayfer.roonie.modules.tempchannel.TempchannelManager;
 import de.splayfer.roonie.modules.ticket.TicketManager;
 import de.splayfer.roonie.modules.ticket.TicketRestoreListener;
 import de.splayfer.roonie.utils.CommandManager;
@@ -70,6 +70,7 @@ public class Roonie {
         ResponseManager.init();
         TicketManager.init();
         ConfigManager.init();
+        BoosterManager.init();
 
         //register events
         builder.addEventListeners(new ReadyEventClass());
@@ -91,6 +92,7 @@ public class Roonie {
         BannerCounter.updateBannerMemberCount();
         AutoRoleListener.fixMemberRoles();
         AutoDeleteListener.checkCommandMessages();
+        BoosterWall.updateBoosterStats();
         System.out.println("[Splayfer] Bot changed Status: Online");
     }
 }

@@ -29,20 +29,14 @@ public class CommandManager {
             commands.get(guild.getId()).add(d);
     }
     public static void initCommands(JDA jda) {
-        List<CommandData> list = new ArrayList<>();
-        for(Long id : commands.keySet()) {
-            list.addAll(commands.get(id));
-            /*
-            if(id == -1) {
+        for (Long id : commands.keySet()) {
+            if (id == -1) {
                 jda.updateCommands().addCommands(commands.get(id)).queue();
             } else {
                 Guild g = jda.getGuildById(id);
                 g.updateCommands().addCommands(commands.get(id)).queue();
             }
-
-             */
         }
-        jda.updateCommands().addCommands(list).queue();
     }
 
     public static boolean checkCommand(CommandInteraction interaction, String name, Param... parameters) {

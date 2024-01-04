@@ -77,4 +77,8 @@ public class Response {
     public static boolean existsResponse(String message){
         return mongoDB.exists("response", "message", message);
     }
+
+    public static boolean existsCreator(Member member) {
+        return mongoDB.exists("response", "creator", member.getIdLong());
+    }
 }
