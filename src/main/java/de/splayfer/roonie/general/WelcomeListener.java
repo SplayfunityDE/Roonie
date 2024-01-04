@@ -50,36 +50,21 @@ public class WelcomeListener extends ListenerAdapter {
 
     }
 
-    public void onButtonInteraction (ButtonInteractionEvent buttonClickEvent) {
-
-        if (!buttonClickEvent.isFromGuild()) {
-
+    public void onButtonInteraction (ButtonInteractionEvent event) {
+        if (!event.isFromGuild()) {
             EmbedBuilder mainEmbed;
-
-            switch (buttonClickEvent.getButton().getId()) {
-
+            switch (event.getButton().getId()) {
                 case "welcome.visit":
-
                     //link
-
                     break;
-
                 case "welcome.features":
-
                     mainEmbed = new EmbedBuilder();
                     mainEmbed.setColor(0x28346d);
                     mainEmbed.setTitle("Unsere Features");
-
                     break;
-
                 case "welcome.question":
-
                     break;
-
             }
-
         }
-
     }
-
 }

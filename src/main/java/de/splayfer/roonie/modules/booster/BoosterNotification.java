@@ -3,6 +3,7 @@ package de.splayfer.roonie.modules.booster;
 import de.splayfer.roonie.Roonie;
 import de.splayfer.roonie.modules.response.Response;
 import de.splayfer.roonie.utils.DefaultMessage;
+import de.splayfer.roonie.utils.enums.Embeds;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
@@ -25,15 +26,11 @@ import java.util.List;
 public class BoosterNotification extends ListenerAdapter {
 
     public void onGuildMemberRoleAdd (GuildMemberRoleAddEvent event) {
-        if (event.getGuild().getId().equals(Roonie.mainGuild)) {
+        if (event.getGuild().equals(Roonie.mainGuild)) {
             if (event.getRoles().get(0).equals(event.getGuild().getBoostRole())) {
 
-                EmbedBuilder banner = new EmbedBuilder();
-                banner.setColor(0xff73fa);
-                banner.setImage("https://cdn.discordapp.com/attachments/906251556637249547/984899323470946314/banner_booster.png");
-
                 EmbedBuilder message = new EmbedBuilder();
-                message.setColor(0xff73fa);
+                message.setColor(0x28346d);
                 message.setThumbnail("https://cdn.discordapp.com/attachments/906251556637249547/984902617836712016/unknown.png");
                 message.setTitle("Danke für deinen Boost!");
                 message.setDescription("> Danke, dass du Splayfunity mithilfe deines Boosts unterstützt hast! Nun hast du Anspruch auf folgende Vorteile:");
@@ -44,38 +41,29 @@ public class BoosterNotification extends ListenerAdapter {
                         "<:point:940963558693425172> Gewinnspiele ohne Bedingungen", false);
                 message.addField("<a:chat:880875728915275786> Wie beantrage ich meine Vorteile?", "Klicke hierzu einfach auf den Button unter dieser Nachricht!", false);
                 message.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
-
-                List<Button> buttons = new ArrayList<>();
-                buttons.add(Button.secondary("boost.vorteile", "Hol dir deine Vorteile!").withEmoji(Emoji.fromCustom("boost_icon", 985150841830899752L, false)));
-
-                event.getUser().openPrivateChannel().complete().sendMessageEmbeds(banner.build(), message.build()).setActionRow(buttons).queue();
+                event.getUser().openPrivateChannel().complete().sendMessageEmbeds(Embeds.BANNER_BOOSTER, message.build()).setActionRow(Button.secondary("boost.vorteile", "Hol dir deine Vorteile!").withEmoji(Emoji.fromCustom("boost_icon", 985150841830899752L, false))).queue();
             }
         }
     }
 
     public void onGuildMemberRoleRemove (GuildMemberRoleRemoveEvent event) {
-        if (event.getRoles().get(0).equals(event.getGuild().getBoostRole())) {
-            //building embed
-            EmbedBuilder banner = new EmbedBuilder();
-            banner.setColor(0xff73fa);
-            banner.setImage("https://cdn.discordapp.com/attachments/906251556637249547/984899323470946314/banner_booster.png");
+        if (event.getGuild().equals(Roonie.mainGuild)) {
+            if (event.getRoles().get(0).equals(event.getGuild().getBoostRole())) {
 
-            EmbedBuilder message = new EmbedBuilder();
-            message.setColor(0xff73fa);
-            message.setThumbnail("https://cdn.discordapp.com/attachments/906251556637249547/984902617836712016/unknown.png");
-            message.setTitle("<a:cross:880711722288169032>〣Boost entfernt!");
-            message.setDescription("> Es scheint als hättest du deinen Boost von Splayfunity entfernt!");
-            message.addField("<a:cross:880711722288169032>〣Verlorene Vorteile", "<:point:940963558693425172> Den exklusiven Booster Rang \n" +
-                    "<:point:940963558693425172> Erstelle Diskussionen (Threads) \n" +
-                    "<:point:940963558693425172> Dein eigener Command \n" +
-                    "<:point:940963558693425172> Erhalte 2x Level XP \n" +
-                    "<:point:940963558693425172> Gewinnspiele ohne Bedingungen", false);
-            message.addField("<a:chat:880875728915275786> Gib uns dein Feedback!", "Klicke auf den Button unter dieser Nachricht und teile uns mit, wie dir die Zeit als Booster bei uns gefallen hat!", false);
-            message.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
-
-            List<Button> buttons = new ArrayList<>();
-            buttons.add(Button.secondary("boost.feedback", "Gib uns Feedback!").withEmoji(Emoji.fromCustom("level", 909085962934562896L, false)));
-            event.getUser().openPrivateChannel().complete().sendMessageEmbeds(banner.build(), message.build()).setActionRow(buttons).queue();
+                EmbedBuilder message = new EmbedBuilder();
+                message.setColor(0x28346d);
+                message.setThumbnail("https://cdn.discordapp.com/attachments/906251556637249547/984902617836712016/unknown.png");
+                message.setTitle("<a:cross:880711722288169032>〣Boost entfernt!");
+                message.setDescription("> Es scheint als hättest du deinen Boost von Splayfunity entfernt!");
+                message.addField("<a:cross:880711722288169032>〣Verlorene Vorteile", "<:point:940963558693425172> Den exklusiven Booster Rang \n" +
+                        "<:point:940963558693425172> Erstelle Diskussionen (Threads) \n" +
+                        "<:point:940963558693425172> Dein eigener Command \n" +
+                        "<:point:940963558693425172> Erhalte 2x Level XP \n" +
+                        "<:point:940963558693425172> Gewinnspiele ohne Bedingungen", false);
+                message.addField("<a:chat:880875728915275786> Gib uns dein Feedback!", "Klicke auf den Button unter dieser Nachricht und teile uns mit, wie dir die Zeit als Booster bei uns gefallen hat!", false);
+                message.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
+                event.getUser().openPrivateChannel().complete().sendMessageEmbeds(Embeds.BANNER_BOOSTER, message.build()).setActionRow(Button.secondary("boost.feedback", "Gib uns Feedback!").withEmoji(Emoji.fromCustom("level", 909085962934562896L, false))).queue();
+            }
         }
     }
 
@@ -103,18 +91,13 @@ public class BoosterNotification extends ListenerAdapter {
         if (event.getButton().getId().startsWith("boost.")) {
             switch (event.getButton().getId().split("\\.")[1]) {
                 case "vorteile":
-                    EmbedBuilder banner = new EmbedBuilder();
-                    banner.setColor(0xff73fa);
-                    banner.setImage("https://cdn.discordapp.com/attachments/906251556637249547/985157271145312338/banner_booster_vorteile.png");
-
                     EmbedBuilder message = new EmbedBuilder();
-                    message.setColor(0xff73fa);
+                    message.setColor(0x28346d);
                     message.setThumbnail("https://cdn.discordapp.com/attachments/906251556637249547/926532656030683206/3391ce4715f3c814d6067911438e5bf7.png");
                     message.setTitle("Wähle deine Vorteile");
                     message.setDescription("> Wähle im Menü unter dieser Nachricht, den Vorteil aus, zu dem du Hilfe benötigst!");
                     message.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
-
-                    event.replyEmbeds(banner.build(), message.build()).setEphemeral(true).addActionRow(StringSelectMenu.create("boost.select")
+                    event.replyEmbeds(Embeds.BANNER_BOOSTER_PERKS, message.build()).setEphemeral(true).addActionRow(StringSelectMenu.create("boost.select")
 
                             .addOption("Exklusiver Rang", "rang", "Erhalte deinen eigenen Rang und werde höher angezeigt!", Emoji.fromCustom("name", 878587314367000606L, false))
                             .addOption("Starte eine Diskussion", "diskussion", "Erstelle einen Thread unter einem Textkanal!", Emoji.fromCustom("promotion", 893878976236359801L, false))
@@ -125,43 +108,35 @@ public class BoosterNotification extends ListenerAdapter {
                             .setPlaceholder("Wähle deine Vorteile aus!")
                             .setMaxValues(1)
                             .build()).queue();
-
                     break;
                 case "claim":
                     switch (event.getButton().getId().split("\\.")[2]) {
                         case "command":
-                            TextInput command = TextInput.create("command", "Command", TextInputStyle.PARAGRAPH)
-                                    .setPlaceholder("Gib den Textcommand an!")
-                                    .setMaxLength(200)
-                                    .setRequired(true)
-                                    .build();
-
-                            TextInput reaction = TextInput.create("reaction", "Reaktion", TextInputStyle.PARAGRAPH)
-                                    .setPlaceholder("Gib die Reaktion auf den Command an!")
-                                    .setMaxLength(200)
-                                    .setRequired(true)
-                                    .build();
-
-                            Modal modal = Modal.create("boost.claim.command.modal", "\uD83D\uDCE2〣Lege die Nachricht fest!")
-                                    .addActionRows(ActionRow.of(command), ActionRow.of(reaction))
-                                    .build();
-
-                            event.replyModal(modal).queue();
+                            event.replyModal(Modal.create("boost.claim.command.modal", "\uD83D\uDCE2〣Lege die Nachricht fest!")
+                                    .addActionRow(
+                                            TextInput.create("command", "Command", TextInputStyle.PARAGRAPH)
+                                                    .setPlaceholder("Gib den Textcommand an!")
+                                                    .setMaxLength(200)
+                                                    .setRequired(true)
+                                                    .build(),
+                                            TextInput.create("reaction", "Reaktion", TextInputStyle.PARAGRAPH)
+                                                    .setPlaceholder("Gib die Reaktion auf den Command an!")
+                                                    .setMaxLength(200)
+                                                    .setRequired(true)
+                                                    .build())
+                                    .build()).queue();
                             break;
                     }
                     break;
                 case "feedback":
-                    TextInput feedback = TextInput.create("feedback", "Feedback", TextInputStyle.PARAGRAPH)
-                            .setPlaceholder("Gib uns dein Feedback!")
-                            .setMaxLength(200)
-                            .setRequired(true)
-                            .build();
-
-                    Modal modal = Modal.create("boost.feedback", "✨〣Feedback abgeben!")
-                            .addActionRows(ActionRow.of(feedback))
-                            .build();
-
-                    event.replyModal(modal).queue();
+                    event.replyModal(Modal.create("boost.feedback", "✨〣Feedback abgeben!")
+                            .addActionRow(
+                                    TextInput.create("feedback", "Feedback", TextInputStyle.PARAGRAPH)
+                                    .setPlaceholder("Gib uns dein Feedback!")
+                                    .setMaxLength(200)
+                                    .setRequired(true)
+                                    .build())
+                            .build()).queue();
                     break;
             }
         }
@@ -169,87 +144,52 @@ public class BoosterNotification extends ListenerAdapter {
 
     public void onStringSelectInteraction(StringSelectInteractionEvent event) {
         if (event.getSelectMenu().getId().equals("boost.select")) {
-            EmbedBuilder banner;
             EmbedBuilder message;
-            List<Button> buttons;
             switch (event.getValues().get(0)) {
                 case "rang":
-                    banner = new EmbedBuilder();
-                    banner.setColor(0xff73fa);
-                    banner.setImage("https://cdn.discordapp.com/attachments/906251556637249547/985173914902732810/banner_booster_vorteile_rang.png");
-
                     message = new EmbedBuilder();
                     message.setColor(0xff73fa);
                     message.setTitle("Exklusiver Booster Rang");
                     message.setDescription("> Die exklusive Booster Rolle wurde dir vollautomatisch hingezufügt, als du deinen Boost auf Splayfunity übertragen hast!");
                     message.setImage("https://cdn.discordapp.com/attachments/985551183479463998/985551358440652810/tutorial_booster.png");
-
-                    event.replyEmbeds(banner.build(), message.build()).setEphemeral(true).queue();
+                    event.replyEmbeds(Embeds.BANNER_BOOSTER_PERKS_ROLE, message.build()).setEphemeral(true).queue();
                     break;
                 case "diskussion":
-                    banner = new EmbedBuilder();
-                    banner.setColor(0xff73fa);
-                    banner.setImage("https://cdn.discordapp.com/attachments/906251556637249547/985173915754201168/banner_booster_vorteile_diskussion.png");
-
                     message = new EmbedBuilder();
-                    message.setColor(0xff73fa);
+                    message.setColor(0x28346d);
                     message.setTitle("Erstelle eine Diskussion");
                     message.setDescription("> Mithilfe des Booster Ranges bist du in der Lage, Diskussionen auf unserem Server zu erstellen!");
                     message.addField("<a:chat:879356542791598160> Wie erstelle ich eine Diskussion?", "Klicke hierfür einfach rechts oben bei dir Nachricht auf das Symbol \"Thread erstellen\"", false);
                     message.setImage("https://cdn.discordapp.com/attachments/985551183479463998/985598971714101288/tutorial_booster_2.png");
-
-                    event.replyEmbeds(banner.build(), message.build()).setEphemeral(true).queue();
-
+                    event.replyEmbeds(Embeds.BANNER_BOOSTER_PERKS_THREADS, message.build()).setEphemeral(true).queue();
                     break;
                 case "command":
-                    if (Response.existsCreator(event.getMember())) {
-
-                        banner = new EmbedBuilder();
-                        banner.setColor(0xff73fa);
-                        banner.setImage("https://cdn.discordapp.com/attachments/906251556637249547/985173915468980324/banner_booster_vorteile_command.png");
-
+                    if (!Response.existsCreator(event.getMember())) {
                         message = new EmbedBuilder();
                         message.setColor(0xff73fa);
                         message.setTitle("Richte deinen Command ein");
                         message.setDescription("> Richte als Booster deinen eigenen Textcommand ein!");
                         message.addField("<a:chat:879356542791598160> Wie erstelle ich den Command?", "Klicke einfach auf den Button, und du kannst direkt loslegen!", false);
                         message.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
-
-                        buttons = new ArrayList<>();
-                        buttons.add(Button.primary("boost.claim.command", "Starte jetzt!").withEmoji(Emoji.fromCustom("text", 877158818088386580L, false)));
-
-                        event.replyEmbeds(banner.build(), message.build()).addActionRow(buttons).setEphemeral(true).queue();
+                        event.replyEmbeds(Embeds.BANNER_BOOSTER_PERKS_COMMNAD, message.build()).addActionRow(Button.primary("boost.claim.command", "Starte jetzt!").withEmoji(Emoji.fromCustom("text", 877158818088386580L, false))).setEphemeral(true).queue();
                     } else
                         event.replyEmbeds(DefaultMessage.error("Bereits verwendet", "Du kannst maximal einen Command als Booster einrichten! Wenn du deinen Command ändern möchtest, wende dich bitte an den Support!")).setEphemeral(true).queue();
                     break;
                 case "level":
-                    banner = new EmbedBuilder();
-                    banner.setColor(0xff73fa);
-                    banner.setImage("https://cdn.discordapp.com/attachments/906251556637249547/985173914672037908/banner_booster_vorteile_level.png");
-
                     message = new EmbedBuilder();
                     message.setColor(0xff73fa);
                     message.setTitle("Erhalte einen Level Boost");
                     message.setDescription("> Du erhältest automatisch die doppelte Anzahl an XP, wenn du im Chat oder Talk aktiv bist!");
                     message.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
-
-                    event.replyEmbeds(banner.build(), message.build()).setEphemeral(true).queue();
+                    event.replyEmbeds(Embeds.BANNER_BOOSTER_PERKS_LEVEL, message.build()).setEphemeral(true).queue();
                     break;
                 case "giveaway":
-                    banner = new EmbedBuilder();
-                    banner.setColor(0xff73fa);
-                    banner.setImage("https://cdn.discordapp.com/attachments/906251556637249547/985173916010020924/banner_booster_vorteile_giveaway.png");
-
                     message = new EmbedBuilder();
                     message.setColor(0xff73fa);
                     message.setTitle("Giveaways ohne Vorraussetzungen");
                     message.setDescription("> Du kannst an Givewaways nun teilnehmen, auch wenn die dafür benötigten Vorraussetzungen nicht erfüllst!");
                     message.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
-
-                    buttons = new ArrayList<>();
-                    buttons.add(Button.secondary("link", "Springe zu den Giveaways!").withUrl("https://discord.com/channels/873506353551925308/905384567077228586").withEmoji(Emoji.fromCustom("giveaway", 898562734680064082L, true)));
-
-                    event.replyEmbeds(banner.build(), message.build()).addActionRow(buttons).setEphemeral(true).queue();
+                    event.replyEmbeds(Embeds.BANNER_BOOSTER_PERKS_GIVEAWAY, message.build()).addActionRow(Button.secondary("link", "Springe zu den Giveaways!").withUrl("https://discord.com/channels/873506353551925308/905384567077228586").withEmoji(Emoji.fromCustom("giveaway", 898562734680064082L, true))).setEphemeral(true).queue();
                     break;
             }
         }

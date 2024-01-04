@@ -1,38 +1,31 @@
 package de.splayfer.roonie.modules.level;
 
-import de.splayfer.roonie.Roonie;
 import de.splayfer.roonie.utils.enums.Roles;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class LevelInfoCommand extends ListenerAdapter {
 
     public void onButtonInteraction (ButtonInteractionEvent event) {
-
         if (event.getButton().getId().equals("viewlevels")) {
-            if (event.isFromGuild())
-                event.replyEmbeds(getLevelEmbed(event.getGuild())).setEphemeral(true).queue();
-            else
-                event.getChannel().sendMessageEmbeds(getLevelEmbed(Roonie.mainGuild)).queue();
+            event.replyEmbeds(getLevelEmbed(event.getGuild(), true)).setEphemeral(true).queue();
         }
     }
 
     public void onSlashCommandInteraction (SlashCommandInteractionEvent event) {
         if (event.getName().equals("levels")) {
-            event.replyEmbeds(getLevelEmbed(event.getGuild())).setEphemeral(true).queue();
+            event.replyEmbeds(getLevelEmbed(event.getGuild(), true)).setEphemeral(true).queue();
         }
     }
 
-    public List<MessageEmbed> getLevelEmbed(Guild guild) {
+    public List<MessageEmbed> getLevelEmbed(Guild guild, boolean isGuild) {
+
         EmbedBuilder banner = new EmbedBuilder();
         banner.setColor(0xfcc21b);
         banner.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905401314857611334/banner_level.png");

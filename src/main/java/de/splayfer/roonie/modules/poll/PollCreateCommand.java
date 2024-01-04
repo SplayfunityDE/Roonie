@@ -60,20 +60,20 @@ public class PollCreateCommand extends ListenerAdapter {
             switch (event.getButton().getId().split("\\.")[2]) {
                 case "topic":
                     event.replyModal(Modal.create("poll.create.topic", "Wähle das Thema!")
-                            .addComponents(
-                                    ActionRow.of(TextInput.create("topic", "Thema", TextInputStyle.SHORT)
+                            .addActionRow(
+                                    TextInput.create("topic", "Thema", TextInputStyle.SHORT)
                                             .setPlaceholder("Erläutere das Thema")
                                             .setRequiredRange(1, 50)
-                                            .build()))
+                                            .build())
                             .build()).queue();
                     break;
                 case "description":
                     event.replyModal(Modal.create("poll.create.description", "Setze die Beschreibung!")
-                            .addComponents(
-                                    ActionRow.of(TextInput.create("description", "Beschreibung", TextInputStyle.PARAGRAPH)
+                            .addActionRow(
+                                    TextInput.create("description", "Beschreibung", TextInputStyle.PARAGRAPH)
                                             .setPlaceholder("Beschreibe die Umfrage")
                                             .setRequiredRange(1, 100)
-                                            .build()))
+                                            .build())
                             .build()).queue();
                     break;
                 case "buttonContent":
@@ -81,11 +81,11 @@ public class PollCreateCommand extends ListenerAdapter {
                         if (bt.getId().equals(event.getButton().getId().split("\\.")[3]))
                             button = bt;
                     event.replyModal(Modal.create("poll.create.buttonContent." + button.getId(), "Inhalt bearbeiten!")
-                            .addComponents(
-                                    ActionRow.of(TextInput.create("content", "Neuer Inhalt", TextInputStyle.SHORT)
+                            .addActionRow(
+                                    TextInput.create("content", "Neuer Inhalt", TextInputStyle.SHORT)
                                             .setPlaceholder("Gib den neuen Inhalt an")
                                             .setRequiredRange(1, 25)
-                                            .build()))
+                                            .build())
                             .build()).queue();
                     break;
                 case "buttonColor":

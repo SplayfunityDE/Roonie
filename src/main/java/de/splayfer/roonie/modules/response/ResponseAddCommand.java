@@ -2,6 +2,7 @@ package de.splayfer.roonie.modules.response;
 
 import com.vdurmont.emoji.EmojiParser;
 import de.splayfer.roonie.utils.DefaultMessage;
+import de.splayfer.roonie.utils.enums.Embeds;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -29,11 +30,6 @@ public class ResponseAddCommand extends ListenerAdapter {
 
         if (event.getName().equals("response") && event.getSubcommandName().equals("add")) {
             String response = event.getOptionsByName("nachricht").get(0).getAsString().toLowerCase(Locale.ROOT);
-
-            EmbedBuilder banner = new EmbedBuilder();
-            banner.setColor(0xffffff);
-            banner.setImage("https://cdn.discordapp.com/attachments/985551183479463998/986195154954231868/banner_response.png");
-
             EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setColor(0xffffff);
             embedBuilder.setTitle(":mag: Wähle deine Aktion für **" + response + "**!");
@@ -41,8 +37,7 @@ public class ResponseAddCommand extends ListenerAdapter {
             embedBuilder.addField("Details", "<:text:886623802954498069> Ausgewählter Begriff: `" + response + "`", false);
             embedBuilder.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
 
-            event.getChannel().sendTyping().queue();
-            event.replyEmbeds(banner.build(), embedBuilder.build()).addActionRow(StringSelectMenu.create("response" + event.getOptionsByName("nachricht").get(0).getAsString())
+            event.replyEmbeds(Embeds.BANNER_RESPONSE, embedBuilder.build()).addActionRow(StringSelectMenu.create("response" + event.getOptionsByName("nachricht").get(0).getAsString())
                     .setRequiredRange(1, 1)
                     .setPlaceholder("Lege deine Aktion fest!")
                     .addOption("Nachricht senden", "message", "Sende eine Nachricht in den Chat!", Emoji.fromCustom(event.getJDA().getEmojiById("879356542791598160")))
@@ -57,24 +52,17 @@ public class ResponseAddCommand extends ListenerAdapter {
 
     public void onStringSelectInteraction (StringSelectInteractionEvent event) {
         if (event.getSelectMenu().getId().startsWith("response")) {
-
             String message = event.getSelectMenu().getId().substring(8);
-            TextInput body;
-            Modal modal;
-
             switch (event.getValues().get(0)) {
                 case "message":
-                    body = TextInput.create("body", "Nachricht", TextInputStyle.PARAGRAPH)
-                            .setPlaceholder("Gib die Nachricht an!")
-                            .setMaxLength(88) // or setRequiredRange(10, 100)
-                            .setRequired(true)
-                            .build();
-
-                    modal = Modal.create("response.msg" + message, "\uD83D\uDCE2〣Füge eine Nachricht hinzu")
-                            .addActionRows(ActionRow.of(body))
-                            .build();
-
-                    event.replyModal(modal).queue();
+                    event.replyModal(Modal.create("response.msg" + message, "\uD83D\uDCE2〣Füge eine Nachricht hinzu")
+                            .addActionRow(
+                                    TextInput.create("body", "Nachricht", TextInputStyle.PARAGRAPH)
+                                    .setPlaceholder("Gib die Nachricht an!")
+                                    .setMaxLength(88)
+                                    .setRequired(true)
+                                    .build())
+                            .build()).queue();
                     break;
                 case "reaction":
                     EmbedBuilder embed = new EmbedBuilder();
@@ -97,26 +85,24 @@ public class ResponseAddCommand extends ListenerAdapter {
                     }, 20000);
                     break;
                 case "picture":
-                    body = TextInput.create("body", "Link zum Bild", TextInputStyle.PARAGRAPH)
-                            .setPlaceholder("Gib den Link zum Bild an!")
-                            .setMaxLength(88) // or setRequiredRange(10, 100)
-                            .setRequired(true)
-                            .build();
-                    modal = Modal.create("response.pic" + message, "\uD83D\uDCE2〣Füge ein Bild hinzu")
-                            .addActionRows(ActionRow.of(body))
-                            .build();
-                    event.replyModal(modal).queue();
+                    event.replyModal(Modal.create("response.pic" + message, "\uD83D\uDCE2〣Füge ein Bild hinzu")
+                            .addActionRow(
+                                    TextInput.create("body", "Link zum Bild", TextInputStyle.PARAGRAPH)
+                                    .setPlaceholder("Gib den Link zum Bild an!")
+                                    .setMaxLength(88)
+                                    .setRequired(true)
+                                    .build())
+                            .build()).queue();
                     break;
                 case "link":
-                    body = TextInput.create("body", "Link zum Url", TextInputStyle.PARAGRAPH)
-                            .setPlaceholder("Gib den Link zum Url an!")
-                            .setMaxLength(88) // or setRequiredRange(10, 100)
-                            .setRequired(true)
-                            .build();
-                    modal = Modal.create("response.url" + message, "\uD83D\uDCE2〣Füge einen Link hinzu")
-                            .addActionRows(ActionRow.of(body))
-                            .build();
-                    event.replyModal(modal).queue();
+                    event.replyModal(Modal.create("response.url" + message, "\uD83D\uDCE2〣Füge einen Link hinzu")
+                            .addActionRow(
+                                    TextInput.create("body", "Link zum Url", TextInputStyle.PARAGRAPH)
+                                    .setPlaceholder("Gib den Link zum Url an!")
+                                    .setMaxLength(88)
+                                    .setRequired(true)
+                                    .build())
+                            .build()).queue();
                     break;
             }
         }

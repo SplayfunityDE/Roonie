@@ -143,22 +143,22 @@ public class MoneyCommand extends ListenerAdapter {
 
         MessageEditBuilder mb = new MessageEditBuilder();
 
-        EmbedBuilder embedBuilder = new EmbedBuilder();
+        EmbedBuilder message = new EmbedBuilder();
         if (other) {
-            embedBuilder.setTitle(":coin: **KONTOINFORMATIONEN VON " + m.getEffectiveName() + "**");
-            embedBuilder.setDescription("> Hier findest du alle wichtigen Econony Statistiken von " + m.getEffectiveName() + "!");
+            message.setTitle(":coin: **KONTOINFORMATIONEN VON " + m.getEffectiveName() + "**");
+            message.setDescription("> Hier findest du alle wichtigen Econony Statistiken von " + m.getEffectiveName() + "!");
         } else {
-            embedBuilder.setTitle(":coin: **DEINE KONTOINFORMATIONEN**");
-            embedBuilder.setDescription("> Hier findest du alle wichtigen Econony Statistiken von dir!");
+            message.setTitle(":coin: **DEINE KONTOINFORMATIONEN**");
+            message.setDescription("> Hier findest du alle wichtigen Econony Statistiken von dir!");
         }
 
-        embedBuilder.setColor(0xffcc4d);
-        embedBuilder.addField("<:people:1001082477537935501> Nutzer", m.getAsMention(), true);
-        embedBuilder.addField("<:coin:1002582123154251777> Kontostand", "**" + money + "**", true);
-        embedBuilder.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
-        embedBuilder.setFooter("ID: " + m.getId());
+        message.setColor(0xffcc4d);
+        message.addField("<:people:1001082477537935501> Nutzer", m.getAsMention(), true);
+        message.addField("<:coin:1002582123154251777> Kontostand", "**" + money + "**", true);
+        message.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
+        message.setFooter("ID: " + m.getId());
 
-        mb.setEmbeds(Embeds.BANNER_ECONOMY_ACCOUNT, embedBuilder.build());
+        mb.setEmbeds(Embeds.BANNER_ECONOMY_ACCOUNT, message.build());
         mb.setActionRow(getMenuActionrow("m_overview"));
 
         return mb.build();

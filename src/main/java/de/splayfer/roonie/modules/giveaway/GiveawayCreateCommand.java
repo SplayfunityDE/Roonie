@@ -109,29 +109,29 @@ public class GiveawayCreateCommand extends ListenerAdapter {
                     break;
                 case "duration":
                     event.replyModal(Modal.create("giveaway.create.duration", "Wähle die Dauer!")
-                            .addComponents(
-                                    ActionRow.of(TextInput.create("duration", "Dauer", TextInputStyle.SHORT)
+                            .addActionRow(
+                                    TextInput.create("duration", "Dauer", TextInputStyle.SHORT)
                                             .setPlaceholder("Beispiel: 4d 2h 8m")
                                             .setRequiredRange(1, 50)
-                                            .build()))
+                                            .build())
                             .build()).queue();
                     break;
                 case "amount":
                     event.replyModal(Modal.create("giveaway.create.amount", "Wähle die Gewinneranzahl!")
-                            .addComponents(
-                                    ActionRow.of(TextInput.create("amount", "Anzahl Gewinner", TextInputStyle.SHORT)
+                            .addActionRow(
+                                    TextInput.create("amount", "Anzahl Gewinner", TextInputStyle.SHORT)
                                             .setPlaceholder("Gib die Anzahl der Gewinner an")
                                             .setRequiredRange(1, 3)
-                                            .build()))
+                                            .build())
                             .build()).queue();
                     break;
                 case "picture":
                     event.replyModal(Modal.create("giveaway.create.picture", "Wähle ein Bild!")
-                            .addComponents(
-                                    ActionRow.of(TextInput.create("picture", "Anzahl Gewinner", TextInputStyle.SHORT)
+                            .addActionRow(
+                                    TextInput.create("picture", "Anzahl Gewinner", TextInputStyle.SHORT)
                                             .setPlaceholder("Gib den Url an oder lass das Feld leer")
                                             .setRequired(false)
-                                            .build()))
+                                            .build())
                             .build()).queue();
                     break;
                 case "continue":

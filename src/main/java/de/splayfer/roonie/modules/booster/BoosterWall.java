@@ -3,6 +3,7 @@ package de.splayfer.roonie.modules.booster;
 import de.splayfer.roonie.Roonie;
 import de.splayfer.roonie.config.Config;
 import de.splayfer.roonie.utils.enums.Channels;
+import de.splayfer.roonie.utils.enums.Embeds;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -48,7 +49,6 @@ public class BoosterWall extends ListenerAdapter {
                     BufferedImage container = new BufferedImage(1920, 1080, BufferedImage.TYPE_INT_ARGB);
 
                     Graphics g = container.getGraphics();
-
                     g.drawImage(background, 0, 0, null);
 
                     Font openSans = null;
@@ -144,12 +144,8 @@ public class BoosterWall extends ListenerAdapter {
 
                     Message m = Channels.MEDIACHANNEL.getMessageChannel(Roonie.mainGuild).sendFiles(FileUpload.fromData(tempFile)).complete();
                     String picUrl = m.getAttachments().get(0).getUrl();
-                    m.delete().queueAfter(120, TimeUnit.SECONDS);
+                    m.delete().queueAfter(10, TimeUnit.SECONDS);
                     Message msg = Config.getConfigChannel("booster").retrieveMessageById(Config.getConfigMessageId("booster")).complete();
-
-                    EmbedBuilder banner = new EmbedBuilder();
-                    banner.setColor(0x28346d);
-                    banner.setImage("https://cdn.discordapp.com/attachments/906251556637249547/984899323470946314/banner_booster.png");
 
                     EmbedBuilder message = new EmbedBuilder();
                     message.setColor(0x28346d);
@@ -161,7 +157,7 @@ public class BoosterWall extends ListenerAdapter {
 
                     List<Button> buttons = new ArrayList<>();
                     buttons.add(Button.secondary(msg.getActionRows().get(0).getButtons().get(0).getId(), msg.getActionRows().get(0).getButtons().get(0).getLabel()).withEmoji(msg.getActionRows().get(0).getButtons().get(0).getEmoji()));
-                    msg.editMessageEmbeds(banner.build(), message.build()).setActionRow(buttons).queue();
+                    msg.editMessageEmbeds(Embeds.BANNER_BOOSTER, message.build()).setActionRow(buttons).queue();
                     tempFile.deleteOnExit();
                     System.out.println("[Splayfer] Booster update");
                 }

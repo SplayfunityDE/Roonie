@@ -66,4 +66,36 @@ public class Embeds {
     public static MessageEmbed BANNER_CATEGORY_GAMING = new EmbedBuilder() {{
         setColor(0x8b8a91);
         setImage("https://cdn.discordapp.com/attachments/906251556637249547/925053738220150794/banner_vorlagen_gaming.png");}}.build();
+
+    public static MessageEmbed BANNER_BOOSTER = new EmbedBuilder() {{
+        setColor(0x28346d);
+        setImage("https://cdn.discordapp.com/attachments/906251556637249547/984899323470946314/banner_booster.png");}}.build();
+
+    public static MessageEmbed BANNER_BOOSTER_PERKS = new EmbedBuilder() {{
+        setColor(0x28346d);
+        setImage("https://cdn.discordapp.com/attachments/906251556637249547/985157271145312338/banner_booster_vorteile.png");}}.build();
+
+    public static MessageEmbed BANNER_BOOSTER_PERKS_ROLE = new EmbedBuilder() {{
+        setColor(0x28346d);
+        setImage("https://cdn.discordapp.com/attachments/906251556637249547/985173914902732810/banner_booster_vorteile_rang.png");}}.build();
+
+    public static MessageEmbed BANNER_BOOSTER_PERKS_THREADS = new EmbedBuilder() {{
+        setColor(0x28346d);
+        setImage("https://cdn.discordapp.com/attachments/906251556637249547/985173915754201168/banner_booster_vorteile_diskussion.png");}}.build();
+
+    public static MessageEmbed BANNER_BOOSTER_PERKS_COMMNAD = new EmbedBuilder() {{
+        setColor(0x28346d);
+        setImage("https://cdn.discordapp.com/attachments/906251556637249547/985173915468980324/banner_booster_vorteile_command.png");}}.build();
+
+    public static MessageEmbed BANNER_BOOSTER_PERKS_LEVEL = new EmbedBuilder() {{
+        setColor(0x28346d);
+        setImage("https://cdn.discordapp.com/attachments/906251556637249547/985173914672037908/banner_booster_vorteile_level.png");}}.build();
+
+    public static MessageEmbed BANNER_BOOSTER_PERKS_GIVEAWAY = new EmbedBuilder() {{
+        setColor(0x28346d);
+        setImage("https://cdn.discordapp.com/attachments/906251556637249547/985173916010020924/banner_booster_vorteile_giveaway.png");}}.build();
+
+    public static MessageEmbed BANNER_RESPONSE = new EmbedBuilder() {{
+        setColor(0x28346d);
+        setImage("https://cdn.discordapp.com/attachments/985551183479463998/986195154954231868/banner_response.png");}}.build();
 }

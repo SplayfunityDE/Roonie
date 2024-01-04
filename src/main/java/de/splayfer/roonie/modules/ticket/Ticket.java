@@ -18,7 +18,7 @@ import java.util.*;
 
 public class Ticket {
 
-    static MongoDBDatabase mongoDB = AMongoDBDatabase.getDatabase("splayfunity");
+    static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
 
     public static HashMap<Integer, String> typeSymbol = new HashMap<>(){{
         put(1, "\uD83D\uDCAC");

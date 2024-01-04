@@ -3,13 +3,15 @@ package de.splayfer.roonie.modules.level;
 import de.splayfer.roonie.Roonie;
 import de.splayfer.roonie.utils.enums.Roles;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
+import net.dv8tion.jda.api.utils.messages.MessageData;
 
 import java.util.*;
 
@@ -66,7 +68,7 @@ public class LevelListener extends ListenerAdapter {
                                 member.getGuild().removeRoleFromMember(member.getUser(), r).queue();
                         event.getGuild().addRoleToMember(member.getUser(), levelroles.get(i)).queue();
                     }
-                    levelUp(member);
+                    event.getMessage().reply(levelUp(member)).queue();
                 }
             }
         }
@@ -92,7 +94,7 @@ public class LevelListener extends ListenerAdapter {
             @Override
             public void run() {
                 for (Member member: Roonie.mainGuild.getMembers()) {
-                    if (member.getVoiceState().inAudioChannel()) {
+                    if (member.getVoiceState().inAudioChannel() && member.getVoiceState().getChannel().getType().equals(ChannelType.VOICE)) {
                         if (!(member.getVoiceState().isMuted() || member.getVoiceState().isDeafened() || member.getVoiceState().isSelfMuted())) {
                             int voiceminutes = LevelManager.getXp(member) + 10;
                             int level = LevelManager.getLevel(member);
@@ -104,6 +106,8 @@ public class LevelListener extends ListenerAdapter {
                                 voiceminutes = voiceminutes - levelstep;
                                 LevelManager.setXp(member, voiceminutes);
                                 LevelManager.addLevelToUser(member, 1);
+                                member.getVoiceState().getChannel().asVoiceChannel().sendMessage(member.getAsMention()).queue();
+                                member.getVoiceState().getChannel().asVoiceChannel().sendMessage(levelUp(member)).queue();
                             } else
                                 LevelManager.addXpToUser(member, 10);
                         }
@@ -113,7 +117,7 @@ public class LevelListener extends ListenerAdapter {
         }, 180000, 180000);
     }
 
-    public static void levelUp(Member member) {
+    public static MessageCreateData levelUp(Member member) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setColor(0xfead33);
         embedBuilder.setTitle(":star: Neues Level auf SPLΛYFUNITY erreicht!");
@@ -178,9 +182,6 @@ public class LevelListener extends ListenerAdapter {
                 embedBuilder.addField("Neue Vorteile", "`KEINE`", false);
                 break;
         }
-        List<Button> buttons = new ArrayList<>();
-        buttons.add(Button.secondary("viewlevels", "Alle Vorteile ansehen!").withEmoji(Emoji.fromFormatted("\uD83C\uDF81")));
-        member.getUser().openPrivateChannel().complete().sendTyping().queue();
-        member.getUser().openPrivateChannel().complete().sendMessageEmbeds(embedBuilder.build()).setActionRow(buttons).queue();
+        return new MessageCreateBuilder().setEmbeds(embedBuilder.build()).setActionRow(Button.secondary("viewlevels", "Alle Vorteile ansehen!").withEmoji(Emoji.fromFormatted("\uD83C\uDF81"))).build();
     }
 }

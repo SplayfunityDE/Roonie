@@ -35,20 +35,15 @@ public class DailyCommand extends ListenerAdapter {
                 main.setImage("https://cdn.discordapp.com/attachments/985551183479463998/986627378417655858/auto_faqw.png");
 
                 //add money
-
                 EconomyManager.addMoneyToUser(event.getMember(), round);
-
                 event.replyEmbeds(Embeds.BANNER_ECONOMY, main.build()).setEphemeral(true).queue();
-
             } else
                 event.replyEmbeds(DefaultMessage.error("Noch nicht verfügbar", "Huch. Es scheint als ist dieser Command nur alle 24h verwendbar...")).setEphemeral(true).addActionRow(Button.secondary("link", "Bruh").withEmoji(Emoji.fromCustom("kekw", 925673040728166470L, false)).withUrl("https://www.youtube.com/watch?v=mKue4WuagL8")).queue();
         }
     }
 
     protected boolean checkCooldown(Member member) {
-
         boolean check;
-
         if (!coolDownList.contains(member)) {
             coolDownList.add(member);
             check = true;
