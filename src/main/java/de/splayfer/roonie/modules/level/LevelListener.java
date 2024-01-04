@@ -88,6 +88,7 @@ public class LevelListener extends ListenerAdapter {
         return check;
     }
 
+    //Todo: Der Nutzer soll xp sammeln, nur wenn 2 Leute im call sind
     public static void checkVoiceMembers() {
         new Timer().schedule(new TimerTask() {
             @Override
@@ -125,7 +126,7 @@ public class LevelListener extends ListenerAdapter {
         Guild guild = Roonie.mainGuild;
         switch (LevelManager.getLevel(member)) {
             case 5:
-                Roonie.mainGuild.getManager().getGuild().addRoleToMember(member.getUser(), Roles.LVL5.getRole(guild)).queue();
+                guild.getManager().getGuild().addRoleToMember(member.getUser(), Roles.LVL5.getRole(guild)).queue();
                 embedBuilder.addField("Neue Vorteile", Roles.LVL5.getRole(guild).getAsMention() + " = `Level 5`\n" +
                         "<a:checkblue:896351653236711454> Rechte auf Nicknames ändern\n" +
                         "<a:checkblue:896351653236711454> 5.000$ im Casino\n" +
@@ -133,14 +134,14 @@ public class LevelListener extends ListenerAdapter {
                         "<a:checkblue:896351653236711454> Höher gelistet werden", false);
                 break;
             case 10:
-                Roonie.mainGuild.getManager().getGuild().addRoleToMember(member.getUser(), Roles.LVL10.getRole(guild)).queue();
+                guild.getManager().getGuild().addRoleToMember(member.getUser(), Roles.LVL10.getRole(guild)).queue();
                 embedBuilder.addField("Neue Vorteile", Roles.LVL10.getRole(guild).getAsMention() + " = `Level 10`\n" +
                         "<a:checkgreen:896351654092374086> Alle Vorteile von Stufe 5\n" +
                         "<a:checkgreen:896351654092374086> 7.500$ im Casino\n" +
                         "<a:checkgreen:896351654092374086> Eigener animierter Banner", false);
                 break;
             case 20:
-                Roonie.mainGuild.getManager().getGuild().addRoleToMember(member.getUser(), Roles.LVL20.getRole(guild)).queue();
+                guild.getManager().getGuild().addRoleToMember(member.getUser(), Roles.LVL20.getRole(guild)).queue();
                 embedBuilder.addField("Neue Vorteile", Roles.LVL20.getRole(guild).getAsMention() + " = `Level 20`\n" +
                         "<a:checkorange:896351648601997353> Komplett eingerichteter Discord Server\n" +
                         "<a:checkorange:896351648601997353> Exklusiver Chat & Talk\n" +
@@ -148,7 +149,7 @@ public class LevelListener extends ListenerAdapter {
                         "<a:checkorange:896351648601997353> Zugriff auf Werbung in #promotion\n \n", false);
                 break;
             case 30:
-                Roonie.mainGuild.getManager().getGuild().addRoleToMember(member.getUser(), Roles.LVL30.getRole(guild)).queue();
+                guild.getManager().getGuild().addRoleToMember(member.getUser(), Roles.LVL30.getRole(guild)).queue();
                 embedBuilder.addField("Neue Vorteile", Roles.LVL30.getRole(guild).getAsMention() + " = `Level 30`\n" +
                         "<a:checkyellow:896351651617726484> Eigener Discord Bot + 24/7 Hosting\n" +
                         "<a:checkyellow:896351651617726484> 20.000$ im Casino\n" +
@@ -156,21 +157,21 @@ public class LevelListener extends ListenerAdapter {
                         "<a:checkyellow:896351651617726484> Chat Cosmetic Tier I\n \n", false);
                 break;
             case 40:
-                Roonie.mainGuild.getManager().getGuild().addRoleToMember(member.getUser(), Roles.LVL40.getRole(guild)).queue();
+                guild.getManager().getGuild().addRoleToMember(member.getUser(), Roles.LVL40.getRole(guild)).queue();
                 embedBuilder.addField("Neue Vorteile", Roles.LVL40.getRole(guild).getAsMention() + " = `Level 40`\n" +
                         "<a:checkpurple:896351653651972116> Giveaways ohne Vorraussetzungen\n" +
                         "<a:checkpurple:896351653651972116> 20.000$ im Casino" +
                         "<a:checkpurple:896351653651972116> Zugriff auf den `/ban` Command", false);
                 break;
             case 50:
-                Roonie.mainGuild.getManager().getGuild().addRoleToMember(member.getUser(), Roles.LVL50.getRole(guild)).queue();
+                guild.getManager().getGuild().addRoleToMember(member.getUser(), Roles.LVL50.getRole(guild)).queue();
                 embedBuilder.addField("Neue Vorteile", Roles.LVL50.getRole(guild).getAsMention() + " = `Level 50`\n" +
                         "<a:checkgreen:896351654092374086> Alle Booster Vorteile\n" +
                         "<a:checkgreen:896351654092374086> Chat Cosmetic Tier II\n" +
                         "<a:checkgreen:896351654092374086> 30.000$ im Casino", false);
                 break;
             case 100:
-                Roonie.mainGuild.getManager().getGuild().addRoleToMember(member.getUser(), Roles.LVL100.getRole(guild)).queue();
+                guild.getManager().getGuild().addRoleToMember(member.getUser(), Roles.LVL100.getRole(guild)).queue();
                 embedBuilder.addField("Neue Vorteile", Roles.LVL100.getRole(guild).getAsMention() + " = `Level 100`\n" +
                         "<a:checkpink:896351654092374086> Eigene Rolle\n" +
                         "<a:checkpink:896351654092374086> Zugriff auf den `$heck` command\n" +

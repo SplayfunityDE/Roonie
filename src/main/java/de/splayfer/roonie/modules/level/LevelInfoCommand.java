@@ -51,7 +51,7 @@ public class LevelInfoCommand extends ListenerAdapter {
 
         message.addField("", Roles.LVL10.getRole(guild).getAsMention() + " = `Level 10`\n" +
                 "<a:checkgreen:896351654092374086> Alle Vorteile von Stufe 5\n" +
-                "<a:checkgreen:896351654092374086> 7.500$ im Casion\n" +
+                "<a:checkgreen:896351654092374086> 7.500$ im Casino\n" +
                 "<a:checkgreen:896351654092374086> Eigener animierter Banner \n \n", false);
 
         message.addField("", Roles.LVL20.getRole(guild).getAsMention() + " = `Level 20`\n" +

@@ -29,6 +29,8 @@ public class CommandInfoListener extends ListenerAdapter {
                     lvlEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/918508681014960188/banner_border.png");
 
                     selectionMenuEvent.replyEmbeds(bannerEmbed.build(), lvlEmbed.build()).setEphemeral(true).queue();
+                    selectionMenuEvent.getMessage().editMessageEmbeds(selectionMenuEvent.getMessage().getEmbeds()).setActionRow(selectionMenuEvent.getSelectMenu()).queue();
+
                     break;
 
                 case "musiccommands":
@@ -48,6 +50,7 @@ public class CommandInfoListener extends ListenerAdapter {
                     musicEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/918508681014960188/banner_border.png");
 
                     selectionMenuEvent.replyEmbeds(bannerEmbed.build(), musicEmbed.build()).setEphemeral(true).queue();
+                    selectionMenuEvent.getMessage().editMessageEmbeds(selectionMenuEvent.getMessage().getEmbeds()).setActionRow(selectionMenuEvent.getSelectMenu()).queue();
                     break;
 
                 case "sonstige":
@@ -64,6 +67,7 @@ public class CommandInfoListener extends ListenerAdapter {
                     sonstigesEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/918508681014960188/banner_border.png");
 
                     selectionMenuEvent.replyEmbeds(bannerEmbed.build(), sonstigesEmbed.build()).setEphemeral(true).queue();
+                    selectionMenuEvent.getMessage().editMessageEmbeds(selectionMenuEvent.getMessage().getEmbeds()).setActionRow(selectionMenuEvent.getSelectMenu()).queue();
                     break;
 
             }
