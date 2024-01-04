@@ -27,19 +27,14 @@ public class BannerListener extends ListenerAdapter {
     protected File cache = new File(System.getProperty("user.dir") + File.separator + "media" + File.separator + "cache");
 
     public void onStringSelectInteraction (StringSelectInteractionEvent event) {
-
         if (event.getSelectMenu().getId().equals("serverbanner")) {
             EmbedBuilder bannerEmbed;
             EmbedBuilder reply;
-
             switch (event.getValues().get(0)) {
-
                 case "maker":
-
                     bannerEmbed = new EmbedBuilder();
                     bannerEmbed.setColor(0xed4245);
                     bannerEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/914518380353040384/banner_fehler.png");
-
                     reply = new EmbedBuilder();
                     reply.setColor(0xed4245);
                     reply.setTitle(":no_entry_sign: FUNKTION NOCH IN ARBEIT");
@@ -48,9 +43,7 @@ public class BannerListener extends ListenerAdapter {
 
                     List<Button> buttons = new ArrayList<>();
                     buttons.add(Button.secondary("setping.neuigkeiten", "Informiere mich, wenn es soweit ist!").withEmoji(Emoji.fromCustom("bell", Long.parseLong("898565138385371247"), true)));
-
                     event.replyEmbeds(bannerEmbed.build(), reply.build()).addActionRow(buttons).setEphemeral(true).queue();
-
                     break;
 
                 case "verwaltung":
@@ -68,90 +61,65 @@ public class BannerListener extends ListenerAdapter {
 
                     event.replyEmbeds(bannerEmbed.build(), reply.build()).addActionRow(StringSelectMenu.create("serverbanner.verwaltung")
                             .setPlaceholder("Triff deine Auswahl!")
-
                             .addOption("Willkommen", "willkommen", "Banner zur Begrüßung der Nutzer", Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false))
                             .addOption("Regelwerk", "regelwerk", "Banner zur Dekoration des Regelwerks", Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false))
                             .addOption("Neuigkeiten", "neuigkeiten", "Perfekt für neue Updates & Änderungen", Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false))
                             .addOption("Umfragen", "umfragen", "Ideal für Abstimmungen am Server", Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false))
                             .addOption("Verifizierung", "verifizierung", "Optimal für Verify Systeme", Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false))
-
                             .build()).setEphemeral(true).queue();
-
                     break;
-
                 case "rollenverteilung":
-
                     bannerEmbed = new EmbedBuilder();
                     bannerEmbed.setColor(0x8b8a91);
                     bannerEmbed.setImage("https://cdn.discordapp.com/attachments/906251556637249547/926066434709286932/banner_serverbanner_verteilung.png");
-
                     reply = new EmbedBuilder();
                     reply.setColor(0x8b8a91);
                     reply.setThumbnail("https://cdn.discordapp.com/attachments/906251556637249547/926837158231293963/splayfunity_rollen.png");
                     reply.setTitle("Für welchen Zweck brauchst du deinen Banner?");
                     reply.setDescription("Hier kannst du nun auswählen, welche Art von Bannern, du für deinen Server benötigst!");
                     reply.setImage("https://cdn.discordapp.com/attachments/906251556637249547/925055440436477982/auto_faqw.png");
-
                     event.replyEmbeds(bannerEmbed.build(), reply.build()).addActionRow(StringSelectMenu.create("serverbanner.rollenverteilung")
                             .setPlaceholder("Triff deine Auswahl!")
-
                             .addOption("Alter", "alter", "Banner zur Begrüßung der Nutzer", Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false))
                             .addOption("Geschlecht", "geschlecht", "Banner zur Dekoration des Regelwerks", Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false))
                             .addOption("Pings", "pings", "Perfekt für neue Updates & Änderungen", Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false))
                             .addOption("Farben", "farben", "Ideal für Abstimmungen am Server", Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false))
-
                             .build()).setEphemeral(true).queue();
-
                     break;
-
                 case "werbung":
-
                     bannerEmbed = new EmbedBuilder();
                     bannerEmbed.setColor(0x8b8a91);
                     bannerEmbed.setImage("https://cdn.discordapp.com/attachments/906251556637249547/926066434981912596/banner_serverbanner_werbung.png");
-
                     reply = new EmbedBuilder();
                     reply.setColor(0x8b8a91);
                     reply.setThumbnail("https://cdn.discordapp.com/attachments/906251556637249547/926532714822262804/marketing-icon-300x300.png");
                     reply.setTitle("Für welchen Zweck brauchst du deinen Banner?");
                     reply.setDescription("Hier kannst du nun auswählen, welche Art von Bannern, du für deinen Server benötigst!");
                     reply.setImage("https://cdn.discordapp.com/attachments/906251556637249547/925055440436477982/auto_faqw.png");
-
                     event.replyEmbeds(bannerEmbed.build(), reply.build()).addActionRow(StringSelectMenu.create("serverbanner.werbung")
                             .setPlaceholder("Triff deine Auswahl!")
-
                             .addOption("Unsere-Werbung", "Unsere-Werbung", "Banner zur Begrüßung der Nutzer", Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false))
                             .addOption("Partner Bedingungen", "bedingungen", "Banner zur Dekoration des Regelwerks", Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false))
                             .addOption("Info", "info", "Perfekt für neue Updates & Änderungen", Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false))
-
                             .build()).setEphemeral(true).queue();
-
                     break;
-
                 case "sonstiges":
-
                     bannerEmbed = new EmbedBuilder();
                     bannerEmbed.setColor(0x8b8a91);
                     bannerEmbed.setImage("https://cdn.discordapp.com/attachments/906251556637249547/926066435422298122/banner_serverbanner_sonstiges.png");
-
                     reply = new EmbedBuilder();
                     reply.setColor(0x8b8a91);
                     reply.setThumbnail("https://cdn.discordapp.com/attachments/906251556637249547/926532656030683206/3391ce4715f3c814d6067911438e5bf7.png");
                     reply.setTitle("Für welchen Zweck brauchst du deinen Banner?");
                     reply.setDescription("Hier kannst du nun auswählen, welche Art von Bannern, du für sonstige Zwecke benötigst benötigst!");
                     reply.setImage("https://cdn.discordapp.com/attachments/906251556637249547/925055440436477982/auto_faqw.png");
-
                     event.replyEmbeds(bannerEmbed.build(), reply.build()).addActionRow(StringSelectMenu.create("serverbanner.werbung")
                             .setPlaceholder("Triff deine Auswahl!")
-
                             .addOption("Unsere-Werbung", "Unsere-Werbung", "Banner zur Begrüßung der Nutzer", Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false))
                             .addOption("Partner Bedingungen", "bedingungen", "Banner zur Dekoration des Regelwerks", Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false))
                             .addOption("Info", "info", "Perfekt für neue Updates & Änderungen", Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false))
-
                             .build()).setEphemeral(true).queue();
-
                     break;
-
             }
 
         } else if (event.getSelectMenu().getId().equals("serverbanner.verwaltung")) {

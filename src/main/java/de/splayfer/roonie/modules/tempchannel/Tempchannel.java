@@ -47,13 +47,11 @@ public class Tempchannel {
     public HashMap<InteractionHook, String> ephList = new HashMap<>();
 
     public Tempchannel(Guild guild, Member member) {
-        System.out.println("Debug");
         this.name = member.getUser().getName();
         this.owner = member;
         this.guild = guild;
         this.vc = create();
         this.settings = createSettingsChannel();
-        System.out.println("Debug");
         ControlListener.tempChannels.put(vc.getId(), this);
 
         if(owner.getId().equals("600230293550399488") || owner.getId().equals("853618861294485534")) {
@@ -71,9 +69,7 @@ public class Tempchannel {
     }
 
     private VoiceChannel create() {
-        System.out.println("Debug");
         VoiceChannel channel = guild.createVoiceChannel(getName(), guild.getCategoryById(voiceCategory)).complete();
-        System.out.println("Debug");
         channel.upsertPermissionOverride(Roles.everyone.getRole(guild)).deny(Permission.MESSAGE_SEND).grant(Permission.VOICE_SPEAK).queue();
         channel.upsertPermissionOverride(Roles.SUP.getRole(guild)).grant(Permission.MESSAGE_MANAGE).grant(Permission.MANAGE_CHANNEL).queue();
         channel.upsertPermissionOverride(Roles.MOD.getRole(guild)).grant(Permission.MESSAGE_MANAGE).grant(Permission.MANAGE_CHANNEL).queue();
@@ -124,8 +120,6 @@ public class Tempchannel {
             if(entry.getValue().startsWith(id)) {
                 InteractionHook hook = entry.getKey();
                 Tempchannel channel = ControlListener.getTempchannel((TextChannel) hook.getInteraction().getChannel());
-
-                System.out.println(id + " / "+ hook.getInteraction().getId());
 
                 if(id.startsWith("editmember")) {
                     hook.editOriginal(getMemberViewEdit(guild.getMemberById(id.split("_")[1]), hook.getInteraction().getMember())).queue(); return;

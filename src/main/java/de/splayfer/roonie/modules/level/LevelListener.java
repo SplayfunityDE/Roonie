@@ -37,17 +37,16 @@ public class LevelListener extends ListenerAdapter {
     public void onMessageReceived (MessageReceivedEvent event) {
         if (!event.getAuthor().isBot() && event.getChannelType().isGuild()) {
             int xpStep;
-            if (event.getMember().getRoles().contains(event.getGuild().getBoostRole()))
-                xpStep = 15;
-            else
-                xpStep = 10;
+            if (checkCoolDown(event.getMember())) {
+                if (event.getMember().getRoles().contains(event.getGuild().getBoostRole()))
+                    xpStep = 15;
+                else
+                    xpStep = 10;
 
-            Member member = event.getMember();
+                Member member = event.getMember();
 
-            int level = LevelManager.getLevel(member);
-            int xp = LevelManager.getXp(member);
-
-            if (checkCoolDown(member)) {
+                int level = LevelManager.getLevel(member);
+                int xp = LevelManager.getXp(member);
                 LevelManager.addXpToUser(member, xpStep);
                 xp += xpStep;
                 int levelstep = LevelManager.getLevelStep(level);
@@ -75,10 +74,10 @@ public class LevelListener extends ListenerAdapter {
     }
 
     private static boolean checkCoolDown(Member member) {
-        boolean check = true;
+        boolean check = false;
         if (!messageCoolDown.contains(member)) {
-            messageCoolDown.add(member);
             check = true;
+            messageCoolDown.add(member);
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
