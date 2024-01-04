@@ -24,7 +24,7 @@ public class TicTacToe extends ListenerAdapter {
 
     protected static int crossAbstand = 182;
     protected static int circleAbstand = 179;
-    MongoDBDatabase mongoDB = new MongoDBDatabase("minigames");
+    static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("minigames");
 
     public void onStringSelectInteraction (StringSelectInteractionEvent event) {
 

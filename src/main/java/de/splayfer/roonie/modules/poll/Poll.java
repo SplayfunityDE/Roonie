@@ -21,7 +21,7 @@ public class Poll {
     private Message message;
     private Button[] buttons;
 
-    static MongoDBDatabase mongoDB = new MongoDBDatabase("splayfunity");
+    static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
 
     public Message getMessage() {
         return message;

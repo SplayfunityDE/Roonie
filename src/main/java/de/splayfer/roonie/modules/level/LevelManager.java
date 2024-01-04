@@ -15,7 +15,7 @@ import org.bson.Document;
 
 public class LevelManager extends ListenerAdapter {
 
-    static MongoDBDatabase mongoDB = new MongoDBDatabase("splayfunity");
+    static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
 
     public static void init() {
         Roonie.builder.addEventListeners(new LevelListener(), new LevelInfoCommand(), new RankCommand(), new LevelCommand(), new XpCommand());

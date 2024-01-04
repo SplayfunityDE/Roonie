@@ -15,26 +15,29 @@ import java.util.List;
 
 public class MongoDBDatabase {
 
-    MongoClient mongoClient;
-    MongoDatabase mongoDatabase;
+    private MongoDatabase mongoDatabase;
+    private static MongoClient mongoClient;
 
-    public MongoDBDatabase(String database) {
-        connect(database);
-    }
-
-    private void connect(String database) {
+    public static void connect() {
         try {
             mongoClient = MongoClients.create("mongodb://useradmin:NFC_King10@116.203.79.193");
-            mongoDatabase = mongoClient.getDatabase(database);
-            System.out.println("Connected to database: " + database);
+            System.out.println("Connected to server: " + "116.203.79.193");
         } catch (MongoException exception) {
             System.out.println("MongoDB Connection Error: " + exception.getMessage());
         }
     }
 
-     public void close() {
+    public void close() {
         //optional - no inpact on performance, conncetion pool managed by MongoClient
         mongoClient.close();
+    }
+
+    public static MongoDBDatabase getDatabase(String name) {
+        return new MongoDBDatabase(mongoClient.getDatabase(name));
+    }
+
+    public MongoDBDatabase(MongoDatabase mongoDatabase) {
+        this.mongoDatabase = mongoDatabase;
     }
 
     public FindIterable<Document> find(String collection, String key, Object value) {
@@ -98,9 +101,10 @@ public class MongoDBDatabase {
     }
 
     public String getCollectionName(Document document) {
-        for (String s : mongoClient.listDatabaseNames())
+        for (String s : mongoDatabase.listCollectionNames())
             if (find(s, document) != null)
                 return s;
         return null;
     }
+
 }

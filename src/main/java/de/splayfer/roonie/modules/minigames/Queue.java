@@ -5,7 +5,7 @@ import org.bson.Document;
 
 public class Queue {
 
-    static MongoDBDatabase mongoDB = new MongoDBDatabase("minigames");
+    static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("minigames");
 
     public static boolean checkForGame() {
             for (Document doc : mongoDB.findAll("tictactoe"))

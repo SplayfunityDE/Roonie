@@ -7,7 +7,7 @@ import org.bson.Document;
 
 public class MinigamesManager {
 
-    static MongoDBDatabase mongoDB = new MongoDBDatabase("minigames");
+    static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("minigames");
 
     public static void init() {
         Roonie.builder.addEventListeners(new DeleteListener(), new GameSelector(), new RequestManager(), new SetupCommand(), new TicTacToe());

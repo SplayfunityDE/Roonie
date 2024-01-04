@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 
 public class AutoComplete extends ListenerAdapter {
 
-    static MongoDBDatabase mongoDB = new MongoDBDatabase("splayfunity");
+    static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
 
     @Override
     public void onCommandAutoCompleteInteraction(CommandAutoCompleteInteractionEvent event) {

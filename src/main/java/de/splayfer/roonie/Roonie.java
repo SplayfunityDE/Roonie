@@ -51,7 +51,7 @@ public class Roonie {
     public static final long BOTID = 886209763178844212L;
 
     public static void main(String[] args) throws IOException, InterruptedException {
-
+        MongoDBDatabase.connect();
         builder = JDABuilder.createDefault("ODg2MjA5NzYzMTc4ODQ0MjEy.G6Z85Z.s24gB6nFpVOPQkyvJaAxiVtTDRWVzoGtBjucgE")
                 .setActivity(Activity.streaming("auf 🌀SPLΛYFUNITY🌀", "https://twitch.tv/splayfer"))
                 .setStatus(OnlineStatus.ONLINE)

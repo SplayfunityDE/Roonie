@@ -8,7 +8,7 @@ import org.bson.Document;
 
 public class TempchannelManager {
 
-    static MongoDBDatabase mongoDB = new MongoDBDatabase("splayfunity");
+    static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
 
     public static void init() {
         Roonie.builder.addEventListeners(new CreateJoinHubCommand(), new RemoveJoinHubCommand(), new ChannelListener(), new ControlListener());

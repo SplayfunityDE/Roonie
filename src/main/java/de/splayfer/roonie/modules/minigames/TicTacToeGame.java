@@ -13,7 +13,7 @@ import java.util.*;
 
 public class TicTacToeGame {
 
-    static MongoDBDatabase mongoDB = new MongoDBDatabase("minigames");
+    static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("minigames");
 
     private ThreadChannel channel;
     private String status;

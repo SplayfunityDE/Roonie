@@ -9,7 +9,7 @@ import org.bson.Document;
 
 public class Config {
 
-    static MongoDBDatabase mongoDB = new MongoDBDatabase("splayfunity");
+    static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
 
     public static void setConfigChannel(String identifier, Channel channel, Message message) {
         if (!mongoDB.exists("config", "identifier", identifier))

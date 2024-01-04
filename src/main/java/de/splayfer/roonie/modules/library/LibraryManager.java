@@ -16,7 +16,7 @@ import java.util.List;
 
 public class LibraryManager {
 
-    static MongoDBDatabase mongoDB = new MongoDBDatabase("splayfunity");
+    static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
 
     public static void init() {
         Roonie.builder.addEventListeners(new LibrarySetupCommand(), new BannerListener(), new BannerCommand(), new TemplateListener(), new TemplateCommand());

@@ -59,7 +59,7 @@ public class Response {
                 .append("value", value);
     }
 
-    static MongoDBDatabase mongoDB = new MongoDBDatabase("splayfunity");
+    static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
 
     public static void create(String message, Member creator, String type, String value) {
         mongoDB.insert("response", new Response(message, creator, type, value).getDocument());

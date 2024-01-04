@@ -13,7 +13,7 @@ import java.util.*;
 
 public class Giveaway {
 
-    static MongoDBDatabase mongoDB = new MongoDBDatabase("splayfunity");
+    static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
 
     private static HashMap<Member, Giveaway> giveaways = new HashMap<>();
 

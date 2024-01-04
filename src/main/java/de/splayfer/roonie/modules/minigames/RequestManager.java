@@ -22,7 +22,7 @@ import java.util.Objects;
 
 public class RequestManager extends ListenerAdapter {
 
-    MongoDBDatabase mongoDB = new MongoDBDatabase("minigames");
+    static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("minigames");
 
     public static void sendGameRequest(User user, String id) {
 
