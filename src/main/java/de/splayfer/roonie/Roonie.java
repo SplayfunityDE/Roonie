@@ -90,7 +90,7 @@ public class Roonie {
         MessageCounter.chatCounterUpdate();
         BotCounter.botCounterUpdate();
         BannerCounter.updateBannerMemberCount();
-        AutoRoleListener.fixMemberRoles();
+       // AutoRoleListener.fixMemberRoles();
         AutoDeleteListener.checkCommandMessages();
         BoosterWall.updateBoosterStats();
         System.out.println("[Splayfer] Bot changed Status: Online");
