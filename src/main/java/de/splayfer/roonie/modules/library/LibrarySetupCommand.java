@@ -50,15 +50,16 @@ public class LibrarySetupCommand extends ListenerAdapter {
                 servertemplates.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
                 servertemplates.addField(":question: Wie funktionieren die Kategorien?", "Das System ist ganz einfach! Wir unterteilen alle Vorlagen in Kategorien. Du musst einfach nur im Menü unter dieser Nachricht das passende Menü auswählen und bekommst alle Server, die unter diese Kategorie fallen per Direktnachricht zugeschickt!", false);
                 servertemplates.addField("\uD83D\uDCA1 Tipp!", "Du kannst dir auch mehrere Kategorien gleichzeitig zuschicken lassen!", false);
-                channel.sendMessageEmbeds(bannerEmbed.build(), servertemplates.build()).setActionRow(StringSelectMenu.create("servertemplates")
+                StringSelectMenu.Builder templates = StringSelectMenu.create("servertemplates")
                         .setPlaceholder("\uD83D\uDCC1 Wähle deine Server Kategorien!")
                         .addOption("Gaming", "gaming", "Klicke hier, um diese Kategorie auszuwählen!", Emoji.fromCustom(event.getJDA().getEmojiById("885085671579062284")))
                         .addOption("Musik", "musik", "Klicke hier, um diese Kategorie auszuwählen!", Emoji.fromCustom(event.getJDA().getEmojiById("886624918983278622")))
                         .addOption("Community", "community", "Klicke hier, um diese Kategorie auszuwählen!", Emoji.fromCustom(event.getJDA().getEmojiById("885212849440448512")))
                         .addOption("Content Creator", "content", "Klicke hier, um diese Kategorie auszuwählen!", Emoji.fromFormatted("\uD83D\uDCFD"))
                         .addOption("Galaxy", "galaxy", "Klicke hier, um diese Kategorie auszuwählen!", Emoji.fromFormatted("\uD83C\uDF00"))
-                        .addOption("Projekt", "projekt", "Klicke hier, um diese Kategorie auszuwählen!", Emoji.fromCustom(event.getJDA().getEmojiById("892461354533941268")))
-                        .build()).queue();
+                        .addOption("Projekt", "projekt", "Klicke hier, um diese Kategorie auszuwählen!", Emoji.fromCustom(event.getJDA().getEmojiById("892461354533941268")));
+                templates.setMaxValues(templates.getOptions().size());
+                channel.sendMessageEmbeds(bannerEmbed.build(), servertemplates.build()).setActionRow(templates.build()).queue();
                 break;
             case 3:
                 //server designs

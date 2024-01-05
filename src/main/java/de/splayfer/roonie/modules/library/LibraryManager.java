@@ -34,7 +34,7 @@ public class LibraryManager {
                 Commands.slash("template", "\uD83D\uDCDC │ Verwalte die Server-Vorlagen der Bibliothek!")
                         .addSubcommands(
                                 new SubcommandData("add", "➕ │ Füge eine Server-Vorlage hinzu!")
-                                        .addOption(OptionType.STRING, "category", "\uD83D\uDCC2 │ Weise der Tempalte eine Kategorie zu!")
+                                        .addOption(OptionType.STRING, "category", "\uD83D\uDCC2 │ Weise der Template eine Kategorie zu!")
                                         .addOption(OptionType.STRING, "url", "\uD83D\uDD17 │ Gib den Link der Template an!"),
                                 new SubcommandData("remove", "➖ │ Entferne eine Server-Vorlage")
                                         .addOption(OptionType.STRING, "url", "\uD83D\uDD17 │ Gib den Link der Template an!"))
