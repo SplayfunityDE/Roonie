@@ -36,6 +36,7 @@ import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.EnumSet;
 
@@ -47,11 +48,13 @@ public class Roonie {
     public static Role[] autoRoles;
     public static JDABuilder builder;
     public static JDA shardMan;
-
+    public static String PATH = "/bot";
     public static final long BOTID = 886209763178844212L;
 
     public static void main(String[] args) throws IOException, InterruptedException {
         MongoDBDatabase.connect();
+        if (!File.separator.equals("/"))
+            PATH = System.getProperty("user.dir");
         builder = JDABuilder.createDefault("ODg2MjA5NzYzMTc4ODQ0MjEy.G6Z85Z.s24gB6nFpVOPQkyvJaAxiVtTDRWVzoGtBjucgE")
                 .setActivity(Activity.streaming("auf 🌀SPLΛYFUNITY🌀", "https://twitch.tv/splayfer"))
                 .setStatus(OnlineStatus.ONLINE)
@@ -90,7 +93,6 @@ public class Roonie {
         MessageCounter.chatCounterUpdate();
         BotCounter.botCounterUpdate();
         BannerCounter.updateBannerMemberCount();
-       // AutoRoleListener.fixMemberRoles();
         AutoDeleteListener.checkCommandMessages();
         BoosterWall.updateBoosterStats();
         System.out.println("[Splayfer] Bot changed Status: Online");
