@@ -30,14 +30,14 @@ public class BoosterWall extends ListenerAdapter {
     protected static BufferedImage background;
 
     public static void updateBoosterStats() {
-        String path = System.getProperty("user.dir");
-        if (File.separator.equals("/"))
-            path = "/bot";
         if (Config.existsConfig("booster")) {
             Timer t = new Timer();
             t.schedule(new TimerTask() {
                 @Override
                 public void run() {
+                    String path = System.getProperty("user.dir");
+                    if (File.separator.equals("/"))
+                        path = "/bot";
                     List<Member> boosterList;
                     if (Roonie.mainGuild.getBoosters().size() > 40)
                         boosterList = Roonie.mainGuild.getBoosters().subList(0, 15);
