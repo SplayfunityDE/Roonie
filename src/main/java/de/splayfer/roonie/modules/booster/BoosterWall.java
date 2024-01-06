@@ -156,11 +156,11 @@ public class BoosterWall extends ListenerAdapter {
                     message.setDescription(msg.getEmbeds().get(1).getDescription());
                     message.addField(msg.getEmbeds().get(1).getFields().get(0));
                     message.addField(msg.getEmbeds().get(1).getFields().get(1));
-                    message.setImage(picUrl);
+                    message.setImage("attachment://boosterBanner.png");
 
                     List<Button> buttons = new ArrayList<>();
                     buttons.add(Button.secondary(msg.getActionRows().get(0).getButtons().get(0).getId(), msg.getActionRows().get(0).getButtons().get(0).getLabel()).withEmoji(msg.getActionRows().get(0).getButtons().get(0).getEmoji()));
-                    msg.editMessageEmbeds(Embeds.BANNER_BOOSTER, message.build()).setActionRow(buttons).queue();
+                    msg.editMessageAttachments(FileUpload.fromData(tempFile, "boosterBanner.png")).setEmbeds(message.build()).setActionRow(buttons).queue();
                     tempFile.deleteOnExit();
                     System.out.println("[Splayfer] Booster update");
                 }
