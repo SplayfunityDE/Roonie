@@ -64,7 +64,6 @@ public class BoosterWall extends ListenerAdapter {
                 int aspect = 0;
 
                 AttributedString name;
-
                 if (m.getEffectiveName().length() > 25) {
                     name = new AttributedString(m.getEffectiveName().substring(0, 22) + "...");
                     name.addAttribute(TextAttribute.FONT, openSans.deriveFont(35f));
@@ -77,6 +76,7 @@ public class BoosterWall extends ListenerAdapter {
                     name = new AttributedString(m.getEffectiveName());
                     name.addAttribute(TextAttribute.FONT, openSans.deriveFont(50f));
                 }
+
 
                 switch (i) {
                     case 1:
