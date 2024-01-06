@@ -15,7 +15,6 @@ public class MessageCounter {
     public static void chatCounterUpdate() {
         CompletableFuture.supplyAsync(() -> mainChat.getHistory().getRetrievedHistory().size()).thenAccept(count -> {
             mainChat.getManager().setTopic("Öffentlicher <a:chat:879356542791598160> Chat von SPLΛYFUNITY. Aktuell gesendete Nachrichten: ** " + count + "**").queue();
-            System.out.println("completed: " + count);
         });
     }
 }

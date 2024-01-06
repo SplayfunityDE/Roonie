@@ -33,10 +33,6 @@ import java.util.concurrent.TimeUnit;
 
 public class ControlListener extends ListenerAdapter {
 
-    protected Role adminrole;
-    protected Role modrole;
-    protected Role suprole;
-
     public static HashMap<String, Tempchannel> tempChannels = new HashMap<>();
 
     public static boolean isTempchannel(VoiceChannel voiceChannel) {
@@ -44,7 +40,6 @@ public class ControlListener extends ListenerAdapter {
            if(entry.getValue().getVoiceChannel().equals(voiceChannel)) {
                return true;
            }
-           System.out.println("false");
        }
 
        return false;

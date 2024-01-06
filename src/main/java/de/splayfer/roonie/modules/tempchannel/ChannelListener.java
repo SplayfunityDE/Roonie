@@ -58,11 +58,8 @@ public class ChannelListener extends ListenerAdapter {
     }
 
     public boolean delete(VoiceChannel voiceChannel) {
-        System.out.println("test1");
         if(ControlListener.isTempchannel(voiceChannel)) {
-            System.out.println("test1");
             if(voiceChannel.getMembers().isEmpty()) {
-                System.out.println("test1");
                 ControlListener.tempChannels.get(voiceChannel.getId()).delete();
                 return true;
             }

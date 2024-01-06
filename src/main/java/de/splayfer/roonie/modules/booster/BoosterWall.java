@@ -30,6 +30,9 @@ public class BoosterWall extends ListenerAdapter {
     protected static BufferedImage background;
 
     public static void updateBoosterStats() {
+        String path = System.getProperty("user.dir");
+        if (File.separator.equals("/"))
+            path = "/bot";
         if (Config.existsConfig("booster")) {
             Timer t = new Timer();
             t.schedule(new TimerTask() {
@@ -41,7 +44,7 @@ public class BoosterWall extends ListenerAdapter {
                     else
                         boosterList = Roonie.mainGuild.getBoosters();
                     try {
-                        background = ImageIO.read(new File(System.getProperty("user.dir") + File.separator + "media" + File.separator + "boosterImg" + File.separator + "boosterBannerTemplate.png"));
+                        background = ImageIO.read(new File(path + File.separator + "media" + File.separator + "boosterImg" + File.separator + "boosterBannerTemplate.png"));
                     } catch (IOException exception) {
                         exception.printStackTrace();
                     }
@@ -53,7 +56,7 @@ public class BoosterWall extends ListenerAdapter {
 
                     Font openSans = null;
                     try {
-                        openSans = Font.createFont(Font.TRUETYPE_FONT, new File(System.getProperty("user.dir") + File.separator + "media" + File.separator + "fonts" + File.separator + "OpenSans_Condensed-ExtraBold.ttf"));
+                        openSans = Font.createFont(Font.TRUETYPE_FONT, new File(path + File.separator + "media" + File.separator + "fonts" + File.separator + "OpenSans_Condensed-ExtraBold.ttf"));
                     } catch (FontFormatException e) {
                         e.printStackTrace();
                     } catch (IOException exception) {
@@ -135,12 +138,12 @@ public class BoosterWall extends ListenerAdapter {
                     g.dispose();
 
                     try {
-                        ImageIO.write(container, "png", new File(System.getProperty("user.dir") + File.separator + "media" + File.separator + "boosterImg" + File.separator + "boosterBanner.png"));
+                        ImageIO.write(container, "png", new File(path + File.separator + "media" + File.separator + "boosterImg" + File.separator + "boosterBanner.png"));
                     } catch (IOException exception) {
                         exception.printStackTrace();
                     }
 
-                    File tempFile = new File(System.getProperty("user.dir") + File.separator + "media" + File.separator + "boosterImg" + File.separator + "boosterBanner.png");
+                    File tempFile = new File(path + File.separator + "media" + File.separator + "boosterImg" + File.separator + "boosterBanner.png");
 
                     Message m = Channels.MEDIACHANNEL.getMessageChannel(Roonie.mainGuild).sendFiles(FileUpload.fromData(tempFile)).complete();
                     String picUrl = m.getAttachments().get(0).getUrl();
