@@ -27,6 +27,6 @@ public class BotCounter {
             public void run() {
                 botCounterUpdate();
             }
-        }, 1000 * 60 * 30, 10000);
+        }, 1000 * 60 * 30);
     }
 }

@@ -40,7 +40,7 @@ public class CommandManager {
                 g.updateCommands().addCommands(commands.get(id)).queue();
             }
              */
-            jda.updateCommands().addCommands(list).queue();
+            Roonie.mainGuild.updateCommands().addCommands(list).queue();
         }
     }
 
