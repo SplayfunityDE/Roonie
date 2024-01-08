@@ -2,7 +2,6 @@ package de.splayfer.roonie.modules.booster;
 
 import de.splayfer.roonie.Roonie;
 import de.splayfer.roonie.config.Config;
-import de.splayfer.roonie.utils.enums.Channels;
 import de.splayfer.roonie.utils.enums.Embeds;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
@@ -21,7 +20,6 @@ import java.io.IOException;
 import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class BoosterWall extends ListenerAdapter {
 

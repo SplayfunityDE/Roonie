@@ -22,11 +22,5 @@ public class BotCounter {
                 botList.add(m);
         int botcounter = botList.size();
         Channels.COMMANDCHAT.getTextChannel(Roonie.mainGuild).getManager().setTopic("Hier kannst du auf alle <:bot:893865039344316446> Bots von SPLΛYFUNITY zugreifen und sie bedienen! Aktuelle Bots: **" + botcounter + "**").queue();
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                botCounterUpdate();
-            }
-        }, 1000 * 60 * 30);
     }
 }
