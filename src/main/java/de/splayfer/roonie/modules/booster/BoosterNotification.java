@@ -79,7 +79,7 @@ public class BoosterNotification extends ListenerAdapter {
                     String command = event.getValue("command").getAsString();
                     String reaction = event.getValue("reaction").getAsString();
                     if (!Response.existsResponse(command)) {
-                        Response.create(command, event.getMember(), "msg", reaction);
+                        Response.create(command, event.getUser(), "msg", reaction);
                         event.replyEmbeds(DefaultMessage.success("Response erfolgreich hinzugefügt", "Du hast die Resposne erfolgreich hinzugefügt!", new MessageEmbed.Field("<:text:886623802954498069> TextCommand", command, true), new MessageEmbed.Field("<:text:886623802954498069> Antwort des Bots", reaction, true))).setEphemeral(true).queue();
                     } else
                         event.replyEmbeds(DefaultMessage.error("Command bereits vergeben", "Der Command " + command + " wurde bereits von einem anderem Nutzer/Teammitglied vergeben!")).setEphemeral(true).queue();
@@ -114,17 +114,17 @@ public class BoosterNotification extends ListenerAdapter {
                     switch (event.getButton().getId().split("\\.")[2]) {
                         case "command":
                             event.replyModal(Modal.create("boost.claim.command.modal", "\uD83D\uDCE2〣Lege die Nachricht fest!")
-                                    .addActionRow(
-                                            TextInput.create("command", "Command", TextInputStyle.PARAGRAPH)
+                                    .addComponents(
+                                            ActionRow.of(TextInput.create("command", "Command", TextInputStyle.PARAGRAPH)
                                                     .setPlaceholder("Gib den Textcommand an!")
                                                     .setMaxLength(200)
                                                     .setRequired(true)
-                                                    .build(),
-                                            TextInput.create("reaction", "Reaktion", TextInputStyle.PARAGRAPH)
+                                                    .build()),
+                                            ActionRow.of(TextInput.create("reaction", "Reaktion", TextInputStyle.PARAGRAPH)
                                                     .setPlaceholder("Gib die Reaktion auf den Command an!")
                                                     .setMaxLength(200)
                                                     .setRequired(true)
-                                                    .build())
+                                                    .build()))
                                     .build()).queue();
                             break;
                     }
@@ -165,7 +165,7 @@ public class BoosterNotification extends ListenerAdapter {
                     event.replyEmbeds(Embeds.BANNER_BOOSTER_PERKS_THREADS, message.build()).setEphemeral(true).queue();
                     break;
                 case "command":
-                    if (!Response.existsCreator(event.getMember())) {
+                    if (!Response.existsCreator(event.getUser().getIdLong())) {
                         message = new EmbedBuilder();
                         message.setColor(0xff73fa);
                         message.setTitle("Richte deinen Command ein");
