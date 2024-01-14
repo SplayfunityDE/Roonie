@@ -144,7 +144,7 @@ public class BoosterWall extends ListenerAdapter {
 
 
             EmbedBuilder message = new EmbedBuilder();
-            message.setColor(0x28346d);
+            message.setColor(0xff73fa);
             message.setTitle(msg.getEmbeds().get(1).getTitle());
             message.setDescription(msg.getEmbeds().get(1).getDescription());
             message.addField(msg.getEmbeds().get(1).getFields().get(0));

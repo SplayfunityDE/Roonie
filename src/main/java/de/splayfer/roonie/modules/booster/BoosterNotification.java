@@ -93,7 +93,7 @@ public class BoosterNotification extends ListenerAdapter {
             switch (event.getButton().getId().split("\\.")[1]) {
                 case "vorteile":
                     EmbedBuilder message = new EmbedBuilder();
-                    message.setColor(0x28346d);
+                    message.setColor(0xff73fa);
                     message.setThumbnail("https://cdn.discordapp.com/attachments/906251556637249547/926532656030683206/3391ce4715f3c814d6067911438e5bf7.png");
                     message.setTitle("Wähle deine Vorteile");
                     message.setDescription("> Wähle im Menü unter dieser Nachricht, den Vorteil aus, zu dem du Hilfe benötigst!");
@@ -131,12 +131,12 @@ public class BoosterNotification extends ListenerAdapter {
                     break;
                 case "feedback":
                     event.replyModal(Modal.create("boost.feedback", "✨〣Feedback abgeben!")
-                            .addActionRow(
-                                    TextInput.create("feedback", "Feedback", TextInputStyle.PARAGRAPH)
+                            .addComponents(
+                                    ActionRow.of(TextInput.create("feedback", "Feedback", TextInputStyle.PARAGRAPH)
                                     .setPlaceholder("Gib uns dein Feedback!")
                                     .setMaxLength(200)
                                     .setRequired(true)
-                                    .build())
+                                    .build()))
                             .build()).queue();
                     break;
             }
@@ -157,7 +157,7 @@ public class BoosterNotification extends ListenerAdapter {
                     break;
                 case "diskussion":
                     message = new EmbedBuilder();
-                    message.setColor(0x28346d);
+                    message.setColor(0xff73fa);
                     message.setTitle("Erstelle eine Diskussion");
                     message.setDescription("> Mithilfe des Booster Ranges bist du in der Lage, Diskussionen auf unserem Server zu erstellen!");
                     message.addField("<a:chat:879356542791598160> Wie erstelle ich eine Diskussion?", "Klicke hierfür einfach rechts oben bei dir Nachricht auf das Symbol \"Thread erstellen\"", false);

@@ -72,27 +72,27 @@ public class Embeds {
         setImage("https://cdn.discordapp.com/attachments/906251556637249547/984899323470946314/banner_booster.png");}}.build();
 
     public static MessageEmbed BANNER_BOOSTER_PERKS = new EmbedBuilder() {{
-        setColor(0x28346d);
+        setColor(0xff73fa);
         setImage("https://cdn.discordapp.com/attachments/906251556637249547/985157271145312338/banner_booster_vorteile.png");}}.build();
 
     public static MessageEmbed BANNER_BOOSTER_PERKS_ROLE = new EmbedBuilder() {{
-        setColor(0x28346d);
+        setColor(0xff73fa);
         setImage("https://cdn.discordapp.com/attachments/906251556637249547/985173914902732810/banner_booster_vorteile_rang.png");}}.build();
 
     public static MessageEmbed BANNER_BOOSTER_PERKS_THREADS = new EmbedBuilder() {{
-        setColor(0x28346d);
+        setColor(0xff73fa);
         setImage("https://cdn.discordapp.com/attachments/906251556637249547/985173915754201168/banner_booster_vorteile_diskussion.png");}}.build();
 
     public static MessageEmbed BANNER_BOOSTER_PERKS_COMMNAD = new EmbedBuilder() {{
-        setColor(0x28346d);
+        setColor(0xff73fa);
         setImage("https://cdn.discordapp.com/attachments/906251556637249547/985173915468980324/banner_booster_vorteile_command.png");}}.build();
 
     public static MessageEmbed BANNER_BOOSTER_PERKS_LEVEL = new EmbedBuilder() {{
-        setColor(0x28346d);
+        setColor(0xff73fa);
         setImage("https://cdn.discordapp.com/attachments/906251556637249547/985173914672037908/banner_booster_vorteile_level.png");}}.build();
 
     public static MessageEmbed BANNER_BOOSTER_PERKS_GIVEAWAY = new EmbedBuilder() {{
-        setColor(0x28346d);
+        setColor(0xff73fa);
         setImage("https://cdn.discordapp.com/attachments/906251556637249547/985173916010020924/banner_booster_vorteile_giveaway.png");}}.build();
 
     public static MessageEmbed BANNER_RESPONSE = new EmbedBuilder() {{
