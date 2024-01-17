@@ -96,7 +96,6 @@ public class Roonie {
         AutoDeleteListener.checkCommandMessages();
         BoosterWall.updateBoosterStats();
         System.out.println("[Splayfer] Bot changed Status: Online");
-        System.out.println("slash remove");
     }
 }
 
