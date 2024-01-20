@@ -24,7 +24,7 @@ jobs:
     - name: Deleteing old packages
       uses: actions/delete-package-versions@v3
       with:
-        package-name: 'de.splayfunityde.new-clyde'
+        package-name: 'de.splayfunityde.roonie'
         min-versions-to-keep: 0
        
     - name: Set up Coretto 21
@@ -53,4 +53,4 @@ jobs:
       run: ssh-keyscan -p ${{ secrets.PORT }} -H ${{ secrets.HOST }}  >> ~/.ssh/known_hosts
       
     - name: Deploy with rsync
-      run: rsync -avz /home/runner/work/New-Clyde/New-Clyde/target/new-clyde-1.0-SNAPSHOT.jar ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/opt/dockerfiles/clyde
+      run: rsync -avz /home/runner/work/Roonie/Roonie/target/roonie-1.0-SNAPSHOT.jar ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/opt/dockerfiles/clyde
