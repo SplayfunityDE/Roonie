@@ -6,7 +6,7 @@
 
     <groupId>de.splayfunityde</groupId>
     <artifactId>roonie</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>latest</version>
     <packaging>jar</packaging>
 
     <properties>
