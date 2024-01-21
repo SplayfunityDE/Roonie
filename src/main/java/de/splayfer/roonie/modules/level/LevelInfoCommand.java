@@ -68,7 +68,7 @@ public class LevelInfoCommand extends ListenerAdapter {
 
         message.addField("", Roles.LVL40.getRole(guild).getAsMention() + " = `Level 40`\n" +
                 "<a:checkpurple:896351653651972116> Giveaways ohne Vorraussetzungen\n" +
-                "<a:checkpurple:896351653651972116> 20.000$ im Casino" +
+                "<a:checkpurple:896351653651972116> 20.000$ im Casino\n" +
                 "<a:checkpurple:896351653651972116> Zugriff auf den `/ban` Command", false);
 
         message.addField("", Roles.LVL50.getRole(guild).getAsMention() + " = `Level 50`\n" +

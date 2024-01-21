@@ -1,6 +1,7 @@
 package de.splayfer.roonie.modules.minigames;
 
 import de.splayfer.roonie.MongoDBDatabase;
+import de.splayfer.roonie.Roonie;
 import de.splayfer.roonie.utils.enums.Embeds;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
@@ -91,7 +92,7 @@ public class TicTacToe extends ListenerAdapter {
     public static void startGame(Member player1, Member player2, ThreadChannel channel) {
         List<Message> messages = channel.getHistory().getRetrievedHistory();
         channel.purgeMessages(messages);
-        File file = new File(System.getProperty("user.dir") + File.separator + "media" + File.separator + "tictactoe" + File.separator + "tictactoe_empty.png");
+        File file = new File(Roonie.PATH + File.separator + "media" + File.separator + "tictactoe" + File.separator + "tictactoe_empty.png");
 
         channel.sendTyping().queue();
         channel.sendFiles(FileUpload.fromData(file)).setActionRow(StringSelectMenu.create("minigames.tictatoe")
@@ -129,9 +130,9 @@ public class TicTacToe extends ListenerAdapter {
         BufferedImage circle = null;
 
         try {
-            backgroundImage = ImageIO.read(new File(System.getProperty("user.dir") + File.separator + "media" + File.separator + "tictactoe" + File.separator + "tictactoe_empty.png"));
-            cross = ImageIO.read(new File(System.getProperty("user.dir") + File.separator + "media" + File.separator + "tictactoe" + File.separator + "tictactoe_cross.png"));
-            circle = ImageIO.read(new File(System.getProperty("user.dir") + File.separator + "media" + File.separator + "tictactoe" + File.separator + "tictactoe_circle.png"));
+            backgroundImage = ImageIO.read(new File(Roonie.PATH + File.separator + "media" + File.separator + "tictactoe" + File.separator + "tictactoe_empty.png"));
+            cross = ImageIO.read(new File(Roonie.PATH + File.separator + "media" + File.separator + "tictactoe" + File.separator + "tictactoe_cross.png"));
+            circle = ImageIO.read(new File(Roonie.PATH + File.separator + "media" + File.separator + "tictactoe" + File.separator + "tictactoe_circle.png"));
         } catch (IOException exception) {
             exception.printStackTrace();
         }
@@ -182,12 +183,12 @@ public class TicTacToe extends ListenerAdapter {
         g.dispose();
 
         try {
-            ImageIO.write(backgroundImage, "png", new File(System.getProperty("user.dir") + File.separator + "media" + File.separator + "cache" + File.separator + "tictactoe.png"));
+            ImageIO.write(backgroundImage, "png", new File(Roonie.PATH + File.separator + "media" + File.separator + "cache" + File.separator + "tictactoe.png"));
         } catch (IOException exception) {
             exception.printStackTrace();
         }
 
-        File tempFile = new File(System.getProperty("user.dir") + File.separator + "media" + File.separator + "cache" + File.separator + "tictactoe.png");
+        File tempFile = new File(Roonie.PATH + File.separator + "media" + File.separator + "cache" + File.separator + "tictactoe.png");
         ThreadChannel channel = game.getChannel();
 
         Member current = game.getMemberTurn();

@@ -117,7 +117,7 @@ public class Ticket {
     }
 
     public static Ticket create(Member creator, int type) {
-        Ticket ticket = new Ticket(Roonie.mainGuild.getTextChannelById(Channels.TICKETPANEL.getId()).createThreadChannel(typeSymbol.get(type) + "-" + creator.getEffectiveName()).complete(), Roonie.mainGuild.getForumChannelById(Channels.TICKETFORUM.getId()).createForumPost(typeSymbol.get(type) + "-" + creator.getEffectiveName(), MessageCreateData.fromContent("\u200E")).complete().getThreadChannel(), creator, null, type, new Date());
+        Ticket ticket = new Ticket(Roonie.mainGuild.getTextChannelById(Channels.TICKETPANEL.getId()).createThreadChannel(typeSymbol.get(type) + "-" + creator.getEffectiveName(), true).complete(), Roonie.mainGuild.getForumChannelById(Channels.TICKETFORUM.getId()).createForumPost(typeSymbol.get(type) + "-" + creator.getEffectiveName(), MessageCreateData.fromContent("\u200E")).complete().getThreadChannel(), creator, null, type, new Date());
         mongoDB.insert("ticket", ticket.getAsDocument());
 
         //create embeds & update permissions

@@ -1,0 +1,8 @@
+services:
+  clyde:
+    build:
+      context: .
+      dockerfile: .
+    restart: on-failure:6
+    volumes:
+      - ./:/bot

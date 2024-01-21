@@ -1,5 +1,6 @@
 package de.splayfer.roonie.modules.level;
 
+import de.splayfer.roonie.Roonie;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -22,9 +23,7 @@ public class RankCommand extends ListenerAdapter {
     protected BufferedImage xpBar;
 
     public void onSlashCommandInteraction (SlashCommandInteractionEvent event) {
-
         if (event.getName().equals("rank")) {
-
             Member member;
 
             if (event.getOptions().isEmpty()) {
@@ -35,13 +34,9 @@ public class RankCommand extends ListenerAdapter {
             }
 
             //lets go
-
-            String path = System.getProperty("user.dir");
-            if (File.separator.equals("/"))
-                path = "/bot";
             URLConnection urlConnection;
             try {
-                backgroundImage = ImageIO.read(new File(path + File.separator + "media" + File.separator + "rankImages" + File.separator + "card_background.png"));
+                backgroundImage = ImageIO.read(new File(Roonie.PATH + File.separator + "media" + File.separator + "rankImages" + File.separator + "card_background.png"));
 
                 urlConnection = new URL(member.getUser().getEffectiveAvatarUrl()).openConnection();
                 urlConnection.addRequestProperty("User-Agent", "Mozilla");
@@ -58,7 +53,7 @@ public class RankCommand extends ListenerAdapter {
 
             try {
 
-                leagueGothic = Font.createFont(Font.TRUETYPE_FONT, new File(path + File.separator + "media" + File.separator + "fonts" + File.separator + "LeagueGothic-Regular.ttf"));
+                leagueGothic = Font.createFont(Font.TRUETYPE_FONT, new File(Roonie.PATH + File.separator + "media" + File.separator + "fonts" + File.separator + "LeagueGothic-Regular.ttf"));
                 GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
                 ge.registerFont(leagueGothic);
 
@@ -105,7 +100,7 @@ public class RankCommand extends ListenerAdapter {
             double xpcurrent = xp / step;
 
                 try {
-                    xpBar = ImageIO.read(new File(path + File.separator + "media" + File.separator + "rankImages" + File.separator + "line_" + (int) xpcurrent + ".png"));
+                    xpBar = ImageIO.read(new File(Roonie.PATH + File.separator + "media" + File.separator + "rankImages" + File.separator + "line_" + (int) xpcurrent + ".png"));
                 } catch (IOException exception) {
                     exception.printStackTrace();
                 }
@@ -128,33 +123,22 @@ public class RankCommand extends ListenerAdapter {
             g.dispose();
 
             try {
-                ImageIO.write(container, "png", new File(path + File.separator + "media" + File.separator + "rankImages" + File.separator + "cache" + File.separator + member.getId() + ".png"));
+                ImageIO.write(container, "png", new File(Roonie.PATH + File.separator + "media" + File.separator + "rankImages" + File.separator + "cache" + File.separator + member.getId() + ".png"));
             } catch (IOException exception) {
                 exception.printStackTrace();
             }
-
             String id = member.getId();
-
-            File tempFile = new File(path + File.separator + "media" + File.separator + "rankImages" + File.separator + "cache" + File.separator + id + ".png");
-
+            File tempFile = new File(Roonie.PATH + File.separator + "media" + File.separator + "rankImages" + File.separator + "cache" + File.separator + id + ".png");
             event.reply("").addFiles(FileUpload.fromData(tempFile)).setEphemeral(true).queue();
-
             tempFile.deleteOnExit();
-
         }
 
     }
 
     public AttributedString getUsername(Member member) {
-
-        String path = System.getProperty("user.dir");
-        if (File.separator.equals("/"))
-            path = "/bot";
-
         Font leagueGothic = null;
-
         try {
-            leagueGothic = Font.createFont(Font.TRUETYPE_FONT, new File(path + File.separator + "media" + File.separator + "fonts" + File.separator + "LeagueGothic-Regular.ttf"));
+            leagueGothic = Font.createFont(Font.TRUETYPE_FONT, new File(Roonie.PATH + File.separator + "media" + File.separator + "fonts" + File.separator + "LeagueGothic-Regular.ttf"));
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             ge.registerFont(leagueGothic);
         } catch (Exception exception) {
@@ -162,18 +146,12 @@ public class RankCommand extends ListenerAdapter {
         }
 
         String s = member.getEffectiveName();
-
         if (member.getEffectiveName().length() > 20) {
-
             s = member.getEffectiveName().substring(0, 17) + "...";
-
         }
-
         AttributedString userName = new AttributedString(s);
         userName.addAttribute(TextAttribute.FONT, leagueGothic.deriveFont(60f));
         userName.addAttribute(TextAttribute.SIZE, 30);
-
         return userName;
     }
-
 }

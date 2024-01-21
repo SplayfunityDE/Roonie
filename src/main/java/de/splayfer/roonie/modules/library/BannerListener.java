@@ -24,7 +24,7 @@ import java.util.List;
 
 public class BannerListener extends ListenerAdapter {
 
-    protected File cache = new File(System.getProperty("user.dir") + File.separator + "media" + File.separator + "cache");
+    protected File cache = new File(Roonie.PATH + File.separator + "media" + File.separator + "cache");
 
     public void onStringSelectInteraction (StringSelectInteractionEvent event) {
         if (event.getSelectMenu().getId().equals("serverbanner")) {
@@ -172,7 +172,7 @@ public class BannerListener extends ListenerAdapter {
 
                                 try {
 
-                                    archive = Font.createFont(Font.TRUETYPE_FONT, new File(System.getProperty("user.dir") + File.separator + "media" + File.separator + "fonts" + File.separator + "Archive.otf"));
+                                    archive = Font.createFont(Font.TRUETYPE_FONT, new File(Roonie.PATH + File.separator + "media" + File.separator + "fonts" + File.separator + "Archive.otf"));
 
                                 } catch (FontFormatException | IOException e) {
                                     e.printStackTrace();

@@ -1,5 +1,6 @@
 package de.splayfer.roonie.general;
 
+import de.splayfer.roonie.general.schedule.BotCounter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
@@ -13,9 +14,7 @@ import java.util.List;
 public class WelcomeListener extends ListenerAdapter {
 
     public void onGuildMemberJoin (GuildMemberJoinEvent event) {
-
         if (!event.getUser().isBot()) {
-
             EmbedBuilder bannerEmbed = new EmbedBuilder();
             bannerEmbed.setColor(0x28346d);
             bannerEmbed.setImage("https://cdn.discordapp.com/attachments/906251556637249547/938746636019073044/banner_willkommen.png");
@@ -40,14 +39,12 @@ public class WelcomeListener extends ListenerAdapter {
             buttons.add(Button.primary("welcome.visit", "Schau dich jetzt um!").withUrl("https://discord.gg/splayfer").withEmoji(Emoji.fromCustom("chat", Long.parseLong("880875728915275786"), true)));
             buttons.add(Button.success("welcome.features", "Schau dir unsere Features an!").withEmoji(Emoji.fromCustom("level", Long.parseLong("909085962934562896"), false)));
             buttons.add(Button.secondary("welcome.question", "Stelle eine Frage!").withEmoji(Emoji.fromFormatted("❓")));
-
             try {
                 event.getUser().openPrivateChannel().complete().sendMessageEmbeds(bannerEmbed.build(), mainEmbed.build()).setActionRow(buttons).queue();
             } catch (Exception e) {
             }
-
-        }
-
+        } else
+            BotCounter.botCounterUpdate();
     }
 
     public void onButtonInteraction (ButtonInteractionEvent event) {

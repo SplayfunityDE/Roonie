@@ -28,7 +28,8 @@ public class BoosterNotification extends ListenerAdapter {
     public void onGuildMemberRoleAdd (GuildMemberRoleAddEvent event) {
         if (event.getGuild().equals(Roonie.mainGuild)) {
             if (event.getRoles().get(0).equals(event.getGuild().getBoostRole())) {
-
+                BoosterWall.updateBoosterStats();
+                System.out.println("Booster update for boost " + event.getUser().getEffectiveName());
                 EmbedBuilder message = new EmbedBuilder();
                 message.setColor(0x28346d);
                 message.setThumbnail("https://cdn.discordapp.com/attachments/906251556637249547/984902617836712016/unknown.png");
@@ -78,7 +79,7 @@ public class BoosterNotification extends ListenerAdapter {
                     String command = event.getValue("command").getAsString();
                     String reaction = event.getValue("reaction").getAsString();
                     if (!Response.existsResponse(command)) {
-                        Response.create(command, event.getMember(), "msg", reaction);
+                        Response.create(command, event.getUser(), "msg", reaction);
                         event.replyEmbeds(DefaultMessage.success("Response erfolgreich hinzugefügt", "Du hast die Resposne erfolgreich hinzugefügt!", new MessageEmbed.Field("<:text:886623802954498069> TextCommand", command, true), new MessageEmbed.Field("<:text:886623802954498069> Antwort des Bots", reaction, true))).setEphemeral(true).queue();
                     } else
                         event.replyEmbeds(DefaultMessage.error("Command bereits vergeben", "Der Command " + command + " wurde bereits von einem anderem Nutzer/Teammitglied vergeben!")).setEphemeral(true).queue();
@@ -92,7 +93,7 @@ public class BoosterNotification extends ListenerAdapter {
             switch (event.getButton().getId().split("\\.")[1]) {
                 case "vorteile":
                     EmbedBuilder message = new EmbedBuilder();
-                    message.setColor(0x28346d);
+                    message.setColor(0xff73fa);
                     message.setThumbnail("https://cdn.discordapp.com/attachments/906251556637249547/926532656030683206/3391ce4715f3c814d6067911438e5bf7.png");
                     message.setTitle("Wähle deine Vorteile");
                     message.setDescription("> Wähle im Menü unter dieser Nachricht, den Vorteil aus, zu dem du Hilfe benötigst!");
@@ -113,29 +114,29 @@ public class BoosterNotification extends ListenerAdapter {
                     switch (event.getButton().getId().split("\\.")[2]) {
                         case "command":
                             event.replyModal(Modal.create("boost.claim.command.modal", "\uD83D\uDCE2〣Lege die Nachricht fest!")
-                                    .addActionRow(
-                                            TextInput.create("command", "Command", TextInputStyle.PARAGRAPH)
+                                    .addComponents(
+                                            ActionRow.of(TextInput.create("command", "Command", TextInputStyle.PARAGRAPH)
                                                     .setPlaceholder("Gib den Textcommand an!")
                                                     .setMaxLength(200)
                                                     .setRequired(true)
-                                                    .build(),
-                                            TextInput.create("reaction", "Reaktion", TextInputStyle.PARAGRAPH)
+                                                    .build()),
+                                            ActionRow.of(TextInput.create("reaction", "Reaktion", TextInputStyle.PARAGRAPH)
                                                     .setPlaceholder("Gib die Reaktion auf den Command an!")
                                                     .setMaxLength(200)
                                                     .setRequired(true)
-                                                    .build())
+                                                    .build()))
                                     .build()).queue();
                             break;
                     }
                     break;
                 case "feedback":
                     event.replyModal(Modal.create("boost.feedback", "✨〣Feedback abgeben!")
-                            .addActionRow(
-                                    TextInput.create("feedback", "Feedback", TextInputStyle.PARAGRAPH)
+                            .addComponents(
+                                    ActionRow.of(TextInput.create("feedback", "Feedback", TextInputStyle.PARAGRAPH)
                                     .setPlaceholder("Gib uns dein Feedback!")
                                     .setMaxLength(200)
                                     .setRequired(true)
-                                    .build())
+                                    .build()))
                             .build()).queue();
                     break;
             }
@@ -156,7 +157,7 @@ public class BoosterNotification extends ListenerAdapter {
                     break;
                 case "diskussion":
                     message = new EmbedBuilder();
-                    message.setColor(0x28346d);
+                    message.setColor(0xff73fa);
                     message.setTitle("Erstelle eine Diskussion");
                     message.setDescription("> Mithilfe des Booster Ranges bist du in der Lage, Diskussionen auf unserem Server zu erstellen!");
                     message.addField("<a:chat:879356542791598160> Wie erstelle ich eine Diskussion?", "Klicke hierfür einfach rechts oben bei dir Nachricht auf das Symbol \"Thread erstellen\"", false);
@@ -164,7 +165,7 @@ public class BoosterNotification extends ListenerAdapter {
                     event.replyEmbeds(Embeds.BANNER_BOOSTER_PERKS_THREADS, message.build()).setEphemeral(true).queue();
                     break;
                 case "command":
-                    if (!Response.existsCreator(event.getMember())) {
+                    if (!Response.existsCreator(event.getUser().getIdLong())) {
                         message = new EmbedBuilder();
                         message.setColor(0xff73fa);
                         message.setTitle("Richte deinen Command ein");

@@ -3,12 +3,13 @@ package de.splayfer.roonie.modules.response;
 import de.splayfer.roonie.MongoDBDatabase;
 import de.splayfer.roonie.Roonie;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.User;
 import org.bson.Document;
 
 public class Response {
 
     private String message;
-    private Member creator;
+    private User creator;
     private String type;
     private String value;
 
@@ -20,11 +21,11 @@ public class Response {
         this.message = message;
     }
 
-    public Member getCreator() {
+    public User getCreator() {
         return creator;
     }
 
-    public void setCreator(Member creator) {
+    public void setCreator(User creator) {
         this.creator = creator;
     }
 
@@ -44,7 +45,7 @@ public class Response {
         this.value = value;
     }
 
-    public Response(String message, Member creator, String type, String value) {
+    public Response(String message, User creator, String type, String value) {
         this.message = message;
         this.creator = creator;
         this.type = type;
@@ -61,7 +62,7 @@ public class Response {
 
     static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
 
-    public static void create(String message, Member creator, String type, String value) {
+    public static void create(String message, User creator, String type, String value) {
         mongoDB.insert("response", new Response(message, creator, type, value).getDocument());
     }
 
@@ -71,14 +72,14 @@ public class Response {
 
     public static Response getResponse(String message) {
         Document doc = mongoDB.find("response", "message", message).first();
-        return new Response(doc.getString("message"), Roonie.mainGuild.getMemberById(doc.getLong("creator")), doc.getString("type"), doc.getString("value"));
+        return new Response(doc.getString("message"), Roonie.shardMan.getUserById(doc.getLong("creator")), doc.getString("type"), doc.getString("value"));
     }
 
     public static boolean existsResponse(String message){
         return mongoDB.exists("response", "message", message);
     }
 
-    public static boolean existsCreator(Member member) {
-        return mongoDB.exists("response", "creator", member.getIdLong());
+    public static boolean existsCreator(long member) {
+        return mongoDB.exists("response", "creator", member);
     }
 }

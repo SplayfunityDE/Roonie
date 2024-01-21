@@ -110,8 +110,8 @@ public class TempchannelPageSystem {
         if(channel.channelChat) {
             channelChat = "Aktiviert";
         }
-        builder.addField("<:icons_forum:964425853138264094> Kanalchat", channelChat, true);
-        builder.addField("<:icons_discover:859429432535023666> Region", parseRegion(channel.getVoiceChannel().getRegion()), true);
+        builder.addField("<:icon_chat:986654051183783948> Kanalchat", channelChat, true);
+        builder.addField("<:globe:1001093203472158740> Region", parseRegion(channel.getVoiceChannel().getRegion()), true);
         String nsfw = "Ausgeschaltet";
         builder.addField("<:outage:1001096157843443712> NSFW", nsfw, true);
 
@@ -143,8 +143,8 @@ public class TempchannelPageSystem {
         if(channel.channelChat) {
             channelChat = "Aktiviert";
         }
-        builder.addField("<:icons_forum:964425853138264094> Kanalchat", channelChat, true);
-        builder.addField("<:icons_discover:859429432535023666> Region", parseRegion(channel.getVoiceChannel().getRegion()), true);
+        builder.addField("<:icon_chat:986654051183783948> Kanalchat", channelChat, true);
+        builder.addField("<:globe:1001093203472158740> Region", parseRegion(channel.getVoiceChannel().getRegion()), true);
         String nsfw = "Ausgeschaltet";
         builder.addField("<:outage:1001096157843443712> NSFW", nsfw, true);
 

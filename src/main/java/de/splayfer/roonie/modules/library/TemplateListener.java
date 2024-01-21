@@ -1,8 +1,10 @@
 package de.splayfer.roonie.modules.library;
 
+import de.splayfer.roonie.utils.DefaultMessage;
 import de.splayfer.roonie.utils.enums.Embeds;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
 import net.dv8tion.jda.api.entities.emoji.EmojiUnion;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
@@ -28,49 +30,19 @@ public class TemplateListener extends ListenerAdapter {
         }};
     }
 
-    /*
-    public void onStringSelectInteraction (StringSelectInteractionEvent event) {
-        if (event.getSelectMenu().getId().equals("servertemplates")) {
-            event.replyEmbeds(DefaultMessage.success("Vorlagen erfolgreich gesendet", "Die angeforderten Vorlagen findest du unter dieser Nachricht!")).setEphemeral(true).queue();
-            for (String link : LibraryManager.getTemplatesByCategory(event.getValues().get(0)))
-                event.getHook().sendMessage(link).setEphemeral(true).queue();
-        }
-    }
-
-
-     */
-
     @Override
     public void onStringSelectInteraction(@NotNull StringSelectInteractionEvent event) {
         if (event.getSelectMenu().getId().equals("servertemplates")) {
             Member member = event.getMember();
-
             InteractionHook hook = event.deferReply(true).complete();
-
             for (SelectOption selectedOption : event.getSelectedOptions()) {
-
                 if (!sendTemplate(selectedOption, member)) {
-                    EmbedBuilder eb = new EmbedBuilder().setTitle("Du hast deine Direktnachrichten deaktiviert!").setColor(0xed4245).setImage(Embeds.EMBED_ENDING_BANNER);
-                    hook.editOriginalEmbeds(Embeds.ERROR_BANNER, eb.build()).queue();
                     event.getMessage().editMessageEmbeds(event.getMessage().getEmbeds()).setActionRow(event.getSelectMenu()).queue();
-
                     return;
                 }
             }
-
-
             String categorysString = getCategoryString(event.getSelectedOptions());
-
-            EmbedBuilder replyEmbed = new EmbedBuilder();
-            replyEmbed.setColor(0x43b480);
-            replyEmbed.setTitle("✅ **VORLAGEN ERFOLGREICH GESENDET**");
-            replyEmbed.setDescription("> Dir wurden erfolgreich die Servervorlagen mit den folgenden Details zugesendet!");
-
-            replyEmbed.addField("<:text:886623802954498069> Kategorie/n", categorysString, false);
-            replyEmbed.setImage(Embeds.EMBED_ENDING_BANNER);
-
-
-            hook.editOriginalEmbeds(Embeds.SUCCESS_BANNER, replyEmbed.build()).queue();
+            hook.editOriginalEmbeds(DefaultMessage.success("Vorlagen erfolgreich gesendet", "Dir wurden erfolgreich die Servervorlagen mit den folgenden Details zugesendet", new MessageEmbed.Field("<:text:886623802954498069> Kategorie(n)", categorysString, false))).queue();
             event.getMessage().editMessageEmbeds(event.getMessage().getEmbeds()).setActionRow(event.getSelectMenu()).queue();
         }
     }
@@ -86,18 +58,9 @@ public class TemplateListener extends ListenerAdapter {
                 categoryString.append(option.getEmoji().asUnicode().getFormatted()).append(" ").append(option.getLabel());
             }
         } else categoryString.append(option.getLabel());
-
-        EmbedBuilder reply = new EmbedBuilder();
-        reply.setColor(0x8b8a91);
-        reply.setTitle(":grey_exclamation: Kategorie erfolgreich gesendet!");
-        reply.setDescription("Dir wurde folgende/n Kategorie/n erfolgreich zugesendet!");
-        reply.addField(categoryString.toString(), "", false);
-        reply.setImage(Embeds.EMBED_ENDING_BANNER);
-
-
         try {
             PrivateChannel privateChannel = target.getUser().openPrivateChannel().complete();
-            privateChannel.sendMessageEmbeds(Embeds.SUCCESS_BANNER, reply.build()).complete();
+            privateChannel.sendMessageEmbeds(DefaultMessage.success("Kategorie(n) erfolgreich gesendet", "Dir wurden folgende Kategorie(n) zugesendet!", new MessageEmbed.Field(categoryString.toString(), "", false))).complete();
             StringBuilder builder = new StringBuilder();
             for (String template : templates) {
                 builder.append(template).append("\n");
@@ -133,6 +96,4 @@ public class TemplateListener extends ListenerAdapter {
             return false;
         }
     }
-
-
 }

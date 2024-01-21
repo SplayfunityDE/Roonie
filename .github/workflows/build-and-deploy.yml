@@ -24,7 +24,7 @@ jobs:
     - name: Deleteing old packages
       uses: actions/delete-package-versions@v3
       with:
-        package-name: 'de.splayfunityde.new-clyde'
+        package-name: 'de.splayfunityde.roonie'
         min-versions-to-keep: 0
        
     - name: Set up Coretto 21
@@ -38,10 +38,10 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-    - name: Publish to GitHub Packages Apache Maven
-      run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
+   # - name: Publish to GitHub Packages Apache Maven
+    #  run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml --debug
+     # env:
+      #  GITHUB_TOKEN: ${{ github.token }}
         
     - name: Install SSH Key
       uses: shimataro/ssh-key-action@v2
@@ -53,4 +53,4 @@ jobs:
       run: ssh-keyscan -p ${{ secrets.PORT }} -H ${{ secrets.HOST }}  >> ~/.ssh/known_hosts
       
     - name: Deploy with rsync
-      run: rsync -avz /home/runner/work/New-Clyde/New-Clyde/target/new-clyde-1.0-SNAPSHOT.jar ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/opt/dockerfiles/clyde
+      run: rsync -avz /home/runner/work/Roonie/Roonie/target/roonie-1.0-SNAPSHOT.jar ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/opt/dockerfiles/roonie

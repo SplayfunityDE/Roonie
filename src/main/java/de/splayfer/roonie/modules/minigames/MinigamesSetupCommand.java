@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 
-public class SetupCommand extends ListenerAdapter {
+public class MinigamesSetupCommand extends ListenerAdapter {
 
     public static void setup(SlashCommandInteractionEvent event) {
         EmbedBuilder mainEmbed = new EmbedBuilder();
@@ -24,7 +24,6 @@ public class SetupCommand extends ListenerAdapter {
                 .addOption("Herausfordern", "challenge", "Fordere einen anderen Spieler heraus", Emoji.fromFormatted("⚔"))
                 .addOption("Statistiken ansehen", "stats", "Schau dir deine aktuellen Statistiken an", Emoji.fromCustom("stats", Long.parseLong("937041708967927818"), false))
                 .build();
-        event.getChannel().sendTyping().queue();
         event.getChannel().sendMessageEmbeds(Embeds.BANNER_MINIGAME, mainEmbed.build()).setActionRow(test).complete();
         Config.setConfigChannel("minigames", event.getChannel());
     }

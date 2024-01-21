@@ -71,7 +71,7 @@
     <repository>
       <id>github</id>
       <name>GitHub splayfunityde Apache Maven Packages</name>
-      <url>https://maven.pkg.github.com/splayfunityde/old-roonie</url>
+      <url>https://maven.pkg.github.com/splayfunityde/roonie</url>
     </repository>
   </distributionManagement>
   <properties>
