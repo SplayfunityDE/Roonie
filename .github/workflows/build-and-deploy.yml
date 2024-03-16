@@ -41,7 +41,7 @@ jobs:
     - name: Publish to GitHub Packages Apache Maven
       run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml --debug
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB.TOKEN }}
+        GITHUB_TOKEN: ${{ github.token }}
         
     - name: Install SSH Key
       uses: shimataro/ssh-key-action@v2
