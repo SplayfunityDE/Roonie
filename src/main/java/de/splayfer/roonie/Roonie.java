@@ -1,5 +1,9 @@
 package de.splayfer.roonie;
 
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import de.splayfer.roonie.config.ConfigManager;
 import de.splayfer.roonie.general.AutoComplete;
 import de.splayfer.roonie.general.AutoRoleListener;
@@ -16,6 +20,8 @@ import de.splayfer.roonie.modules.library.LibraryManager;
 import de.splayfer.roonie.modules.management.commands.AutoDeleteListener;
 import de.splayfer.roonie.modules.management.commands.CommandInfoListener;
 import de.splayfer.roonie.modules.minigames.MinigamesManager;
+import de.splayfer.roonie.modules.music.MusicManager;
+import de.splayfer.roonie.modules.music.PlayerManager;
 import de.splayfer.roonie.modules.poll.PollManager;
 import de.splayfer.roonie.modules.response.ResponseManager;
 import de.splayfer.roonie.modules.tempchannel.TempchannelManager;
@@ -42,6 +48,8 @@ import java.util.EnumSet;
 
 public class Roonie {
 
+    public static PlayerManager playerManager;
+    public static AudioPlayerManager audioPlayerManager = new DefaultAudioPlayerManager();
     public static Guild mainGuild;
     public static Guild emojiServerGuild;
     public static Guild emojiServerGuild2;
@@ -74,6 +82,11 @@ public class Roonie {
         TicketManager.init();
         ConfigManager.init();
         BoosterManager.init();
+        MusicManager.init();
+
+        AudioSourceManagers.registerRemoteSources(audioPlayerManager);
+        AudioPlayer player = audioPlayerManager.createPlayer();
+        playerManager = new PlayerManager();
 
         //register events
         builder.addEventListeners(new ReadyEventClass());
