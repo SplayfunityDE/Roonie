@@ -5,6 +5,7 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
 import java.awt.*;
 
@@ -13,7 +14,7 @@ public class AudioLoadResult implements AudioLoadResultHandler {
     private MusicController controller;
     private String uri;
 
-    public AudioLoadResult(MusicController controller, String uri) {
+    public AudioLoadResult(MusicController controller, String uri, SlashCommandInteractionEvent event) {
         this.controller = controller;
         this.uri = uri;
     }

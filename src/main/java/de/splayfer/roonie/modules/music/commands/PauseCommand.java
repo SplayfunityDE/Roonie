@@ -7,16 +7,15 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.managers.AudioManager;
 
-public class StopCommand extends ListenerAdapter {
+public class PauseCommand extends ListenerAdapter {
 
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
-        if (event.getName().equals("stop")) {
+        if (event.getName().equals("pause")) {
             MusicController controller = Roonie.playerManager.getController(event.getGuild().getIdLong());
             AudioManager manager = event.getGuild().getAudioManager();
             AudioPlayer player = controller.getPlayer();
-            player.stopTrack();
-            manager.closeAudioConnection();
-            event.deferReply().queue();
+            player.setPaused(true);
         }
     }
+
 }

@@ -20,7 +20,8 @@ public class PlayCommand extends ListenerAdapter {
                 if(!url.startsWith("http")) {
                     url = "ytsearch: " + url;
                 }
-                Roonie.audioPlayerManager.loadItem(url, new AudioLoadResult(controller, url));
+                Roonie.audioPlayerManager.loadItem(url, new AudioLoadResult(controller, url, event));
+                event.deferReply().queue();
             }
         }
     }

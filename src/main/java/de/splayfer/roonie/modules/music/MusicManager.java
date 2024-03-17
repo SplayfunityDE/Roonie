@@ -1,8 +1,7 @@
 package de.splayfer.roonie.modules.music;
 
 import de.splayfer.roonie.Roonie;
-import de.splayfer.roonie.modules.music.commands.PlayCommand;
-import de.splayfer.roonie.modules.music.commands.StopCommand;
+import de.splayfer.roonie.modules.music.commands.*;
 import de.splayfer.roonie.modules.poll.PollCreateCommand;
 import de.splayfer.roonie.modules.poll.PollEnterListener;
 import de.splayfer.roonie.utils.CommandManager;
@@ -13,7 +12,7 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 public class MusicManager {
 
     public static void init() {
-        Roonie.builder.addEventListeners(new PlayCommand(), new StopCommand());
+        Roonie.builder.addEventListeners(new PlayCommand(), new StopCommand(), new ResumeCommand(), new SkipCommand(), new PauseCommand(), new ShuffelCommand());
 
         CommandManager.addCommands(Guilds.MAIN,
                 Commands.slash("play", "▶ │ Spiele Inhalte von YouTube, Spotify, Soundcloud, Twitch und vielem mehr!")
@@ -23,7 +22,7 @@ public class MusicManager {
                 Commands.slash("resume", "⏯ │ Setzt den aktuellen Inhalt fort!"),
                 Commands.slash("stop", "⏹ │ Stoppt den aktuell gespielten Inhalt!"),
                 Commands.slash("skip", "⏯ │ Übersprint den aktuellen Titel der Warteschleife!"),
-                Commands.slash("shuffle", "� │ Würfelt die aktuellen Titel der Warteschleifen durcheinander!"));
+                Commands.slash("shuffel", "� │ Würfelt die aktuellen Titel der Warteschleifen durcheinander!"));
     }
 
 }
