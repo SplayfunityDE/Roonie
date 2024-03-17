@@ -16,7 +16,7 @@ public class PlayCommand extends ListenerAdapter {
                 AudioManager manager = event.getGuild().getAudioManager();
                 manager.openAudioConnection(event.getMember().getVoiceState().getChannel());
 
-                String url = event.getOption("url").getAsString().trim();
+                String url = event.getOption("inhalt").getAsString().trim();
                 if(!url.startsWith("http")) {
                     url = "ytsearch: " + url;
                 }
