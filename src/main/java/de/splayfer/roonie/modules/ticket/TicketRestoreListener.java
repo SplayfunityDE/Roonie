@@ -11,21 +11,23 @@ public class TicketRestoreListener {
             //check for threads & post
             if (!(Roonie.mainGuild.getThreadChannels().contains(ticket.getChannel()) && Roonie.mainGuild.getForumChannelById(Channels.TICKETFORUM.getId()).getThreadChannels().contains(ticket.getPost()))) {
                 ticket.delete();
-                System.out.println("Ticket " + ticket.getChannel().getName() + " gelöscht");
+                System.out.println("Ticket " + " gelöscht");
             } else if (!Roonie.mainGuild.getThreadChannels().contains(ticket.getChannel())) {
                 //check only for threads
                 ticket.delete();
-                System.out.println("Ticket " + ticket.getChannel().getName() + " wegen fehlendem Channel gelöscht");
+                System.out.println("Ticket " + " wegen fehlendem Channel gelöscht");
             } else if (!Roonie.mainGuild.getForumChannelById(Channels.TICKETFORUM.getId()).getThreadChannels().contains(ticket.getPost())) {
                 //check only for post
                 ticket.setPost(Roonie.mainGuild.getForumChannelById(Channels.TICKETFORUM.getId()).createForumPost(Ticket.typeSymbol.get(ticket.getType()) + "-" + ticket.getCreator().getEffectiveName(), MessageCreateData.fromContent("\u200E")).complete().getThreadChannel());
                 ticket.getPost().sendMessageEmbeds(ticket.getPostEmbed()).queue();
                 ticket.updateMongoDB();
-                System.out.println("Ticket " + ticket.getChannel().getName() + " wegen fehlendem Post");
+                System.out.println("Ticket " + " wegen fehlendem Post wiederhergestellt");
             }
             //check for member left - if ticket is unclaimed
-            if (ticket.getSupporter() == null && !Roonie.mainGuild.getMembers().contains(ticket.getCreator()))
+            if (ticket.getSupporter() == null && !Roonie.mainGuild.getMembers().contains(ticket.getCreator())) {
                 ticket.close("Server verlassen");
+                System.out.println("Server verlassen");
+            }
         }
     }
 }
