@@ -123,7 +123,7 @@ class ReadyEventClass extends ListenerAdapter {
         Roonie.autoRoles = new Role[]{
                 Roonie.mainGuild.getRoleById("891292965241233448"), //member-role
         };
-        Roonie.mainGuild.updateCommands().addCommands(Commands.slash("letsjohannes", "Hmm :eyes:")).queue();
+        //Roonie.mainGuild.updateCommands().addCommands(Commands.slash("letsjohannes", "Hmm :eyes:")).queue();
         TicketRestoreListener.restoreTickets();
     }
 }
