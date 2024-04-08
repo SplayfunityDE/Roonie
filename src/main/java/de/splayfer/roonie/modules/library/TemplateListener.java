@@ -25,7 +25,6 @@ public class TemplateListener extends ListenerAdapter {
             put("musik", "<a:music:886624918983278622> Musik");
             put("community", "<a:partner:885212849440448512> Community");
             put("content", "\uD83D\uDCFD Content Creator");
-            put("galaxy", "\uD83C\uDF00 Galaxy");
             put("projekt", "<:folder:883415478700232735> Projekt");
         }};
     }
@@ -59,12 +58,15 @@ public class TemplateListener extends ListenerAdapter {
             }
         } else categoryString.append(option.getLabel());
         try {
-            PrivateChannel privateChannel = target.getUser().openPrivateChannel().complete();
-            privateChannel.sendMessageEmbeds(DefaultMessage.success("Kategorie(n) erfolgreich gesendet", "Dir wurden folgende Kategorie(n) zugesendet!", new MessageEmbed.Field(categoryString.toString(), "", false))).complete();
             StringBuilder builder = new StringBuilder();
             for (String template : templates) {
                 builder.append(template).append("\n");
             }
+            PrivateChannel privateChannel = target.getUser().openPrivateChannel().complete();
+            if (!builder.isEmpty())
+                privateChannel.sendMessageEmbeds(DefaultMessage.success("Kategorie(n) erfolgreich gesendet", "Dir wurden folgende Kategorie(n) zugesendet!", new MessageEmbed.Field(categoryString.toString(), "", false))).complete();
+            else
+                privateChannel.sendMessageEmbeds(DefaultMessage.error("Leere Kategorie(n)", "Es scheint als wäre deine Auswahl noch nicht mit Servervorlagen gefüllt :(", new MessageEmbed.Field(categoryString.toString(), "", false))).complete();
             privateChannel.sendMessage(builder.toString()).complete();
             return true;
         } catch (ErrorResponseException ex) {

@@ -56,7 +56,6 @@ public class LibrarySetupCommand extends ListenerAdapter {
                         .addOption("Musik", "musik", "Klicke hier, um diese Kategorie auszuwählen!", Emoji.fromCustom(event.getJDA().getEmojiById("886624918983278622")))
                         .addOption("Community", "community", "Klicke hier, um diese Kategorie auszuwählen!", Emoji.fromCustom(event.getJDA().getEmojiById("885212849440448512")))
                         .addOption("Content Creator", "content", "Klicke hier, um diese Kategorie auszuwählen!", Emoji.fromFormatted("\uD83D\uDCFD"))
-                        .addOption("Galaxy", "galaxy", "Klicke hier, um diese Kategorie auszuwählen!", Emoji.fromFormatted("\uD83C\uDF00"))
                         .addOption("Projekt", "projekt", "Klicke hier, um diese Kategorie auszuwählen!", Emoji.fromCustom(event.getJDA().getEmojiById("892461354533941268")));
                 templates.setMaxValues(templates.getOptions().size());
                 channel.sendMessageEmbeds(bannerEmbed.build(), servertemplates.build()).setActionRow(templates.build()).queue();
