@@ -27,7 +27,10 @@ public class TicketRestoreListener {
             }
             //check for member left - if ticket is unclaimed
             if (ticket.getSupporter() == null && !Roonie.mainGuild.getMembers().contains(ticket.getCreator())) {
-                ticket.close("Server verlassen");
+                if (ticket.getChannel() != null)
+                    ticket.close("Server verlassen");
+                else
+                    ticket.prune(list.get(ticket));
                 System.out.println("Server verlassen");
             }
         }
