@@ -147,12 +147,11 @@ public class Ticket {
     }
 
     public void delete() {
-        try {
+        if (channel != null)
             channel.delete().queue();
+        if (post != null)
             post.delete().queue();
-            mongoDB.drop("ticket", mongoDB.find("ticket", "channel", channel.getIdLong()).first());
-        } catch (Exception exception) {
-        }
+        mongoDB.drop("ticket", mongoDB.find("ticket", "channel", channel.getIdLong()).first());
     }
 
     public Document getAsDocument() {
