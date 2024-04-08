@@ -8,17 +8,20 @@ public class TicketRestoreListener {
 
     public static void restoreTickets() {
         for (Ticket ticket : Ticket.getAllTickets()) {
-            //check for threads
-            if (!Roonie.mainGuild.getThreadChannels().contains(ticket.getChannel())) {
-                ticket.setChannel(Roonie.mainGuild.getTextChannelById(Channels.TICKETPANEL.getId()).createThreadChannel(Ticket.typeSymbol.get(ticket.getType()) + "-" + ticket.getCreator().getEffectiveName()).complete());
-                ticket.getChannel().sendMessageEmbeds(ticket.getMainEmbeds()).queue();
-                ticket.updateMongoDB();
-            }
-            //check for post
-            if (!Roonie.mainGuild.getForumChannelById(Channels.TICKETFORUM.getId()).getThreadChannels().contains(ticket.getPost())) {
+            //check for threads & post
+            if (!(Roonie.mainGuild.getThreadChannels().contains(ticket.getChannel()) && Roonie.mainGuild.getForumChannelById(Channels.TICKETFORUM.getId()).getThreadChannels().contains(ticket.getPost()))) {
+                ticket.delete();
+                System.out.println("Ticket " + ticket.getChannel().getName() + " gelöscht");
+            } else if (!Roonie.mainGuild.getThreadChannels().contains(ticket.getChannel())) {
+                //check only for threads
+                ticket.delete();
+                System.out.println("Ticket " + ticket.getChannel().getName() + " wegen fehlendem Channel gelöscht");
+            } else if (!Roonie.mainGuild.getForumChannelById(Channels.TICKETFORUM.getId()).getThreadChannels().contains(ticket.getPost())) {
+                //check only for post
                 ticket.setPost(Roonie.mainGuild.getForumChannelById(Channels.TICKETFORUM.getId()).createForumPost(Ticket.typeSymbol.get(ticket.getType()) + "-" + ticket.getCreator().getEffectiveName(), MessageCreateData.fromContent("\u200E")).complete().getThreadChannel());
                 ticket.getPost().sendMessageEmbeds(ticket.getPostEmbed()).queue();
                 ticket.updateMongoDB();
+                System.out.println("Ticket " + ticket.getChannel().getName() + " wegen fehlendem Post");
             }
             //check for member left - if ticket is unclaimed
             if (ticket.getSupporter() == null && !Roonie.mainGuild.getMembers().contains(ticket.getCreator()))

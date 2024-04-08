@@ -60,6 +60,7 @@ public class Roonie {
     public static final long BOTID = 886209763178844212L;
 
     public static void main(String[] args) throws IOException, InterruptedException {
+
         MongoDBDatabase.connect();
         if (!File.separator.equals("/"))
             PATH = System.getProperty("user.dir");

@@ -137,10 +137,22 @@ public class Ticket {
     }
 
     public void close(String reason) {
-        channel.delete().queue();
-        post.delete().queue();
-        mongoDB.drop("ticket", mongoDB.find("ticket", "channel", channel.getIdLong()).first());
-        creator.getUser().openPrivateChannel().complete().sendMessageEmbeds(Embeds.BANNER_TICKET, getCloseDmEmbed(reason)).queue();
+        try {
+            channel.delete().queue();
+            post.delete().queue();
+            mongoDB.drop("ticket", mongoDB.find("ticket", "channel", channel.getIdLong()).first());
+            creator.getUser().openPrivateChannel().complete().sendMessageEmbeds(Embeds.BANNER_TICKET, getCloseDmEmbed(reason)).queue();
+        } catch (Exception exception) {
+        }
+    }
+
+    public void delete() {
+        try {
+            channel.delete().queue();
+            post.delete().queue();
+            mongoDB.drop("ticket", mongoDB.find("ticket", "channel", channel.getIdLong()).first());
+        } catch (Exception exception) {
+        }
     }
 
     public Document getAsDocument() {
