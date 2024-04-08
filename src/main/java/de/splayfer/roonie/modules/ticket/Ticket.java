@@ -137,21 +137,23 @@ public class Ticket {
     }
 
     public void close(String reason) {
-        try {
-            channel.delete().queue();
-            post.delete().queue();
-            mongoDB.drop("ticket", mongoDB.find("ticket", "channel", channel.getIdLong()).first());
-            creator.getUser().openPrivateChannel().complete().sendMessageEmbeds(Embeds.BANNER_TICKET, getCloseDmEmbed(reason)).queue();
-        } catch (Exception exception) {
-        }
-    }
-
-    public void delete() {
         if (channel != null)
             channel.delete().queue();
         if (post != null)
             post.delete().queue();
         mongoDB.drop("ticket", mongoDB.find("ticket", "channel", channel.getIdLong()).first());
+        try {
+            creator.getUser().openPrivateChannel().complete().sendMessageEmbeds(Embeds.BANNER_TICKET, getCloseDmEmbed(reason)).queue();
+        } catch (Exception exception) {
+        }
+    }
+
+    public void prune(long channelId) {
+        if (channel != null)
+            channel.delete().queue();
+        if (post != null)
+            post.delete().queue();
+        mongoDB.drop("ticket", mongoDB.find("ticket", "channel", channelId).first());
     }
 
     public Document getAsDocument() {
@@ -174,6 +176,13 @@ public class Ticket {
         List<Ticket> tickets = new ArrayList<>();
         for (Document doc : mongoDB.findAll("ticket"))
             tickets.add(Ticket.getFromDocument(doc));
+        return tickets;
+    }
+
+    public static HashMap<Ticket, Long> getAllTicketsWithId() {
+        HashMap<Ticket, Long> tickets = new HashMap<>();
+        for (Document doc : mongoDB.findAll("ticket"))
+            tickets.put(Ticket.getFromDocument(doc), doc.getLong("channel"));
         return tickets;
     }
 

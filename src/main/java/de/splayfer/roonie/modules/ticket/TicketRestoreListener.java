@@ -4,17 +4,19 @@ import de.splayfer.roonie.Roonie;
 import de.splayfer.roonie.utils.enums.Channels;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
+import java.util.HashMap;
+
 public class TicketRestoreListener {
 
     public static void restoreTickets() {
-        for (Ticket ticket : Ticket.getAllTickets()) {
+        HashMap<Ticket, Long> list = Ticket.getAllTicketsWithId();
+        for (Ticket ticket : list.keySet()) {
             //check for threads & post
             if (!(Roonie.mainGuild.getThreadChannels().contains(ticket.getChannel()) && Roonie.mainGuild.getForumChannelById(Channels.TICKETFORUM.getId()).getThreadChannels().contains(ticket.getPost()))) {
-                ticket.delete();
                 System.out.println("Ticket " + " gelöscht");
             } else if (!Roonie.mainGuild.getThreadChannels().contains(ticket.getChannel())) {
                 //check only for threads
-                ticket.delete();
+                ticket.prune(list.get(ticket));
                 System.out.println("Ticket " + " wegen fehlendem Channel gelöscht");
             } else if (!Roonie.mainGuild.getForumChannelById(Channels.TICKETFORUM.getId()).getThreadChannels().contains(ticket.getPost())) {
                 //check only for post
