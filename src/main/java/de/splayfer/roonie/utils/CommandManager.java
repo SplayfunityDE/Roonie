@@ -31,16 +31,18 @@ public class CommandManager {
     public static void initCommands(JDA jda) {
         List<CommandData> list = new ArrayList<>();
         for (Long id : commands.keySet()) {
+            System.out.println("loop");
             list.addAll(commands.get(id));
-            /*
             if (id == -1) {
-                jda.updateCommands().addCommands(commands.get(id)).queue();
+                if (!jda.retrieveCommands().complete().equals(commands.get(id)))
+                    jda.updateCommands().addCommands(commands.get(id)).queue();
             } else {
                 Guild g = jda.getGuildById(id);
-                g.updateCommands().addCommands(commands.get(id)).queue();
+                if (!g.retrieveCommands().complete().equals(commands.get(id))) {
+                    g.updateCommands().addCommands(commands.get(id)).queue();
+                    System.out.println("global update");
+                }
             }
-             */
-            Roonie.mainGuild.updateCommands().addCommands(list).queue();
         }
     }
 

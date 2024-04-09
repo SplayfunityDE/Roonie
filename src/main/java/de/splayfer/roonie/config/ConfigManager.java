@@ -2,6 +2,7 @@ package de.splayfer.roonie.config;
 
 import de.splayfer.roonie.Roonie;
 import de.splayfer.roonie.utils.CommandManager;
+import de.splayfer.roonie.utils.enums.Guilds;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
