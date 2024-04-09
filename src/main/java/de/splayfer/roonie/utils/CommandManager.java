@@ -30,18 +30,14 @@ public class CommandManager {
     }
     public static void initCommands(JDA jda) {
         List<CommandData> list = new ArrayList<>();
+        if (1 == 1) return;
         for (Long id : commands.keySet()) {
-            System.out.println("loop");
             list.addAll(commands.get(id));
-            if (id == -1) {
-                if (!jda.retrieveCommands().complete().equals(commands.get(id)))
-                    jda.updateCommands().addCommands(commands.get(id)).queue();
-            } else {
+            if (id == -1)
+                jda.updateCommands().addCommands(commands.get(id)).queue();
+            else {
                 Guild g = jda.getGuildById(id);
-                if (!g.retrieveCommands().complete().equals(commands.get(id))) {
-                    g.updateCommands().addCommands(commands.get(id)).queue();
-                    System.out.println("global update");
-                }
+                g.updateCommands().addCommands(commands.get(id)).queue();
             }
         }
     }
