@@ -107,7 +107,7 @@ public class TicketListener extends ListenerAdapter {
                             .addComponents(
                                     ActionRow.of(TextInput.create("reason", "Grund", TextInputStyle.SHORT)
                                             .setPlaceholder("(Optional) Gib einen Grund an")
-                                            .setRequiredRange(1, 50)
+                                            .setRequiredRange(1, 200)
                                             .setRequired(false)
                                             .build()))
                             .build()).queue();
