@@ -30,7 +30,6 @@ public class CommandManager {
     }
     public static void initCommands(JDA jda) {
         List<CommandData> list = new ArrayList<>();
-        if (1 == 1) return;
         for (Long id : commands.keySet()) {
             list.addAll(commands.get(id));
             if (id == -1)
