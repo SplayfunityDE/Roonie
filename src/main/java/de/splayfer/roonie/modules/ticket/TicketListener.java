@@ -70,10 +70,18 @@ public class TicketListener extends ListenerAdapter {
                                     messageCache.remove(hook.retrieveOriginal().complete().getIdLong());
                             }
                         }, 1000 * 60 * 14);
-                    } else
-                    if (event.getMember().hasPermission(Permission.ADMINISTRATOR))
-                        event.replyEmbeds(DefaultMessage.error("Ticket bereits geclaimt", "Das angegebene Ticket wurde bereits von " + ticket.getSupporter().getAsMention() + " geclaimt!", new MessageEmbed.Field("\uD83D\uDEAB Rechte entziehen", "Als Administrator kannst du einem Teammitglied die Claim-Rechte temporär entziehen, klicke hierfür auf den Button unter dieser Nachricht!", false))).setActionRow(Button.secondary("ticket.unclaim", "Claim-Rechte entziehen").withEmoji(Emoji.fromFormatted("\uD83D\uDEAB"))).setEphemeral(true).queue();
-                    break;
+                    } else if (event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
+                        InteractionHook hook = event.replyEmbeds(DefaultMessage.error("Ticket bereits geclaimt", "Das angegebene Ticket wurde bereits von " + ticket.getSupporter().getAsMention() + " geclaimt!", new MessageEmbed.Field("\uD83D\uDEAB Rechte entziehen", "Als Administrator kannst du einem Teammitglied die Claim-Rechte temporär entziehen, klicke hierfür auf den Button unter dieser Nachricht!", false))).setActionRow(Button.secondary("ticket.unclaim", "Claim-Rechte entziehen").withEmoji(Emoji.fromFormatted("\uD83D\uDEAB"))).setEphemeral(true).complete();
+                        messageCache.put(hook.retrieveOriginal().complete().getIdLong(), event.getMessage());
+                        new Timer().schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                if (messageCache.get(hook.retrieveOriginal().complete().getIdLong()) != null)
+                                    messageCache.remove(hook.retrieveOriginal().complete().getIdLong());
+                            }
+                        }, 1000 * 60 * 14);
+                    }
+                        break;
                 case "unclaim":
                     ticket = Ticket.getFromPost(event.getChannelIdLong());
                     event.getMessage().delete().queue();
