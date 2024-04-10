@@ -32,15 +32,12 @@ public class CommandManager {
         List<CommandData> list = new ArrayList<>();
         for (Long id : commands.keySet()) {
             list.addAll(commands.get(id));
-            /*
-            if (id == -1) {
+            if (id == -1)
                 jda.updateCommands().addCommands(commands.get(id)).queue();
-            } else {
+            else {
                 Guild g = jda.getGuildById(id);
                 g.updateCommands().addCommands(commands.get(id)).queue();
             }
-             */
-            Roonie.mainGuild.updateCommands().addCommands(list).queue();
         }
     }
 

@@ -117,7 +117,12 @@ public class Ticket {
     }
 
     public static Ticket create(Member creator, int type) {
-        Ticket ticket = new Ticket(Roonie.mainGuild.getTextChannelById(Channels.TICKETPANEL.getId()).createThreadChannel(typeSymbol.get(type) + "-" + creator.getEffectiveName(), true).complete(), Roonie.mainGuild.getForumChannelById(Channels.TICKETFORUM.getId()).createForumPost(typeSymbol.get(type) + "-" + creator.getEffectiveName(), MessageCreateData.fromContent("\u200E")).complete().getThreadChannel(), creator, null, type, new Date());
+        ThreadChannel threadChannel;
+        if (creator.getGuild().getBoostCount() >= 7) //check for server boost level
+            threadChannel = Roonie.mainGuild.getTextChannelById(Channels.TICKETPANEL.getId()).createThreadChannel(typeSymbol.get(type) + "-" + creator.getEffectiveName(), true).setInvitable(false).complete();
+        else
+            threadChannel = Roonie.mainGuild.getTextChannelById(Channels.TICKETPANEL.getId()).createThreadChannel(typeSymbol.get(type) + "-" + creator.getEffectiveName(), true).complete();
+        Ticket ticket = new Ticket(threadChannel, Roonie.mainGuild.getForumChannelById(Channels.TICKETFORUM.getId()).createForumPost(typeSymbol.get(type) + "-" + creator.getEffectiveName(), MessageCreateData.fromContent("\u200E")).complete().getThreadChannel(), creator, null, type, new Date());
         mongoDB.insert("ticket", ticket.getAsDocument());
 
         //create embeds & update permissions
@@ -132,10 +137,23 @@ public class Ticket {
     }
 
     public void close(String reason) {
-        channel.delete().queue();
-        post.delete().queue();
+        if (channel != null)
+            channel.delete().queue();
+        if (post != null)
+            post.delete().queue();
         mongoDB.drop("ticket", mongoDB.find("ticket", "channel", channel.getIdLong()).first());
-        creator.getUser().openPrivateChannel().complete().sendMessageEmbeds(Embeds.BANNER_TICKET, getCloseDmEmbed(reason)).queue();
+        try {
+            creator.getUser().openPrivateChannel().complete().sendMessageEmbeds(Embeds.BANNER_TICKET, getCloseDmEmbed(reason)).queue();
+        } catch (Exception exception) {
+        }
+    }
+
+    public void prune(long channelId) {
+        if (channel != null)
+            channel.delete().queue();
+        if (post != null)
+            post.delete().queue();
+        mongoDB.drop("ticket", mongoDB.find("ticket", "channel", channelId).first());
     }
 
     public Document getAsDocument() {
@@ -161,8 +179,15 @@ public class Ticket {
         return tickets;
     }
 
+    public static HashMap<Ticket, Long> getAllTicketsWithId() {
+        HashMap<Ticket, Long> tickets = new HashMap<>();
+        for (Document doc : mongoDB.findAll("ticket"))
+            tickets.put(Ticket.getFromDocument(doc), doc.getLong("channel"));
+        return tickets;
+    }
+
     public List<MessageEmbed> getMainEmbeds() {
-        MessageEmbed banner = Embeds.BANNER_TICKET;
+        MessageEmbed banner;
         EmbedBuilder message = new EmbedBuilder();
         switch (type) {
             case 1:
@@ -206,6 +231,8 @@ public class Ticket {
                 message.addField("⛔ Achtung!", "Das Fragen nach einer Servereinladung / Website ist nicht strafbar!", false);
                 message.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
                 break;
+            default:
+                banner = Embeds.BANNER_TICKET;
         }
         return List.of(banner, message.build());
     }

@@ -141,8 +141,6 @@ public class BoosterWall extends ListenerAdapter {
              */
             Message msg = Config.getConfigChannel("booster").retrieveMessageById(Config.getConfigMessageId("booster")).complete();
 
-
-
             EmbedBuilder message = new EmbedBuilder();
             message.setColor(0x28346d);
             message.setTitle(msg.getEmbeds().get(1).getTitle());
