@@ -63,11 +63,11 @@ public class TemplateListener extends ListenerAdapter {
                 builder.append(template).append("\n");
             }
             PrivateChannel privateChannel = target.getUser().openPrivateChannel().complete();
-            if (!builder.isEmpty())
+            if (!builder.isEmpty()) {
                 privateChannel.sendMessageEmbeds(DefaultMessage.success("Kategorie(n) erfolgreich gesendet", "Dir wurden folgende Kategorie(n) zugesendet!", new MessageEmbed.Field(categoryString.toString(), "", false))).complete();
-            else
+                privateChannel.sendMessage(builder.toString()).complete();
+            } else
                 privateChannel.sendMessageEmbeds(DefaultMessage.error("Leere Kategorie(n)", "Es scheint als wäre deine Auswahl noch nicht mit Servervorlagen gefüllt :(", new MessageEmbed.Field(categoryString.toString(), "", false))).complete();
-            privateChannel.sendMessage(builder.toString()).complete();
             return true;
         } catch (ErrorResponseException ex) {
             return false;
