@@ -118,7 +118,7 @@ public class TicketListener extends ListenerAdapter {
 
     public void onMessageReceived(MessageReceivedEvent event) {
         if (event.getChannel().getId().equals("908795138623537232"))
-            if (event.getAuthor().getIdLong() == Roonie.BOTID && event.getMessage().getEmbeds().isEmpty())
+            if (event.getAuthor().getIdLong() == Roonie.shardMan.getSelfUser().getIdLong() && event.getMessage().getEmbeds().isEmpty())
                 event.getMessage().delete().queue();
     }
 

@@ -57,7 +57,6 @@ public class Roonie {
     public static JDABuilder builder;
     public static JDA shardMan;
     public static String PATH = "/bot";
-    public static final long BOTID = 886209763178844212L;
 
     public static void main(String[] args) throws IOException, InterruptedException {
 

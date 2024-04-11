@@ -9,7 +9,7 @@ public class PlayerManager {
     public ConcurrentHashMap<Long, MusicController> controller;
 
     public PlayerManager() {
-        this.controller = new ConcurrentHashMap<Long, MusicController>();
+        this.controller = new ConcurrentHashMap<>();
     }
 
     public MusicController getController(long guildid) {
