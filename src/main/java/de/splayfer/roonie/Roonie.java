@@ -65,7 +65,7 @@ public class Roonie {
         if (!File.separator.equals("/"))
             PATH = System.getProperty("user.dir");
         builder = JDABuilder.createDefault("ODg2MjA5NzYzMTc4ODQ0MjEy.G6Z85Z.s24gB6nFpVOPQkyvJaAxiVtTDRWVzoGtBjucgE")
-                .setActivity(Activity.streaming("auf 🌀SPLΛYFUNITY🌀", "https://twitch.tv/splayfer"))
+                .setActivity(Activity.streaming("🌀SPLΛYFUNITY🌀", "https://twitch.tv/splayfer"))
                 .setStatus(OnlineStatus.ONLINE)
                 .setChunkingFilter(ChunkingFilter.ALL)
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
