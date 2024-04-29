@@ -54,3 +54,14 @@ jobs:
       
     - name: Deploy with rsync
       run: rsync -avz /home/runner/work/Roonie/Roonie/target/roonie-1.0-SNAPSHOT.jar ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/opt/dockerfiles/roonie
+
+    - name: Rebuild container
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+          docker compose -f /opt/dockerfiles/roonie/docker-compose.yaml down
+          docker compose -f /opt/dockerfiles/roonie/docker-compose.yaml up -d
