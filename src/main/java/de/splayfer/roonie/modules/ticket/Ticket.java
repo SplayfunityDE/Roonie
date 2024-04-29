@@ -192,7 +192,7 @@ public class Ticket {
         switch (type) {
             case 1:
                 banner = Embeds.BANNER_TICKET;
-                message.setColor(0x4DD0E1);
+                message.setColor(0x28346d);
                 message.setTitle("\uD83D\uDCE8 Support Anfrage - Ticket");
                 message.setDescription("Hey " + creator.getAsMention() + " !\n" +
                         "> dein Support Ticket wurde erfolgreich erstellt und ein zuständiges Teammtiglied kontaktiert. Überlege dir am besten schonmal im Voraus, wie du dein Anliegen formulieren möchtest!");

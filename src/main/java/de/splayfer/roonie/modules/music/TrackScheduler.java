@@ -42,5 +42,4 @@ public class TrackScheduler extends AudioEventAdapter {
         player.stopTrack();
         manager.closeAudioConnection();
     }
-
 }

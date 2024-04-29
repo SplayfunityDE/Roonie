@@ -14,7 +14,7 @@ public class ResponseManager {
     public static void init() {
         Roonie.builder.addEventListeners(new ResponseAddCommand(), new ResponseRemoveCommand(), new ResponseListener());
 
-        CommandManager.addCommands(Guilds.MAIN, Commands.slash("response", "\uD83D\uDCDC │ Verwalte automatisierte Reaktionen des Bots!")
+        CommandManager.addCommands(Guilds.MAIN, Commands.slash("response", "\uD83D\uDCDC   Verwalte automatisierte Reaktionen des Bots!")
                 .addSubcommands(new SubcommandData("add", "\uD83D\uDCDC │ Füge automatisierte Reaktionen hinzu!")
                                 .addOption(OptionType.STRING, "nachricht", "\uD83D\uDCE2 │ Nachricht, auf die der Bot reagieren soll", true),
                         new SubcommandData("remove", "\uD83D\uDCDC │ Entferne automatisierte Reaktionen!")

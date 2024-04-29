@@ -1,6 +1,5 @@
 package de.splayfer.roonie;
 
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
@@ -36,7 +35,6 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
@@ -49,7 +47,7 @@ import java.util.EnumSet;
 public class Roonie {
 
     public static PlayerManager playerManager;
-    public static AudioPlayerManager audioPlayerManager = new DefaultAudioPlayerManager();
+    public static AudioPlayerManager audioPlayerManager;
     public static Guild mainGuild;
     public static Guild emojiServerGuild;
     public static Guild emojiServerGuild2;
@@ -57,20 +55,23 @@ public class Roonie {
     public static JDABuilder builder;
     public static JDA shardMan;
     public static String PATH = "/bot";
-    public static final long BOTID = 886209763178844212L;
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
         MongoDBDatabase.connect();
-        if (!File.separator.equals("/"))
+        if (File.separator.equals("/"))
             PATH = System.getProperty("user.dir");
         builder = JDABuilder.createDefault("ODg2MjA5NzYzMTc4ODQ0MjEy.G6Z85Z.s24gB6nFpVOPQkyvJaAxiVtTDRWVzoGtBjucgE")
-                .setActivity(Activity.streaming("auf 🌀SPLΛYFUNITY🌀", "https://twitch.tv/splayfer"))
+                .setActivity(Activity.streaming("🌀SPLΛYFUNITY🌀", "https://twitch.tv/splayfer"))
                 .setStatus(OnlineStatus.ONLINE)
                 .setChunkingFilter(ChunkingFilter.ALL)
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
                 .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_VOICE_STATES, GatewayIntent.DIRECT_MESSAGE_TYPING, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.MESSAGE_CONTENT)
                 .enableCache(EnumSet.of(CacheFlag.ONLINE_STATUS, CacheFlag.CLIENT_STATUS, CacheFlag.EMOJI, CacheFlag.VOICE_STATE));
+
+        audioPlayerManager = new DefaultAudioPlayerManager();
+        AudioSourceManagers.registerRemoteSources(audioPlayerManager);
+        playerManager = new PlayerManager();
 
         EconomyManager.init();
         GiveawayManager.init();
@@ -84,10 +85,6 @@ public class Roonie {
         ConfigManager.init();
         BoosterManager.init();
         MusicManager.init();
-
-        AudioSourceManagers.registerRemoteSources(audioPlayerManager);
-        AudioPlayer player = audioPlayerManager.createPlayer();
-        playerManager = new PlayerManager();
 
         //register events
         builder.addEventListeners(new ReadyEventClass());
