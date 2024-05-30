@@ -18,15 +18,14 @@ public class Queue {
 
 
     public boolean next() {
-        if(this.queuelist.size() >= 1) {
+        if(!this.queuelist.isEmpty()) {
             AudioTrack track = queuelist.remove(0);
-
             if(track != null) {
                 this.controller.getPlayer().playTrack(track);
+                System.out.println("Test");
                 return true;
             }
         }
-
         return false;
     }
 

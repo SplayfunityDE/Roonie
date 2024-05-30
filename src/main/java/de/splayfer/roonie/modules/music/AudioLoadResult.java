@@ -20,7 +20,8 @@ public class AudioLoadResult implements AudioLoadResultHandler {
     }
     @Override
     public void trackLoaded(AudioTrack track) {
-        controller.getPlayer().playTrack(track);
+        controller.getQueue().addTrackToQueue(track);
+        //controller.getPlayer().playTrack(track);
     }
 
     @Override
