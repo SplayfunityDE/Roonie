@@ -27,6 +27,7 @@ import de.splayfer.roonie.modules.tempchannel.TempchannelManager;
 import de.splayfer.roonie.modules.ticket.TicketManager;
 import de.splayfer.roonie.modules.ticket.TicketRestoreListener;
 import de.splayfer.roonie.utils.CommandManager;
+import dev.lavalink.youtube.YoutubeAudioSourceManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -70,7 +71,8 @@ public class Roonie {
                 .enableCache(EnumSet.of(CacheFlag.ONLINE_STATUS, CacheFlag.CLIENT_STATUS, CacheFlag.EMOJI, CacheFlag.VOICE_STATE));
 
         audioPlayerManager = new DefaultAudioPlayerManager();
-        AudioSourceManagers.registerRemoteSources(audioPlayerManager);
+        audioPlayerManager.registerSourceManager(new YoutubeAudioSourceManager());
+        AudioSourceManagers.registerRemoteSources(audioPlayerManager, YoutubeAudioSourceManager.class);
         playerManager = new PlayerManager();
 
         EconomyManager.init();

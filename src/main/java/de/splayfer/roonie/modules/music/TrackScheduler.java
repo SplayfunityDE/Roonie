@@ -28,18 +28,20 @@ public class TrackScheduler extends AudioEventAdapter {
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-        Guild guild = Roonie.shardMan.getGuildById(Roonie.playerManager.getGuildByPlayerHash(player.hashCode()));
+        if (endReason.name().equals("FINISHED")) {
+            Guild guild = Roonie.shardMan.getGuildById(Roonie.playerManager.getGuildByPlayerHash(player.hashCode()));
 
-        if(endReason.mayStartNext) {
-            MusicController controller = Roonie.playerManager.getController(guild.getIdLong());
-            Queue queue = controller.getQueue();
+            if (endReason.mayStartNext) {
+                MusicController controller = Roonie.playerManager.getController(guild.getIdLong());
+                Queue queue = controller.getQueue();
 
-            if(queue.next())
-                return;
+                if (queue.next())
+                    return;
+            }
+
+            AudioManager manager = guild.getAudioManager();
+            player.stopTrack();
+            manager.closeAudioConnection();
         }
-
-        AudioManager manager = guild.getAudioManager();
-        player.stopTrack();
-        manager.closeAudioConnection();
     }
 }
