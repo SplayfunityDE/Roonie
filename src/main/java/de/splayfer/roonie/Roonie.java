@@ -69,6 +69,8 @@ public class Roonie {
             dotenv.configure().load();
         if (dotenv.get("MEDIA_PATH").equals("user.dir"))
             PATH = System.getProperty("user.dir");
+        else
+            PATH = dotenv.get("MEDIA_PATH");
         MongoDBDatabase.connect();
         /*
         if (!File.separator.equals("/"))
