@@ -66,16 +66,12 @@ public class Roonie {
         if (envFile.exists())
             dotenv = Dotenv.configure().directory(jarDir).load();
         else
-            dotenv.configure().load();
+            dotenv = Dotenv.configure().load();
         if (dotenv.get("MEDIA_PATH").equals("user.dir"))
             PATH = System.getProperty("user.dir");
         else
             PATH = dotenv.get("MEDIA_PATH");
         MongoDBDatabase.connect();
-        /*
-        if (!File.separator.equals("/"))
-            PATH = System.getProperty("user.dir");
-         */
         builder = JDABuilder.createDefault(dotenv.get("BOT_TOKEN"))
                 .setActivity(Activity.streaming("🌀SPLΛYFUNITY🌀", "https://twitch.tv/splayfer"))
                 .setStatus(OnlineStatus.ONLINE)

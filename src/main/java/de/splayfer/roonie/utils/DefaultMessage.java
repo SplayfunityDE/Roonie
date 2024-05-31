@@ -1,5 +1,7 @@
 package de.splayfer.roonie.utils;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
@@ -10,40 +12,25 @@ public class DefaultMessage {
     private static final String errorEmoji = ":no_entry_sign:";
     private static final String successEmoji = "✅";
 
+    @Getter
+    @Setter
     private String type;
+    @Getter
+    @Setter
     private String title;
+    @Getter
+    @Setter
     private String description;
+    private String thumbnail;
+    @Getter
+    @Setter
     private MessageEmbed.Field[] fields;
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
+    public DefaultMessage(String type, String title, String description, String image, MessageEmbed.Field... fields) {
         this.type = type;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
         this.description = description;
-    }
-
-    public MessageEmbed.Field[] getFields() {
-        return fields;
-    }
-
-    public void setFields(MessageEmbed.Field[] fields) {
+        this.thumbnail = image;
         this.fields = fields;
     }
 
@@ -75,6 +62,10 @@ public class DefaultMessage {
 
     public static List<MessageEmbed> error(String title) {
         return new DefaultMessage("error", title).load();
+    }
+
+    public static List<MessageEmbed> success(String title, String description, String image, MessageEmbed.Field... fields) {
+        return new DefaultMessage("success", title, description, image, fields).load();
     }
 
     public static List<MessageEmbed> success(String title, String description, MessageEmbed.Field... fields) {
@@ -132,6 +123,9 @@ public class DefaultMessage {
         reply.setTitle(emoji + " **" + title.toUpperCase() + "**");
         if (description != null) {
             reply.setDescription("> " + description);
+        }
+        if (thumbnail != null) {
+            reply.setThumbnail(thumbnail);
         }
         if (fields != null) {
             for (MessageEmbed.Field f : fields) {
