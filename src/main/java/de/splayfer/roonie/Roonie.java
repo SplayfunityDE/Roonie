@@ -62,8 +62,10 @@ public class Roonie {
     public static void main(String[] args) throws IOException, InterruptedException {
 
         MongoDBDatabase.connect();
-        if (File.separator.equals("/"))
+        /*
+        if (!File.separator.equals("/"))
             PATH = System.getProperty("user.dir");
+         */
         builder = JDABuilder.createDefault(dotenv.get("BOT_TOKEN"))
                 .setActivity(Activity.streaming("🌀SPLΛYFUNITY🌀", "https://twitch.tv/splayfer"))
                 .setStatus(OnlineStatus.ONLINE)
