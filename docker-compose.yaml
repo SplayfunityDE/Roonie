@@ -1,5 +1,5 @@
 services:
-  clyde:
+  roonie:
     build:
       context: .
       dockerfile: .
