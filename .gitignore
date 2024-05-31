@@ -1,7 +1,11 @@
-RoonieData/
 media/
 *.MF
+target/
+
+### IntelliJ IDEA ###
 out/
 .idea/
-target/
 logs/
+
+### Security ###
+.env

@@ -28,6 +28,7 @@ import de.splayfer.roonie.modules.ticket.TicketManager;
 import de.splayfer.roonie.modules.ticket.TicketRestoreListener;
 import de.splayfer.roonie.utils.CommandManager;
 import dev.lavalink.youtube.YoutubeAudioSourceManager;
+import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -47,8 +48,8 @@ import java.util.EnumSet;
 
 public class Roonie {
 
-    public static PlayerManager playerManager;
-    public static AudioPlayerManager audioPlayerManager;
+    public static PlayerManager playerManager = new PlayerManager();
+    public static AudioPlayerManager audioPlayerManager = new DefaultAudioPlayerManager();
     public static Guild mainGuild;
     public static Guild emojiServerGuild;
     public static Guild emojiServerGuild2;
@@ -56,13 +57,16 @@ public class Roonie {
     public static JDABuilder builder;
     public static JDA shardMan;
     public static String PATH = "/bot";
+    public static Dotenv dotenv = Dotenv.load();
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
         MongoDBDatabase.connect();
+        /*
         if (!File.separator.equals("/"))
             PATH = System.getProperty("user.dir");
-        builder = JDABuilder.createDefault("ODg2MjA5NzYzMTc4ODQ0MjEy.G6Z85Z.s24gB6nFpVOPQkyvJaAxiVtTDRWVzoGtBjucgE")
+         */
+        builder = JDABuilder.createDefault(dotenv.get("BOT_TOKEN"))
                 .setActivity(Activity.streaming("🌀SPLΛYFUNITY🌀", "https://twitch.tv/splayfer"))
                 .setStatus(OnlineStatus.ONLINE)
                 .setChunkingFilter(ChunkingFilter.ALL)
@@ -70,10 +74,8 @@ public class Roonie {
                 .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_VOICE_STATES, GatewayIntent.DIRECT_MESSAGE_TYPING, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.MESSAGE_CONTENT)
                 .enableCache(EnumSet.of(CacheFlag.ONLINE_STATUS, CacheFlag.CLIENT_STATUS, CacheFlag.EMOJI, CacheFlag.VOICE_STATE));
 
-        audioPlayerManager = new DefaultAudioPlayerManager();
         audioPlayerManager.registerSourceManager(new YoutubeAudioSourceManager());
         AudioSourceManagers.registerRemoteSources(audioPlayerManager, YoutubeAudioSourceManager.class);
-        playerManager = new PlayerManager();
 
         EconomyManager.init();
         GiveawayManager.init();
