@@ -58,13 +58,15 @@ public class Roonie {
     public static JDA shardMan;
     public static String PATH = "";
     public static String jarDir = new File(Dotenv.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
-    public static Dotenv dotenv = Dotenv.load();
+    public static Dotenv dotenv;
     public static File envFile = new File(jarDir, ".env");
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
         if (envFile.exists())
             dotenv = Dotenv.configure().directory(jarDir).load();
+        else
+            dotenv.configure().load();
         if (dotenv.get("MEDIA_PATH").equals("user.dir"))
             PATH = System.getProperty("user.dir");
         MongoDBDatabase.connect();
