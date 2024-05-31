@@ -59,7 +59,7 @@ public class Roonie {
     public static String PATH = "";
     public static String jarDir = new File(Dotenv.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
     public static Dotenv dotenv = Dotenv.load();
-    public static File envFile = new File(new File(Dotenv.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent(), ".env");
+    public static File envFile = new File(jarDir, ".env");
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
