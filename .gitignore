@@ -6,3 +6,6 @@ target/
 out/
 .idea/
 logs/
+
+### Security ###
+.env
