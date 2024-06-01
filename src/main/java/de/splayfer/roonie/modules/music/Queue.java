@@ -22,7 +22,6 @@ public class Queue {
             AudioTrack track = queuelist.remove(0);
             if(track != null) {
                 this.controller.getPlayer().playTrack(track);
-                System.out.println("Test");
                 return true;
             }
         }
