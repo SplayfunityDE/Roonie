@@ -99,4 +99,27 @@ public class Embeds {
         setColor(0x28346d);
         setImage("https://cdn.discordapp.com/attachments/985551183479463998/986195154954231868/banner_response.png");}}.build();
 
+    public static MessageEmbed BANNER_MUSIC_PAUSE = new EmbedBuilder() {{
+        setColor(0xd87a23);
+        setImage("https://cdn.discordapp.com/attachments/985551183479463998/1246136699243987026/banner_pausiert.png");}}.build();
+
+    public static MessageEmbed BANNER_MUSIC_RESUME = new EmbedBuilder() {{
+        setColor(0x008080);
+        setImage("https://cdn.discordapp.com/attachments/985551183479463998/1246133749620539432/banner_wiedergabe.png");}}.build();
+
+    public static MessageEmbed BANNER_MUSIC_SKIP = new EmbedBuilder() {{
+        setColor(0x727272);
+        setImage("https://cdn.discordapp.com/attachments/985551183479463998/1246430008633856081/banner_ubersprungen.png");}}.build();
+
+    public static MessageEmbed BANNER_MUSIC_ADD = new EmbedBuilder() {{
+        setColor(0x429fe0);
+        setImage("https://cdn.discordapp.com/attachments/985551183479463998/1246440842386739280/banner_hinzugefugt.png");}}.build();
+
+    public static MessageEmbed BANNER_MUSIC_SHUFFEL = new EmbedBuilder() {{
+        setColor(0x28346d);
+        setImage("https://cdn.discordapp.com/attachments/985551183479463998/1246452306430398494/banner_shuffel.png");}}.build();
+
+    public static MessageEmbed BANNER_MUSIC_STOP = new EmbedBuilder() {{
+        setColor(0x823031);
+        setImage("https://cdn.discordapp.com/attachments/985551183479463998/1246458623027052665/banner_stop.png");}}.build();
 }
