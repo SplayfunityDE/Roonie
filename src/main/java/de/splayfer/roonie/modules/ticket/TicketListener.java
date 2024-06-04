@@ -2,7 +2,6 @@ package de.splayfer.roonie.modules.ticket;
 
 import de.splayfer.roonie.Roonie;
 import de.splayfer.roonie.utils.DefaultMessage;
-import de.splayfer.roonie.utils.enums.Embeds;
 import de.splayfer.roonie.utils.enums.Roles;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
@@ -15,7 +14,6 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.Component;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.text.TextInput;
 import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
@@ -43,7 +41,11 @@ public class TicketListener extends ListenerAdapter {
                     type = 3;
                     break;
             }
-            event.replyEmbeds(DefaultMessage.success("Ticket erfolgreich erstellt", "Dein Ticket wurde erfolgreich in dem Kanal " + Ticket.create(event.getMember(), type).getChannel().getAsMention() + " erstellt!")).setEphemeral(true).queue();
+            Ticket existTicket;
+            if ((existTicket = Ticket.fromUser(event.getMember())) == null)
+                event.replyEmbeds(DefaultMessage.success("Ticket erfolgreich erstellt", "Dein Ticket wurde erfolgreich in dem Kanal " + Ticket.create(event.getMember(), type).getChannel().getAsMention() + " erstellt!")).setEphemeral(true).queue();
+            else
+                event.replyEmbeds(DefaultMessage.error("Ticketlimit erreicht","Du hast bereits in Ticket in " + existTicket.getChannel().getAsMention() + " erstellt!")).setEphemeral(true).queue();
             event.editSelectMenu(event.getSelectMenu()).queue();
         }
     }

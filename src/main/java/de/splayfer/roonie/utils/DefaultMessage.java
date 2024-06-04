@@ -21,18 +21,9 @@ public class DefaultMessage {
     @Getter
     @Setter
     private String description;
-    private String thumbnail;
     @Getter
     @Setter
     private MessageEmbed.Field[] fields;
-
-    public DefaultMessage(String type, String title, String description, String image, MessageEmbed.Field... fields) {
-        this.type = type;
-        this.title = title;
-        this.description = description;
-        this.thumbnail = image;
-        this.fields = fields;
-    }
 
     public DefaultMessage(String type, String title, String description, MessageEmbed.Field... fields) {
         this.type = type;
@@ -62,10 +53,6 @@ public class DefaultMessage {
 
     public static List<MessageEmbed> error(String title) {
         return new DefaultMessage("error", title).load();
-    }
-
-    public static List<MessageEmbed> success(String title, String description, String image, MessageEmbed.Field... fields) {
-        return new DefaultMessage("success", title, description, image, fields).load();
     }
 
     public static List<MessageEmbed> success(String title, String description, MessageEmbed.Field... fields) {
@@ -123,9 +110,6 @@ public class DefaultMessage {
         reply.setTitle(emoji + " **" + title.toUpperCase() + "**");
         if (description != null) {
             reply.setDescription("> " + description);
-        }
-        if (thumbnail != null) {
-            reply.setThumbnail(thumbnail);
         }
         if (fields != null) {
             for (MessageEmbed.Field f : fields) {
