@@ -53,8 +53,12 @@ public class Queue {
         this.queuelist = queuelist;
     }
 
-    public void shuffel() {
-        Collections.shuffle(queuelist);
+    public boolean shuffel() {
+        if (!queuelist.isEmpty()) {
+            Collections.shuffle(queuelist);
+            return true;
+        }
+        return false;
     }
 
 }

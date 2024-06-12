@@ -136,6 +136,12 @@ public class Ticket {
         return ticket;
     }
 
+    public static Ticket fromUser(Member creator) {
+        if (mongoDB.exists("ticket", "creator", creator.getIdLong()))
+            return Ticket.getFromDocument(mongoDB.find("ticket", "creator", creator.getIdLong()).first());
+        return null;
+    }
+
     public void close(String reason) {
         if (channel != null)
             channel.delete().queue();
