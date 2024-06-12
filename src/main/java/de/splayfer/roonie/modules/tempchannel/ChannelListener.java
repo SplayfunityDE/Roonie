@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.PermissionOverride;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -12,7 +13,7 @@ public class ChannelListener extends ListenerAdapter {
 
     @Override
     public void onGuildVoiceUpdate(GuildVoiceUpdateEvent event) {
-        if (event.getVoiceState().inAudioChannel()) {
+        if (event.getVoiceState().inAudioChannel() && !event.getVoiceState().getChannel().getType().equals(ChannelType.STAGE)) {
 
             if (TempchannelManager.existesJoinHub(event.getChannelJoined().getIdLong())) {
                 createNewChannel(event.getGuild(), event.getMember());

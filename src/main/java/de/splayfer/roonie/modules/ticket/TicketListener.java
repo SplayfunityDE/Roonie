@@ -2,10 +2,13 @@ package de.splayfer.roonie.modules.ticket;
 
 import de.splayfer.roonie.Roonie;
 import de.splayfer.roonie.utils.DefaultMessage;
+import de.splayfer.roonie.utils.enums.Channels;
 import de.splayfer.roonie.utils.enums.Roles;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -19,9 +22,7 @@ import net.dv8tion.jda.api.interactions.components.text.TextInput;
 import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
 import net.dv8tion.jda.api.interactions.modals.Modal;
 
-import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class TicketListener extends ListenerAdapter {
 
@@ -41,11 +42,15 @@ public class TicketListener extends ListenerAdapter {
                     type = 3;
                     break;
             }
-            Ticket existTicket;
-            if ((existTicket = Ticket.fromUser(event.getMember())) == null)
+            Ticket existTicket = Ticket.fromUser(event.getMember());
+            if (existTicket == null)
                 event.replyEmbeds(DefaultMessage.success("Ticket erfolgreich erstellt", "Dein Ticket wurde erfolgreich in dem Kanal " + Ticket.create(event.getMember(), type).getChannel().getAsMention() + " erstellt!")).setEphemeral(true).queue();
-            else
-                event.replyEmbeds(DefaultMessage.error("Ticketlimit erreicht","Du hast bereits in Ticket in " + existTicket.getChannel().getAsMention() + " erstellt!")).setEphemeral(true).queue();
+            else {
+                if (existTicket.getChannel() != null)
+                    event.replyEmbeds(DefaultMessage.error("Ticketlimit erreicht","Du hast bereits ein Ticket in " + existTicket.getChannel().getAsMention() + " erstellt!")).setEphemeral(true).queue();
+                else
+                    event.replyEmbeds(DefaultMessage.error("Ticketlimit erreicht","Du hast bereits ein erstellt!")).setEphemeral(true).queue();
+            }
             event.editSelectMenu(event.getSelectMenu()).queue();
         }
     }
@@ -83,7 +88,7 @@ public class TicketListener extends ListenerAdapter {
                             }
                         }, 1000 * 60 * 14);
                     }
-                        break;
+                    break;
                 case "unclaim":
                     ticket = Ticket.getFromPost(event.getChannelIdLong());
                     event.getMessage().delete().queue();
@@ -119,9 +124,26 @@ public class TicketListener extends ListenerAdapter {
     }
 
     public void onMessageReceived(MessageReceivedEvent event) {
-        if (event.getChannel().getId().equals("908795138623537232"))
+        if (event.getChannel().getId().equals("908795138623537232")) {
             if (event.getAuthor().getIdLong() == Roonie.shardMan.getSelfUser().getIdLong() && event.getMessage().getEmbeds().isEmpty())
                 event.getMessage().delete().queue();
+        } else if (event.getChannel().getType().isThread() && Ticket.getAllTicketsWithId().containsValue(event.getChannel().getIdLong()) && Ticket.getFromChannel(event.getChannel().getIdLong()).getSupporter() == null) {
+            Ticket ticket = Ticket.getFromChannel(event.getChannel().getIdLong());
+            if (event.getMember().equals(ticket.getCreator())) {
+                List<String> list = new ArrayList<>();
+                event.getChannel().getHistory().retrievePast(10).complete().forEach(message -> {
+                    if (message.getAuthor().equals(ticket.getCreator().getUser())) {
+                        list.add(message.getContentStripped());
+                    }
+                });
+                StringBuilder strBuilder = new StringBuilder();
+                strBuilder.append("```");
+                list.reversed().forEach(message -> strBuilder.append(message).append("\n"));
+                strBuilder.append("```");
+                //ActionRow actionRow = ticket.getPost().retrieveStartMessage().complete().getActionRows().getFirst();
+                ticket.getPost().retrieveStartMessage().complete().editMessageEmbeds(EmbedBuilder.fromData(ticket.getPostEmbed().toData()).addField("Anliegen des Nutzers", strBuilder.toString(), false).build()).complete();
+            }
+        }
     }
 
     public void onModalInteraction(ModalInteractionEvent event) {

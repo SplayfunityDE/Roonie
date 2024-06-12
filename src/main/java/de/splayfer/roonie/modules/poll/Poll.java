@@ -2,6 +2,8 @@ package de.splayfer.roonie.modules.poll;
 
 import de.splayfer.roonie.MongoDBDatabase;
 import de.splayfer.roonie.Roonie;
+import lombok.Getter;
+import lombok.Setter;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
@@ -13,55 +15,24 @@ import java.util.*;
 
 public class Poll {
 
+    static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
     static HashMap<Member, Poll> polls = new HashMap<>();
 
+    @Getter
+    @Setter
     private MessageChannel channel;
+    @Getter
+    @Setter
     private String topic;
+    @Getter
+    @Setter
     private String description;
+    @Getter
+    @Setter
     private Message message;
+    @Getter
+    @Setter
     private Button[] buttons;
-
-    static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
-
-    public Message getMessage() {
-        return message;
-    }
-
-    public void setMessage(Message message) {
-        this.message = message;
-    }
-
-    public MessageChannel getChannel() {
-        return channel;
-    }
-
-    public void setChannel(MessageChannel channel) {
-        this.channel = channel;
-    }
-
-    public String getTopic() {
-        return topic;
-    }
-
-    public void setTopic(String topic) {
-        this.topic = topic;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Button[] getButtons() {
-        return buttons;
-    }
-
-    public void setButtons(Button[] buttons) {
-        this.buttons = buttons;
-    }
 
     @Override
     public boolean equals(Object o) {

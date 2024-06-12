@@ -22,12 +22,7 @@ public class BannerCounter {
 
     public static void updateBannerMemberCount() {
         String membercount = String.valueOf(Roonie.mainGuild.getMemberCount());
-        int onlineMemberCountInt = 0;
-        for (Member m : Roonie.mainGuild.getMembers()) {
-            if (!m.getOnlineStatus().equals(OnlineStatus.OFFLINE)) {
-                onlineMemberCountInt = onlineMemberCountInt + 1;
-            }
-        }
+        int onlineMemberCountInt = (int) Roonie.mainGuild.getMembers().stream().filter(member -> !member.getOnlineStatus().equals(OnlineStatus.OFFLINE)).count();
         String onlinecount = String.valueOf(onlineMemberCountInt);
         Font doctorGlitch = null;
 
@@ -124,7 +119,6 @@ public class BannerCounter {
         } catch (Exception exception) {
         }
 
-        System.out.println("[Splayfer] Banner updated succesfully");
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
