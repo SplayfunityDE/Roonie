@@ -2,48 +2,25 @@ package de.splayfer.roonie.modules.response;
 
 import de.splayfer.roonie.MongoDBDatabase;
 import de.splayfer.roonie.Roonie;
+import lombok.Getter;
+import lombok.Setter;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import org.bson.Document;
 
 public class Response {
 
+    @Getter
+    @Setter
     private String message;
+    @Getter
     private User creator;
+    @Getter
+    @Setter
     private String type;
+    @Getter
+    @Setter
     private String value;
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public User getCreator() {
-        return creator;
-    }
-
-    public void setCreator(User creator) {
-        this.creator = creator;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
 
     public Response(String message, User creator, String type, String value) {
         this.message = message;

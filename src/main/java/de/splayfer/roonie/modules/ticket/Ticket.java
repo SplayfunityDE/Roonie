@@ -4,6 +4,8 @@ import de.splayfer.roonie.MongoDBDatabase;
 import de.splayfer.roonie.Roonie;
 import de.splayfer.roonie.utils.enums.Channels;
 import de.splayfer.roonie.utils.enums.Embeds;
+import lombok.Getter;
+import lombok.Setter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -26,60 +28,22 @@ public class Ticket {
         put(3, "👮‍♂️");
     }};
 
+    @Getter
+    @Setter
     private ThreadChannel channel;
+    @Getter
+    @Setter
     private ThreadChannel post;
+    @Getter
     private Member creator;
+    @Getter
+    @Setter
     private Member supporter;
+    @Getter
+    @Setter
     private int type;
+    @Getter
     private Date createDate;
-
-    public ThreadChannel getChannel() {
-        return channel;
-    }
-
-    public void setChannel(ThreadChannel channel) {
-        this.channel = channel;
-    }
-
-    public ThreadChannel getPost() {
-        return post;
-    }
-
-    public void setPost(ThreadChannel post) {
-        this.post = post;
-    }
-
-    public Member getCreator() {
-        return creator;
-    }
-
-    public void setCreator(Member creator) {
-        this.creator = creator;
-    }
-
-    public Member getSupporter() {
-        return supporter;
-    }
-
-    public void setSupporter(Member supporter) {
-        this.supporter = supporter;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
-
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
 
     public Ticket(ThreadChannel channel, ThreadChannel post, Member creator, Member supporter, int type, Date createDate) {
         this.channel = channel;
@@ -122,7 +86,9 @@ public class Ticket {
             threadChannel = Roonie.mainGuild.getTextChannelById(Channels.TICKETPANEL.getId()).createThreadChannel(typeSymbol.get(type) + "-" + creator.getEffectiveName(), true).setInvitable(false).complete();
         else
             threadChannel = Roonie.mainGuild.getTextChannelById(Channels.TICKETPANEL.getId()).createThreadChannel(typeSymbol.get(type) + "-" + creator.getEffectiveName(), true).complete();
-        Ticket ticket = new Ticket(threadChannel, Roonie.mainGuild.getForumChannelById(Channels.TICKETFORUM.getId()).createForumPost(typeSymbol.get(type) + "-" + creator.getEffectiveName(), MessageCreateData.fromContent("\u200E")).complete().getThreadChannel(), creator, null, type, new Date());
+        Ticket ticket = new Ticket(threadChannel, null, creator, null, type, new Date());
+        ThreadChannel post = Roonie.mainGuild.getForumChannelById(Channels.TICKETFORUM.getId()).createForumPost(typeSymbol.get(type) + "-" + creator.getEffectiveName(), MessageCreateData.fromEmbeds(ticket.getPostEmbed())).addActionRow(Button.primary("ticket.claim", "Ticket claimen").withEmoji(Emoji.fromFormatted("\uD83D\uDD12"))).complete().getThreadChannel();
+        ticket.setPost(post);
         mongoDB.insert("ticket", ticket.getAsDocument());
 
         //create embeds & update permissions
@@ -132,11 +98,10 @@ public class Ticket {
                 Button.secondary("ticket.export", "Chatverlauf exportieren").withEmoji(Emoji.fromCustom(Roonie.emojiServerGuild.getEmojiById("878586042821787658"))),
                 Button.success("ticket.archiv", "Ticket archivieren").withEmoji(Emoji.fromCustom(Roonie.emojiServerGuild.getEmojiById("883415478700232735")))
         ).queue();
-        ticket.post.sendMessageEmbeds(ticket.getPostEmbed()).setActionRow(Button.primary("ticket.claim", "Ticket claimen").withEmoji(Emoji.fromFormatted("\uD83D\uDD12"))).queue();
         return ticket;
     }
 
-    public static Ticket fromUser(Member creator) {
+    public static Ticket fromUser(Member creator) {;
         if (mongoDB.exists("ticket", "creator", creator.getIdLong()))
             return Ticket.getFromDocument(mongoDB.find("ticket", "creator", creator.getIdLong()).first());
         return null;

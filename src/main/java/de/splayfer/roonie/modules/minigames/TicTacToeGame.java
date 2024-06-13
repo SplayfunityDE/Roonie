@@ -3,6 +3,8 @@ package de.splayfer.roonie.modules.minigames;
 
 import de.splayfer.roonie.MongoDBDatabase;
 import de.splayfer.roonie.Roonie;
+import lombok.Getter;
+import lombok.Setter;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
@@ -15,69 +17,28 @@ public class TicTacToeGame {
 
     static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("minigames");
 
+    @Getter
+    @Setter
     private ThreadChannel channel;
+    @Getter
+    @Setter
     private String status;
+    @Getter
+    @Setter
     private String type;
+    @Getter
+    @Setter
     private Member player1;
+    @Getter
+    @Setter
     private Member player2;
+    @Getter
+    @Setter
     private int turn;
+    @Getter
+    @Setter
     private HashMap<Integer, String> fields;
 
-    public ThreadChannel getChannel() {
-        return channel;
-    }
-
-    public void setChannel(ThreadChannel channel) {
-        this.channel = channel;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public Member getPlayer1() {
-        return player1;
-    }
-
-    public void setPlayer1(Member player1) {
-        this.player1 = player1;
-    }
-
-    public Member getPlayer2() {
-        return player2;
-    }
-
-    public void setPlayer2(Member player2) {
-        this.player2 = player2;
-    }
-
-    public HashMap<Integer, String> getFields() {
-        return fields;
-    }
-
-    public void setFields(HashMap<Integer, String> fields) {
-        this.fields = fields;
-    }
-
-    public int getTurn() {
-        return turn;
-    }
-
-    public void setTurn(int turn) {
-        this.turn = turn;
-    }
 
     public TicTacToeGame(ThreadChannel channel, String status, String type, Member player1, Member player2, int turn, HashMap<Integer, String> fields) {
         this.channel = channel;

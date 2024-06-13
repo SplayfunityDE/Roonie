@@ -3,6 +3,8 @@ package de.splayfer.roonie.modules.giveaway;
 import de.splayfer.roonie.MongoDBDatabase;
 import de.splayfer.roonie.Roonie;
 import de.splayfer.roonie.modules.level.LevelManager;
+import lombok.Getter;
+import lombok.Setter;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -17,77 +19,30 @@ public class Giveaway {
 
     private static HashMap<Member, Giveaway> giveaways = new HashMap<>();
 
+    @Getter
+    @Setter
     private MessageChannel channel;
+    @Getter
+    @Setter
     private String prize;
+    @Getter
+    @Setter
     private Long duration;
+    @Getter
+    @Setter
     private List<String> requirement;
+    @Getter
+    @Setter
     private Integer amount;
+    @Getter
+    @Setter
     private Message message;
+    @Getter
+    @Setter
     private List<Long> entrys;
-
-    public String getPicture() {
-        return picture;
-    }
-
+    @Getter
+    @Setter
     private String picture;
-
-    public MessageChannel getChannel() {
-        return channel;
-    }
-
-    public String getPrize() {
-        return prize;
-    }
-
-    public Long getDuration() {
-        return duration;
-    }
-
-    public List<String> getRequirement() {
-        return requirement;
-    }
-
-    public Integer getAmount() {
-        return amount;
-    }
-
-    public Message getMessage() {
-        return message;
-    }
-    public List<Long> getEntrys() {
-        return entrys;
-    }
-
-    public void setChannel(MessageChannel channel) {
-        this.channel = channel;
-    }
-
-    public void setPrize(String prize) {
-        this.prize = prize;
-    }
-
-    public void setDuration(Long duration) {
-        this.duration = duration;
-    }
-
-    public void setRequirement(List<String> requirement) {
-        this.requirement = requirement;
-    }
-
-    public void setAmount(Integer amount) {
-        this.amount = amount;
-    }
-
-    public void setPicture(String picture) {
-        this.picture = picture;
-    }
-
-    public void setMessage(Message message) {
-        this.message = message;
-    }
-    public void setEntrys(List<Long> entrys) {
-        this.entrys = entrys;
-    }
 
     @Override
     public boolean equals(Object o) {
