@@ -53,19 +53,22 @@ public class LevelListener extends ListenerAdapter {
                 if (xp >= levelstep + 1) {
 
                     //wenn neues level erreicht
-
                     xp = xp - (levelstep + 1);
 
                     LevelManager.setXp(member, xp);
                     LevelManager.addLevelToUser(member, 1);
 
                     int i = level + 1;
-                    initRoles(event.getGuild());
-                    if (levelroles.containsKey(i)) {
+                    if (i >= 5) {
+                        int itemp = i;
+                        initRoles(event.getGuild());
+                        while (!levelroles.containsKey(itemp)) {
+                            itemp--;
+                        }
                         for (Role r : member.getRoles())
                             if (levelroles.containsValue(r))
                                 member.getGuild().removeRoleFromMember(member.getUser(), r).queue();
-                        event.getGuild().addRoleToMember(member.getUser(), levelroles.get(i)).queue();
+                        event.getGuild().addRoleToMember(member.getUser(), levelroles.get(itemp)).queue();
                     }
                     event.getMessage().reply(levelUp(member)).queue();
                 }
