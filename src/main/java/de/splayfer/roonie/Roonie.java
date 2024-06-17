@@ -45,6 +45,9 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import java.io.File;
 import java.io.IOException;
 import java.util.EnumSet;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Roonie {
 
@@ -115,7 +118,8 @@ public class Roonie {
         BotCounter.botCounterUpdate();
         BannerCounter.updateBannerMemberCount();
         AutoDeleteListener.checkCommandMessages();
-        BoosterWall.updateBoosterStats();
+        ScheduledExecutorService exec = Executors.newScheduledThreadPool(1);
+        exec.scheduleAtFixedRate(BoosterWall.updateBoosterStats , 0, 1, TimeUnit.HOURS);
         System.out.println("[Splayfer] Bot changed Status: Online");
     }
 }

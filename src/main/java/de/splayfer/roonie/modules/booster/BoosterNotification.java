@@ -28,7 +28,6 @@ public class BoosterNotification extends ListenerAdapter {
     public void onGuildMemberRoleAdd (GuildMemberRoleAddEvent event) {
         if (event.getGuild().equals(Roonie.mainGuild)) {
             if (event.getRoles().get(0).equals(event.getGuild().getBoostRole())) {
-                BoosterWall.updateBoosterStats();
                 EmbedBuilder message = new EmbedBuilder();
                 message.setColor(0x28346d);
                 message.setThumbnail("https://cdn.discordapp.com/attachments/906251556637249547/984902617836712016/unknown.png");
