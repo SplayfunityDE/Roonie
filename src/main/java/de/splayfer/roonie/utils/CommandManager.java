@@ -29,7 +29,6 @@ public class CommandManager {
             commands.get(guild.getId()).add(d);
     }
     public static void initCommands(JDA jda) {
-        /*
         List<CommandData> list = new ArrayList<>();
         for (Long id : commands.keySet()) {
             list.addAll(commands.get(id));
@@ -40,7 +39,6 @@ public class CommandManager {
                 g.updateCommands().addCommands(commands.get(id)).queue();
             }
         }
-         */
     }
 
     public static boolean checkCommand(CommandInteraction interaction, String name, Param... parameters) {
