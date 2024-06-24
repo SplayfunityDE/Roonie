@@ -14,8 +14,8 @@ public class PollManager {
         Roonie.builder.addEventListeners(new PollCreateCommand(), new PollEnterListener());
 
         CommandManager.addCommands(Guilds.MAIN,
-                Commands.slash("umfrage", "\uD83D\uDCCA │ Verwaltet die gesamten Umfragen des Servers!")
-                        .addSubcommands(new SubcommandData("create", "➕ │ Erstelle eine neue Umfrage!"))
+                Commands.slash("umfrage", "\uD83D\uDCCA │ Verwaltet die gesamten Umfragen des Servers")
+                        .addSubcommands(new SubcommandData("create", "➕ │ Erstelle eine neue Umfrage"))
                         .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)));
     }
 }

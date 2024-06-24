@@ -37,6 +37,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
@@ -134,7 +135,7 @@ class ReadyEventClass extends ListenerAdapter {
         Roonie.autoRoles = new Role[]{
                 Roonie.mainGuild.getRoleById("891292965241233448"), //member-role
         };
-        //Roonie.mainGuild.updateCommands().addCommands(Commands.slash("letsjohannes", "Hmm :eyes:")).queue();
+        CommandManager.addCommands(Commands.slash("letsjohannes", "Hmm :eyes:"));
         TicketRestoreListener.restoreTickets();
     }
 }

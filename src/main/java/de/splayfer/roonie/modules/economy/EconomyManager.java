@@ -20,10 +20,10 @@ public class EconomyManager {
         Roonie.builder.addEventListeners(new CoinBomb(), new MoneyCommand(), new DailyCommand());
 
         CommandManager.addCommands(Guilds.MAIN,
-                Commands.slash("money", "\uD83D\uDCB3 │ Zeigt dir den aktuellen Kontostand an!")
-                        .addOption(OptionType.USER, "nutzer", "\uD83D\uDC65 │ Nutzer, welchen du anzeigen möchtest!", false),
-                Commands.slash("leaderboard", "\uD83D\uDCCA │ Zeigt dir die Rangliste mit den aktuell besten Casino Spielern an!"),
-                Commands.slash("daily", "\uD83D\uDCC5 │ Hole dir deine tägliche Menge an Coins!"));
+                Commands.slash("money", "\uD83D\uDCB3 │ Zeigt dir den aktuellen Kontostand an")
+                        .addOption(OptionType.USER, "nutzer", "\uD83D\uDC65 │ Nutzer, welchen du anzeigen möchtest", false),
+                Commands.slash("leaderboard", "\uD83D\uDCCA │ Zeigt dir die Rangliste mit den aktuell besten Casino Spielern an"),
+                Commands.slash("daily", "\uD83D\uDCC5 │ Hole dir deine tägliche Menge an Coins"));
     }
 
     public static void addMoneyToUser(Member member, int amount) {

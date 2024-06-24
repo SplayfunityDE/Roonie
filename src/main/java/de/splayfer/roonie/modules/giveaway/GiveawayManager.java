@@ -24,8 +24,8 @@ public class GiveawayManager {
         Roonie.builder.addEventListeners(new GiveawayEnterListener(), new GiveawayCreateCommand());
 
         CommandManager.addCommands(Guilds.MAIN,
-                Commands.slash("giveaway", "\uD83C\uDF89 │ Verwalte die gesamten Giveaways des Servers!")
-                        .addSubcommands(new SubcommandData("create", "➕ │ Erstelle ein neues Giveaway!"))
+                Commands.slash("giveaway", "\uD83C\uDF89 │ Verwalte die gesamten Giveaways des Servers")
+                        .addSubcommands(new SubcommandData("create", "➕ │ Erstelle ein neues Giveaway"))
                         .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)));
 
         checkGiveaways();
@@ -71,13 +71,13 @@ public class GiveawayManager {
                             main.setColor(m.getEmbeds().get(1).getColor());
                             main.setImage(m.getEmbeds().get(1).getImage().getUrl());
                             main.setTitle(m.getEmbeds().get(1).getTitle());
-                            main.setDescription("Dieses Giveaway wurde bereits beendet! Du kannst hier die Details einsehen!");
+                            main.setDescription("Dieses Giveaway wurde bereits beendet! Du kannst hier die Details einsehen");
                             main.addField(m.getEmbeds().get(1).getFields().get(0).getName(), m.getEmbeds().get(1).getFields().get(0).getValue(), true);
                             main.addField(m.getEmbeds().get(1).getFields().get(1).getName(), "<:cancel:877158821779345428> BEREITS BEENDET", true);
                             main.addField(":busts_in_silhouette: Gewinner", winmessage.toString(), true);
 
                             List<Button> buttons = new ArrayList<>();
-                            buttons.add(Button.secondary("giveaway.closed", "Giveaway wurde bereits beendet!").withEmoji(Emoji.fromCustom("cancel", Long.parseLong("877158821779345428"), false)));
+                            buttons.add(Button.secondary("giveaway.closed", "Giveaway wurde bereits beendet").withEmoji(Emoji.fromCustom("cancel", Long.parseLong("877158821779345428"), false)));
 
                             m.editMessageEmbeds(banner.build(), main.build()).setActionRow(buttons).queue();
 
@@ -95,8 +95,8 @@ public class GiveawayManager {
 
                                 EmbedBuilder dmMessage = new EmbedBuilder();
                                 dmMessage.setColor(0x28346d);
-                                dmMessage.setTitle(":tada: HERZLICHEN GLÜCKWUNSCH!");
-                                dmMessage.setDescription("Hey! Es scheint als hast du auf SPLΛYFUNITY an einem Giveaway gewonnen!");
+                                dmMessage.setTitle(":tada: HERZLICHEN GLÜCKWUNSCH");
+                                dmMessage.setDescription("Hey! Es scheint als hast du auf SPLΛYFUNITY an einem Giveaway gewonnen");
                                 dmMessage.addField("<a:wettbewerb:898566916958978078> Gewonnener Preis", giveaway.getPrize(), false);
                                 dmMessage.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
 
