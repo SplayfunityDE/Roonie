@@ -23,21 +23,21 @@ public class LibraryManager {
         Roonie.builder.addEventListeners(new NitroGamesListener(), new NitrogamesSetupCommand());
 
         CommandManager.addCommands(Guilds.MAIN,
-                Commands.slash("banner", "\uD83D\uDDBC\uFE0F │ Verwalte die Banner der Bibliothek!")
+                Commands.slash("banner", "\uD83D\uDDBC\uFE0F │ Verwalte die Banner der Bibliothek")
                         .addSubcommands(
-                                new SubcommandData("add", "➕ │ Füge einen Banner hinzu!")
-                                        .addOption(OptionType.STRING, "category", "\uD83D\uDCC2 │ Weise dem Banner eine Kategorie zu!")
-                                        .addOption(OptionType.STRING, "url", "\uD83D\uDD17 │ Gib den Link zu dem Banner an!"),
+                                new SubcommandData("add", "➕ │ Füge einen Banner hinzu")
+                                        .addOption(OptionType.STRING, "category", "\uD83D\uDCC2 │ Weise dem Banner eine Kategorie zu")
+                                        .addOption(OptionType.STRING, "url", "\uD83D\uDD17 │ Gib den Link zu dem Banner an"),
                                 new SubcommandData("remove", "➖ │ Entferne einen Banner")
-                                        .addOption(OptionType.STRING, "url", "\uD83D\uDD17 │ Gib den Link zu dem Banner an!"))
+                                        .addOption(OptionType.STRING, "url", "\uD83D\uDD17 │ Gib den Link zu dem Banner an"))
                         .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)),
-                Commands.slash("template", "\uD83D\uDCDC │ Verwalte die Server-Vorlagen der Bibliothek!")
+                Commands.slash("template", "\uD83D\uDCDC │ Verwalte die Server-Vorlagen der Bibliothek")
                         .addSubcommands(
                                 new SubcommandData("add", "➕ │ Füge eine Server-Vorlage hinzu!")
                                         .addOption(OptionType.STRING, "category", "\uD83D\uDCC2 │ Weise der Template eine Kategorie zu!")
-                                        .addOption(OptionType.STRING, "url", "\uD83D\uDD17 │ Gib den Link der Template an!"),
+                                        .addOption(OptionType.STRING, "url", "\uD83D\uDD17 │ Gib den Link der Template an"),
                                 new SubcommandData("remove", "➖ │ Entferne eine Server-Vorlage")
-                                        .addOption(OptionType.STRING, "url", "\uD83D\uDD17 │ Gib den Link der Template an!"))
+                                        .addOption(OptionType.STRING, "url", "\uD83D\uDD17 │ Gib den Link der Template an"))
                         .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)));
     }
 
