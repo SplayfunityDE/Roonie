@@ -54,7 +54,7 @@ public class WelcomeListener extends ListenerAdapter {
         if (!event.isFromGuild()) {
             switch (event.getButton().getId()) {
                 case "welcome.features":
-                    event.replyEmbeds(DefaultMessage.error("IN ARBET", "Diese Funktion ist zurzeit in Arbeit!")).setEphemeral(true).queue();
+                    event.replyEmbeds(DefaultMessage.error("IN ARBEIT", "Diese Funktion ist zurzeit in Arbeit!")).setEphemeral(true).queue();
                     break;
             }
         }

@@ -55,7 +55,6 @@ public class AudioLoadResult implements AudioLoadResultHandler {
             embedBuilder.addField("Name", track.getInfo().title, true);
             embedBuilder.setThumbnail(thumbnailUrl);
             embedBuilder.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
-            System.out.println(controller.getPlayer().getPlayingTrack() == null);
             if (controller.getQueue().getQueuelist().isEmpty() && controller.getPlayer().getPlayingTrack() == null) {
                 embedBuilder.setColor(Embeds.BANNER_MUSIC_RESUME.getColor());
                 embedBuilder.setTitle("**:white_check_mark: INHALT GESTARTET**");

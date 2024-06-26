@@ -13,7 +13,7 @@ public class ChannelListener extends ListenerAdapter {
 
     @Override
     public void onGuildVoiceUpdate(GuildVoiceUpdateEvent event) {
-        if (event.getVoiceState().inAudioChannel() && !event.getVoiceState().getChannel().getType().equals(ChannelType.STAGE)) {
+        if (event.getVoiceState().inAudioChannel() && event.getVoiceState().getChannel().getType().equals(ChannelType.VOICE)) {
 
             if (TempchannelManager.existesJoinHub(event.getChannelJoined().getIdLong())) {
                 createNewChannel(event.getGuild(), event.getMember());
@@ -36,22 +36,20 @@ public class ChannelListener extends ListenerAdapter {
                 }
 
             }
-        } else {
+        } else if (event.getChannelLeft().getType().equals(ChannelType.VOICE)) {
 
-            if (!delete((VoiceChannel) event.getChannelLeft())) {
+            if (!delete(event.getChannelLeft().asVoiceChannel())) {
                 ControlListener.tempChannels.get(event.getChannelLeft().getId()).changeOwner();
             }
 
-            VoiceChannel vc = event.getGuild().getVoiceChannelById(event.getChannelLeft().getId());
-            if (vc != null) {
+            VoiceChannel vc;
+            if ((vc = event.getGuild().getVoiceChannelById(event.getChannelLeft().getId())) != null) {
                 Tempchannel channel = ControlListener.getTempchannel(vc);
                 if (channel != null) {
                     channel.getVoiceChannel().upsertPermissionOverride(event.getMember()).deny(Permission.MESSAGE_SEND).queue();
                 }
             }
-
         }
-
     }
 
     private void createNewChannel(Guild guild, Member member) {
