@@ -100,6 +100,7 @@ public class Roonie {
         BoosterManager.init();
         MusicManager.init();
 
+        
         //register events
         builder.addEventListeners(new ReadyEventClass());
 
