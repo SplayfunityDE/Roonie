@@ -25,6 +25,7 @@ Folgende Features sind in dem Botsystem enthalten:
 
 Die Speicherung jeglicher statischen Daten erfolgt über eine MongoDB Datenbank, welche Daten auf Basis von JSON-ähnlichen Textblöcken speichert.
 
+
 **Deployment**
 
 Die automatische Anwenungsverteilung läuft mittels [Github Actions](https://docs.github.com/de/actions) und wird in dem Workflow anschließend mit dem Dienst [rsync](https://wiki.ubuntuusers.de/rsync/) auf die zuständigen Linux Server verteilt. Dort werden Diese anschließend über einen systemd Service zu [Docker Images](https://docs.docker.com/engine/reference/commandline/image_ls/) und daraufhin zu [Docker-Containern](https://www.docker.com/resources/what-container/) umgewandelt und gestartet.
