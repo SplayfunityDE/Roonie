@@ -1,8 +1,8 @@
 services:
-  radio:
+  roonie:
     build:
       context: .
       dockerfile: Dockerfile
     restart: always
     volumes:
-      - /opt/dockerfiles/radio:/bot
+      - /opt/dockerfiles/roonie:/bot
