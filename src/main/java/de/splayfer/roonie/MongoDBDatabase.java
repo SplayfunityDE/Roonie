@@ -20,7 +20,7 @@ public class MongoDBDatabase {
 
     public static void connect() {
         try {
-            mongoClient = MongoClients.create("mongodb://" + Roonie.dotenv.get("MONGO_USERNAME") + ":" + Roonie.dotenv.get("MONGO_PASSWORD") + "@" + Roonie.dotenv.get("MONGO_HOST"));
+            mongoClient = MongoClients.create("mongodb://" + System.getenv("MONGO_USERNAME") + ":" + System.getenv("MONGO_PASSWORD") + "@" + System.getenv("MONGO_HOST"));
             System.out.println("Connected to MongoDB Server");
         } catch (MongoException exception) {
             System.out.println("MongoDB Connection Error: " + exception.getMessage());
