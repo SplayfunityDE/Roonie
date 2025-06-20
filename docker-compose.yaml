@@ -6,3 +6,4 @@ services:
     restart: always
     volumes:
       - /opt/dockerfiles/roonie:/bot
+    env_file: /bot/.env
