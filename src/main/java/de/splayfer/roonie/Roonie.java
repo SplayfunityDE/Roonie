@@ -28,7 +28,6 @@ import de.splayfer.roonie.modules.ticket.TicketManager;
 import de.splayfer.roonie.modules.ticket.TicketRestoreListener;
 import de.splayfer.roonie.utils.CommandManager;
 import dev.lavalink.youtube.YoutubeAudioSourceManager;
-import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -43,7 +42,6 @@ import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.EnumSet;
 import java.util.concurrent.Executors;
@@ -61,22 +59,15 @@ public class Roonie {
     public static JDABuilder builder;
     public static JDA shardMan;
     public static String PATH = "";
-    public static String jarDir = new File(Dotenv.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
-    public static Dotenv dotenv;
-    public static File envFile = new File(jarDir, ".env");
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
-        if (envFile.exists())
-            dotenv = Dotenv.configure().directory(jarDir).load();
-        else
-            dotenv = Dotenv.configure().load();
-        if (dotenv.get("MEDIA_PATH").equals("user.dir"))
+        if (System.getenv("MEDIA_PATH").equals("user.dir"))
             PATH = System.getProperty("user.dir");
         else
-            PATH = dotenv.get("MEDIA_PATH");
+            PATH = System.getenv("MEDIA_PATH");
         MongoDBDatabase.connect();
-        builder = JDABuilder.createDefault(dotenv.get("BOT_TOKEN"))
+        builder = JDABuilder.createDefault(System.getenv("BOT_TOKEN"))
                 .setActivity(Activity.streaming("🌀SPLΛYFUNITY🌀", "https://twitch.tv/splayfer"))
                 .setStatus(OnlineStatus.ONLINE)
                 .setChunkingFilter(ChunkingFilter.ALL)
