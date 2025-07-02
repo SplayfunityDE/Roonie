@@ -5,7 +5,7 @@
 > [!Note]
 > Be careful! Any changes from `master` will be deployed directly to the production system via rsync!
 
-Roonie is the bot system of the [SPLAYFUNITY](https://discord.gg/V2Vc5hpRkH) Discord server.
+Roonie is the bot system of the [SPLAYFUNITY](https:splayfer.de) Discord server.
 
 ## Features
 The following features are included in the bot system:
