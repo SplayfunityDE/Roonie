@@ -3,29 +3,34 @@
 <img align="right" src="https://avatars.githubusercontent.com/u/108355696?s=200&v=4" height="200" width="200">
 
 > [!Note]
-> Sei vorsichtig! Alle Änderungen aus `master` werden direkt per Software-Deployment auf das Produktivsystem verteilt!
+> Be careful! Any changes from `master` will be deployed directly to the production system via rsync!
 
-Bei Roonie handelt es sich um das Botsystem des [SPLAYFUNITY](https://discord.gg/V2Vc5hpRkH) Discord Servers.
+Roonie is the bot system of the [SPLAYFUNITY](https://splayfer.de) Discord server.
 
 ## Features
-Folgende Features sind in dem Botsystem enthalten:
-- Support-Ticketsystem
-- Temporäre Sprachkanäle
-- Automatische Response-Verwaltung (Custom Commands)
-- Umfragen
-- Gewinnspiele (Giveaways)
+The following features are included in the bot system:
+- Support Ticket System
+- Temporary Voice Channels
+- Automatic Response Management (Custom Commands)
+- Polls
+- Giveaways
 - Minigames
-- Server-Vorlagen (Bibliothek)
-- Banner-Vorlagen (Bibliothek)
-- Wirtschaftssystem (Economy)
-- Integrierte Booster-Vorteile
+- Server Templates (Library)
+- Banner Templates (Library)
+- Economy System
+- Integrated Booster Benefits
 
 ## Backend
-**Datenbank**
+**Database**
 
-Die Speicherung jeglicher statischen Daten erfolgt über eine MongoDB Datenbank, welche Daten auf Basis von JSON-ähnlichen Textblöcken speichert.
+This repository uses the default SPLAYFUNITY MongoDB database.
 
 
 **Deployment**
 
-Die automatische Anwenungsverteilung läuft mittels [Github Actions](https://docs.github.com/de/actions) und wird in dem Workflow anschließend mit dem Dienst [rsync](https://wiki.ubuntuusers.de/rsync/) auf die zuständigen Linux Server verteilt. Dort werden Diese anschließend über einen systemd Service zu [Docker Images](https://docs.docker.com/engine/reference/commandline/image_ls/) und daraufhin zu [Docker-Containern](https://www.docker.com/resources/what-container/) umgewandelt und gestartet.
+Deployment is accessing varios open source ressources and interfaces.
+- Github Actions
+- Maven shade plugin
+- ssh
+- rsync
+- docker compose
