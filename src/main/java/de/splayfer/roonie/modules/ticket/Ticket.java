@@ -133,9 +133,13 @@ public class Ticket {
                 .append("post", post.getIdLong())
                 .append("creator", creator.getIdLong())
                 .append("type", type)
-                .append("createDate", createDate);
+                .append("createDate", createDate)
+                .append("channelTxt", channel.getName())
+                .append("creatorTxt", creator.getEffectiveName());
         if (supporter != null)
-            doc.append("supporter", supporter.getIdLong());
+            doc
+                    .append("supporter", supporter.getIdLong())
+                    .append("supporterTxt", supporter.getEffectiveName());
         return doc;
     }
 
