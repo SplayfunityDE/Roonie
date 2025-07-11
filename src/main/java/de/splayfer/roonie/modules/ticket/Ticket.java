@@ -69,14 +69,14 @@ public class Ticket {
 
     public static Ticket getFromDocument(Document document) {
         Member supporter = null;
-        if (document.getLong("supporter") != null)
-            supporter = Roonie.mainGuild.getMemberById(document.getLong("supporter"));
-        return new Ticket(Roonie.mainGuild.getThreadChannelById(document.getLong("channel")), Roonie.mainGuild.getThreadChannelById(document.getLong("post")), Roonie.mainGuild.getMemberById(document.getLong("creator")), supporter, document.getInteger("type"), document.getDate("createDate"));
+        if (document.getString("supporter") != null)
+            supporter = Roonie.mainGuild.getMemberById(document.getString("supporter"));
+        return new Ticket(Roonie.mainGuild.getThreadChannelById(document.getString("channel")), Roonie.mainGuild.getThreadChannelById(document.getString("post")), Roonie.mainGuild.getMemberById(document.getString("creator")), supporter, document.getInteger("type"), document.getDate("createDate"));
     }
-    public static Ticket getFromChannel(long id) {
+    public static Ticket getFromChannel(String id) {
         return Ticket.getFromDocument(mongoDB.find("ticket", "channel", id).first());
     }
-    public static Ticket getFromPost(long id) {
+    public static Ticket getFromPost(String id) {
         return Ticket.getFromDocument(mongoDB.find("ticket", "post", id).first());
     }
 
@@ -102,8 +102,8 @@ public class Ticket {
     }
 
     public static Ticket fromUser(Member creator) {;
-        if (mongoDB.exists("ticket", "creator", creator.getIdLong()))
-            return Ticket.getFromDocument(mongoDB.find("ticket", "creator", creator.getIdLong()).first());
+        if (mongoDB.exists("ticket", "creator", creator.getId()))
+            return Ticket.getFromDocument(mongoDB.find("ticket", "creator", creator.getId()).first());
         return null;
     }
 
@@ -112,14 +112,14 @@ public class Ticket {
             channel.delete().queue();
         if (post != null)
             post.delete().queue();
-        mongoDB.drop("ticket", mongoDB.find("ticket", "channel", channel.getIdLong()).first());
+        mongoDB.drop("ticket", mongoDB.find("ticket", "channel", channel.getId()).first());
         try {
             creator.getUser().openPrivateChannel().complete().sendMessageEmbeds(Embeds.BANNER_TICKET, getCloseDmEmbed(reason)).queue();
         } catch (Exception exception) {
         }
     }
 
-    public void prune(long channelId) {
+    public void prune(String channelId) {
         if (channel != null)
             channel.delete().queue();
         if (post != null)
@@ -129,22 +129,22 @@ public class Ticket {
 
     public Document getAsDocument() {
         Document doc = new Document()
-                .append("channel", channel.getIdLong())
-                .append("post", post.getIdLong())
-                .append("creator", creator.getIdLong())
+                .append("channel", channel.getId())
+                .append("post", post.getId())
+                .append("creator", creator.getId())
                 .append("type", type)
                 .append("createDate", createDate)
                 .append("channelTxt", channel.getName())
                 .append("creatorTxt", creator.getEffectiveName());
         if (supporter != null)
             doc
-                    .append("supporter", supporter.getIdLong())
+                    .append("supporter", supporter.getId())
                     .append("supporterTxt", supporter.getEffectiveName());
         return doc;
     }
 
     public void updateMongoDB() {
-        mongoDB.update("ticket", mongoDB.find("ticket", "channel", channel.getIdLong()).first(), this.getAsDocument());
+        mongoDB.update("ticket", mongoDB.find("ticket", "channel", channel.getId()).first(), this.getAsDocument());
     }
 
     public static List<Ticket> getAllTickets() {
@@ -154,10 +154,10 @@ public class Ticket {
         return tickets;
     }
 
-    public static HashMap<Ticket, Long> getAllTicketsWithId() {
-        HashMap<Ticket, Long> tickets = new HashMap<>();
+    public static HashMap<Ticket, String> getAllTicketsWithId() {
+        HashMap<Ticket, String> tickets = new HashMap<>();
         for (Document doc : mongoDB.findAll("ticket"))
-            tickets.put(Ticket.getFromDocument(doc), doc.getLong("channel"));
+            tickets.put(Ticket.getFromDocument(doc), doc.getString("channel"));
         return tickets;
     }
 

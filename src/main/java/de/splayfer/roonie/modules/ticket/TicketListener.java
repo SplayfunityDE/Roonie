@@ -60,7 +60,7 @@ public class TicketListener extends ListenerAdapter {
             Ticket ticket;
             switch (event.getButton().getId().split("\\.")[1]) {
                 case "claim":
-                    ticket = Ticket.getFromPost(event.getChannelIdLong());
+                    ticket = Ticket.getFromPost(event.getChannelId());
                     if (ticket.getSupporter() == null) {
                         ticket.getChannel().addThreadMember(event.getMember()).queue();
                         ticket.setSupporter(event.getMember());
@@ -90,7 +90,7 @@ public class TicketListener extends ListenerAdapter {
                     }
                     break;
                 case "unclaim":
-                    ticket = Ticket.getFromPost(event.getChannelIdLong());
+                    ticket = Ticket.getFromPost(event.getChannelId());
                     event.getMessage().delete().queue();
                     ticket.setSupporter(null);
                     ticket.updateMongoDB();
@@ -99,7 +99,7 @@ public class TicketListener extends ListenerAdapter {
                     messageCache.remove(event.getMessageIdLong());
                     break;
                 case "close":
-                    ticket = Ticket.getFromChannel(event.getChannelIdLong());
+                    ticket = Ticket.getFromChannel(event.getChannelId());
                     if (ticket.getSupporter() != null)
                         if (!(event.getMember().equals(ticket.getSupporter()) || event.getMember().hasPermission(Permission.ADMINISTRATOR))) {
                             event.replyEmbeds(DefaultMessage.error("Ticket wird gerade bearbeitet", "Du kannst dieses Ticket nicht schließen, weil es gerade von " + ticket.getSupporter().getAsMention() + " bearbeitet wird!")).setEphemeral(true).queue();
@@ -127,8 +127,8 @@ public class TicketListener extends ListenerAdapter {
         if (event.getChannel().getId().equals("908795138623537232")) {
             if (event.getAuthor().getIdLong() == Roonie.shardMan.getSelfUser().getIdLong() && event.getMessage().getEmbeds().isEmpty())
                 event.getMessage().delete().queue();
-        } else if (event.getChannel().getType().isThread() && Ticket.getAllTicketsWithId().containsValue(event.getChannel().getIdLong()) && Ticket.getFromChannel(event.getChannel().getIdLong()).getSupporter() == null) {
-            Ticket ticket = Ticket.getFromChannel(event.getChannel().getIdLong());
+        } else if (event.getChannel().getType().isThread() && Ticket.getAllTicketsWithId().containsValue(event.getChannel().getId()) && Ticket.getFromChannel(event.getChannel().getId()).getSupporter() == null) {
+            Ticket ticket = Ticket.getFromChannel(event.getChannel().getId());
             if (event.getMember().equals(ticket.getCreator())) {
                 List<String> list = new ArrayList<>();
                 event.getChannel().getHistory().retrievePast(10).complete().forEach(message -> {
@@ -156,7 +156,7 @@ public class TicketListener extends ListenerAdapter {
                     else
                         reason = "`KEINER`";
                     event.deferEdit().queue();
-                    Ticket.getFromChannel(event.getChannelIdLong()).close(reason);
+                    Ticket.getFromChannel(event.getChannelId()).close(reason);
                     break;
             }
         }

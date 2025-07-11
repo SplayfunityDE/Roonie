@@ -9,7 +9,7 @@ import java.util.HashMap;
 public class TicketRestoreListener {
 
     public static void restoreTickets() {
-        HashMap<Ticket, Long> list = Ticket.getAllTicketsWithId();
+        HashMap<Ticket, String> list = Ticket.getAllTicketsWithId();
         for (Ticket ticket : list.keySet()) {
             //check for member left - if ticket is unclaimed
             if (ticket.getSupporter() == null && !Roonie.mainGuild.getMembers().contains(ticket.getCreator())) {
