@@ -112,6 +112,9 @@ public class Ticket {
             channel.delete().queue();
         if (post != null)
             post.delete().queue();
+        //move to ticket-closed
+        mongoDB.insert("ticket-closed", mongoDB.find("ticket", "channel", channel.getId()).first());
+        //delete from ticket
         mongoDB.drop("ticket", mongoDB.find("ticket", "channel", channel.getId()).first());
         try {
             creator.getUser().openPrivateChannel().complete().sendMessageEmbeds(Embeds.BANNER_TICKET, getCloseDmEmbed(reason)).queue();
@@ -124,6 +127,9 @@ public class Ticket {
             channel.delete().queue();
         if (post != null)
             post.delete().queue();
+        //move to ticket-closed
+        mongoDB.insert("ticket-closed", mongoDB.find("ticket", "channel", channelId).first());
+        //delete from ticket
         mongoDB.drop("ticket", mongoDB.find("ticket", "channel", channelId).first());
     }
 
