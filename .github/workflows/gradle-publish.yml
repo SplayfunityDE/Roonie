@@ -40,7 +40,7 @@ jobs:
           ${{ runner.os }}-gradle-
 
     - name: Build with Gradle
-      run: ./gradlew build --parallel --no-daemon
+      run: ./gradlew build --parallel --no-daemon --configuration-cache
         
     - name: Install SSH Key
       uses: shimataro/ssh-key-action@v2
