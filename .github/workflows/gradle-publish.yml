@@ -5,9 +5,9 @@ name: Build and Deploy to Staging server
 
 on:
   push:
-    branches: [ gradle-migration ]
+    branches: [ master ]
   pull_request:
-    branches: [ gradle-migration ]
+    branches: [ master ]
 
 jobs:
   build-and-deploy:
