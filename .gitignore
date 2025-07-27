@@ -6,6 +6,8 @@ target/
 out/
 .idea/
 logs/
+.gradle/
+build/
 
 ### Security ###
 .env

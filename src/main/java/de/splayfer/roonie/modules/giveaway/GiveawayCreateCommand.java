@@ -47,7 +47,7 @@ public class GiveawayCreateCommand extends ListenerAdapter {
         if (event.getSelectMenu().getId().startsWith("giveaway.create")) {
             switch (event.getSelectMenu().getId().split("\\.")[2]) {
                 case "channel":
-                    Giveaway.getFromMember(event.getMember()).setChannel(event.getGuild().getTextChannelById(event.getMentions().getChannels().get(0).getId()));
+                    Giveaway.getFromMember(event.getMember()) .setChannel(event.getGuild().getTextChannelById(event.getMentions().getChannels().get(0).getId()));
                     updateHook(event.getMember());
                     event.deferEdit().queue();
                     break;
