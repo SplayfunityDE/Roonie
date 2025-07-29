@@ -14,7 +14,7 @@ version = '1.0.0'
 
 jar {
     manifest {
-        attributes 'Main-Class': 'de.splayfer.Roonie'
+        attributes 'Main-Class': 'de.splayfer.roonie.Roonie'
     }
     // optional: um sicherzugehen, dass du auch compiled class files bekommst
     from {
