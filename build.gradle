@@ -9,6 +9,21 @@ plugins {
     id 'maven-publish'
 }
 
+group = 'de.splayfer'
+version = '1.0.0'
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'de.splayfer.Roonie'
+    }
+    // optional: um sicherzugehen, dass du auch compiled class files bekommst
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
 repositories {
     mavenLocal()
     maven {
