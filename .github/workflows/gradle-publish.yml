@@ -73,5 +73,5 @@ jobs:
 
     - name: Rebuild container
       run: |
-          staging docker compose -f /opt/dockerfiles/roonie/docker-compose.yaml down
-          staging docker compose -f /opt/dockerfiles/roonie/docker-compose.yaml up -d
+          ssh staging docker compose -f /opt/dockerfiles/roonie/docker-compose.yaml down
+          ssh staging docker compose -f /opt/dockerfiles/roonie/docker-compose.yaml up -d
