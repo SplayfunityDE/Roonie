@@ -41,7 +41,7 @@ jobs:
 
     - name: Build with Gradle
       run: ./gradlew build --parallel --no-daemon --configuration-cache
-        
+
     - name: Install SSH Key
       uses: shimataro/ssh-key-action@v2
       with:
@@ -49,18 +49,29 @@ jobs:
         known_hosts: unnecessary
         
     - name: Adding Known Hosts
-      run: ssh-keyscan -p ${{ secrets.PORT }} -H ${{ secrets.HOST }}  >> ~/.ssh/known_hosts
+      run: ssh-keyscan -p ${{ secrets.PORT }} -H ${{ secrets.HOST }}  >> ~/.ssh/known_hosts  
+
+    - name: Configure SSH
+      run: |
+        mkdir -p ~/.ssh/
+        echo "$SSH_KEY" > ~/.ssh/staging.key
+        chmod 600 ~/.ssh/staging.key
+        cat >>~/.ssh/config <<END
+        Host staging
+          HostName $SSH_HOST
+          User $SSH_USER
+          IdentityFile ~/.ssh/staging.key
+          StrictHostKeyChecking no
+        END
+      env:
+        SSH_USER: ${{ secrets.USERNAME }}
+        SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        SSH_HOST: ${{ secrets.HOST }}     
       
     - name: Deploy with rsync
       run: rsync -avz /home/runner/work/Roonie/Roonie/build/libs/ ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/opt/dockerfiles/roonie
 
     - name: Rebuild container
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: ${{ secrets.PORT }}
-        script: |
-          docker compose -f /opt/dockerfiles/roonie/docker-compose.yaml down
-          docker compose -f /opt/dockerfiles/roonie/docker-compose.yaml up -d
+      run: |
+          staging docker compose -f /opt/dockerfiles/roonie/docker-compose.yaml down
+          staging docker compose -f /opt/dockerfiles/roonie/docker-compose.yaml up -d
