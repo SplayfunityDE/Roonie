@@ -68,8 +68,11 @@ jobs:
         SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         SSH_HOST: ${{ secrets.HOST }}     
       
-    - name: Deploy with rsync
+    - name: Deploy Gradle Artifacts
       run: rsync -avz /home/runner/work/Roonie/Roonie/build/libs/ ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/opt/dockerfiles/roonie
+
+    - name: Sync Docker Configuration
+      run: rsync -avz --include="Dockerfile" --include="docker-compose.yaml" --exclude="*" . ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/opt/dockerfiles/roonie
 
     - name: Rebuild container
       run: |
