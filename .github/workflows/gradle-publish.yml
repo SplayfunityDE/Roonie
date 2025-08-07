@@ -123,6 +123,7 @@ jobs:
         "
 
     - name: Sync Docker Compose File
+      working-directory: ${{ github.workspace }}
       run: rsync -avz ./docker-compose.yaml ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/opt/dockerfiles/roonie
 
     - name: Start Container
