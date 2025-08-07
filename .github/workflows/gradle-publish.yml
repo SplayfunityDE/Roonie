@@ -123,7 +123,7 @@ jobs:
         "
 
     - name: Sync Docker Compose File
-      run: rsync -avz docker-compose.yaml ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/opt/dockerfiles/roonie
+      run: rsync -avz ./docker-compose.yaml ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/opt/dockerfiles/roonie
 
     - name: Start Container
       run: ssh staging docker compose -f /opt/dockerfiles/roonie/docker-compose.yaml up -d
