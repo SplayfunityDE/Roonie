@@ -80,7 +80,9 @@ jobs:
         push-to-registry: true        
           
   start-service:
+  
     runs-on: ubuntu-latest
+    needs: build-and-publish
     
     permissions:
       contents: read
