@@ -113,17 +113,14 @@ jobs:
       env:
         SSH_USER: ${{ secrets.USERNAME }}
         SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        SSH_HOST: ${{ secrets.HOST }}     
-
-    - name: Log in to the Container registry
-      uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
-      with:
-        registry: ${{ env.REGISTRY }}
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}        
-      
-    - name: Pull Docker Image
-      run: ssh staging docker pull ghcr.io/splayfunityde/roonie
+        SSH_HOST: ${{ secrets.HOST }}   
+        
+    - name: Login and Pull on staging
+      run: |
+        ssh staging "
+          echo '${{ secrets.GHCR_TOKEN }}' | docker login ghcr.io -u <username> --password-stdin &&
+          docker pull ghcr.io/splayfunityde/roonie
+        "
 
     - name: Sync Docker Compose File
       run: rsync -avz --include="docker-compose.yaml" --exclude="*" . ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/opt/dockerfiles/roonie
