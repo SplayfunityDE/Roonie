@@ -118,7 +118,7 @@ jobs:
     - name: Login and Pull on staging
       run: |
         ssh staging "
-          echo '${{ secrets.GHCR_TOKEN }}' | docker login ghcr.io -u <username> --password-stdin &&
+          echo '${{ secrets.GHCR_TOKEN }}' | docker login ghcr.io -u splayfery --password-stdin &&
           docker pull ghcr.io/splayfunityde/roonie
         "
 
