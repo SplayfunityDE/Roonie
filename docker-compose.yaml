@@ -1,8 +1,6 @@
 services:
   roonie:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/splayfunityde/roonie:ghcr-test
     restart: always
     volumes:
       - /opt/dockerfiles/roonie:/bot
