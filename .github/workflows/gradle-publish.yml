@@ -126,4 +126,4 @@ jobs:
       run: rsync -avz --include="docker-compose.yaml" --exclude="*" . ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/opt/dockerfiles/roonie
 
     - name: Start Container
-      run: ssh staging docker run -d ghcr.io/splayfunityde/roonie      
+      run: ssh staging docker run -d ghcr.io/splayfunityde/roonie:ghcr-test
