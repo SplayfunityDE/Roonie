@@ -5,9 +5,9 @@ name: Build and Deploy to Staging server
 
 on:
   push:
-    branches: [ master ]
+    branches: [ ghcr-test ]
   pull_request:
-    branches: [ master ]
+    branches: [ ghcr-test ]
 
 
 env:
