@@ -119,7 +119,7 @@ jobs:
       run: |
         ssh staging "
           echo '${{ secrets.GHCR_TOKEN }}' | docker login ghcr.io -u splayfery --password-stdin &&
-          docker pull ghcr.io/splayfunityde/roonie
+          docker pull ghcr.io/splayfunityde/roonie:ghcr-test
         "
 
     - name: Sync Docker Compose File
