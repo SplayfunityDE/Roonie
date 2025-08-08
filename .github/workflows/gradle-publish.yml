@@ -130,13 +130,16 @@ jobs:
       env:
         SSH_USER: ${{ secrets.USERNAME }}
         SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        SSH_HOST: ${{ secrets.HOST }}   
+        SSH_HOST: ${{ secrets.HOST }}
+
+    - name: Set lowercase IMAGE_NAME
+      run: echo "IMAGE_NAME=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
         
     - name: Login and Pull
       run: |
         ssh staging "
           echo '${{ secrets.GHCR_TOKEN }}' | docker login ghcr.io -u ${{ env.GHCR_USER }} --password-stdin &&
-          docker pull ${{ env.REGISTRY }}/\${GITHUB_REPOSITORY,,}:${{ env.LABEL }}
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.LABEL }}
         "
 
     - name: Sync Docker Compose File
