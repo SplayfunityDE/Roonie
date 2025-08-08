@@ -1,6 +1,6 @@
 services:
   roonie:
-    image: ghcr.io/splayfunityde/roonie:ghcr-test
+    image: ghcr.io/splayfunityde/roonie:latest
     restart: always
     volumes:
       - /opt/dockerfiles/roonie:/bot
