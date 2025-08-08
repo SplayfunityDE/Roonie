@@ -15,7 +15,7 @@ env:
   IMAGE_NAME: ${{ github.repository }}
   REMOTE_PATH: /opt/dockerfiles/roonie
   GHCR_USER: splayfery
-  LABEL: latest
+  TAGS: latest
 
 jobs:
   build-and-publish:
@@ -74,7 +74,7 @@ jobs:
       uses: docker/metadata-action@v5
       with:
         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-        tags: ${{ env.LATEST }}
+        tags: ${{ env.TAGS }}
 
     - name: Build and push multi-arch Docker image
       id: push
