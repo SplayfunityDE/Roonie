@@ -89,6 +89,9 @@ jobs:
       packages: write
 
     steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      
     - name: Install SSH Key
       uses: shimataro/ssh-key-action@v2
       with:
@@ -129,7 +132,7 @@ jobs:
 
     - name: Sync Docker Compose File
       working-directory: ${{ github.workspace }}
-      run: rsync -avz ./docker-compose.yaml ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/opt/dockerfiles/roonie
+      run: rsync -avz docker-compose.yaml ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/opt/dockerfiles/roonie
 
     - name: Start Container
       run: ssh staging docker compose -f /opt/dockerfiles/roonie/docker-compose.yaml up -d
