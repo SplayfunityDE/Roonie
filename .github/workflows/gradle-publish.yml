@@ -14,6 +14,7 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
   REMOTE_PATH: /opt/dockerfiles/roonie
+  GHCR_USER: splayfery
   LABEL: latest
 
 jobs:
@@ -134,8 +135,8 @@ jobs:
     - name: Login and Pull
       run: |
         ssh staging "
-          echo '${{ secrets.GHCR_TOKEN }}' | docker login ghcr.io -u splayfery --password-stdin &&
-          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME | toLower }}:${{ env.LABEL | toLower }}
+          echo '${{ secrets.GHCR_TOKEN }}' | docker login ghcr.io -u ${{ env.GHCR_USER }} --password-stdin &&
+          docker pull ${{ env.REGISTRY }}/\${GITHUB_REPOSITORY,,}:${{ env.LABEL }}
         "
 
     - name: Sync Docker Compose File
