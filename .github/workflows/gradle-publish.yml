@@ -122,14 +122,14 @@ jobs:
           docker pull ghcr.io/splayfunityde/roonie:ghcr-test
         "
 
-    - name: Sync Docker Compose File
-      working-directory: ${{ github.workspace }}
-      run: rsync -avz ./docker-compose.yaml ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/opt/dockerfiles/roonie
-
     - name: Debug
       run: |
         pwd
-        ls -la
+        ls -la        
+
+    - name: Sync Docker Compose File
+      working-directory: ${{ github.workspace }}
+      run: rsync -avz ./docker-compose.yaml ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/opt/dockerfiles/roonie
 
     - name: Start Container
       run: ssh staging docker compose -f /opt/dockerfiles/roonie/docker-compose.yaml up -d
