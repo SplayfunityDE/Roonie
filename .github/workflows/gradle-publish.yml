@@ -74,7 +74,7 @@ jobs:
       uses: docker/metadata-action@v5
       with:
         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-        tags: latest
+        tags: ${{ env.TAGS }}
 
     - name: Build and push multi-arch Docker image
       id: push
@@ -139,7 +139,7 @@ jobs:
       run: |
         ssh staging "
           echo '${{ secrets.GHCR_TOKEN }}' | docker login ghcr.io -u ${{ env.GHCR_USER }} --password-stdin &&
-          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.LABEL }}
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
         "
 
     - name: Sync Docker Compose File
