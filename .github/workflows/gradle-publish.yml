@@ -118,17 +118,12 @@ jobs:
         SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         SSH_HOST: ${{ secrets.HOST }}   
         
-    - name: Login and Pull on staging
+    - name: Login and Pull
       run: |
         ssh staging "
           echo '${{ secrets.GHCR_TOKEN }}' | docker login ghcr.io -u splayfery --password-stdin &&
           docker pull ghcr.io/splayfunityde/roonie:ghcr-test
         "
-
-    - name: Debug
-      run: |
-        pwd
-        ls -la        
 
     - name: Sync Docker Compose File
       working-directory: ${{ github.workspace }}
