@@ -135,7 +135,7 @@ jobs:
       run: |
         ssh staging "
           echo '${{ secrets.GHCR_TOKEN }}' | docker login ghcr.io -u splayfery --password-stdin &&
-          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.LABEL }}
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME | toLower }}:${{ env.LABEL | toLower }}
         "
 
     - name: Sync Docker Compose File
