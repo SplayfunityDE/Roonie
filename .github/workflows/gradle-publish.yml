@@ -135,15 +135,20 @@ jobs:
     - name: Set lowercase IMAGE_NAME
       run: echo "IMAGE_NAME=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
         
-    - name: Login and Pull
+    - name: Deploy and Restart Container
       run: |
         ssh staging "
           echo '${{ secrets.GHCR_TOKEN }}' | docker login ghcr.io -u ${{ env.GHCR_USER }} --password-stdin &&
-          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
+          # Stop running container
+          docker compose -f ${REMOTE_PATH}/docker-compose.yaml down || true &&
+
+          # Pull latest image
+          docker pull ${REGISTRY}/${IMAGE_NAME}:latest &&
+
+          # Remove unused old images
+          docker image prune -af &&
+
+          # Start new container
+          docker compose -f ${REMOTE_PATH}/docker-compose.yaml up -d
         "
-
-    - name: Sync Docker Compose File
-      run: rsync -avz docker-compose.yaml ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ env.REMOTE_PATH }}
-
-    - name: Start Container
-      run: ssh staging docker compose -f ${{ env.REMOTE_PATH }}/docker-compose.yaml up -d
