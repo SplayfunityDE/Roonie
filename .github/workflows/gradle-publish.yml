@@ -69,6 +69,12 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Cleanup old latest images in GHCR
+      uses: actions/delete-package-versions@v5
+      with:
+        package-name: roonie
+        min-versions-to-keep: 0
+
     - name: Extract metadata (tags, labels) for Docker
       id: meta
       uses: docker/metadata-action@v5
@@ -91,7 +97,7 @@ jobs:
       with:
         subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
         subject-digest: ${{ steps.push.outputs.digest }}
-        push-to-registry: false
+        push-to-registry: true
 
     - name: Authenticate GitHub CLI
       env:
@@ -99,28 +105,6 @@ jobs:
       run: |
         echo "Authenticating gh CLI"
         gh auth status
-
-    - name: Cleanup old latest images in GHCR
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        ORG="SplayfunityDE"
-        PACKAGE="roonie"
-
-        echo "Cleaning up old 'latest' tags in package $PACKAGE from org $ORG"
-
-        # Liste aller Versionen, die 'latest' tragen, neueste zuerst
-        DIGESTS=$(gh api "/orgs/$ORG/packages/container/$PACKAGE/versions" \
-          --jq '.[] | select(.metadata.container.tags[]? == "latest") | .id')
-
-        COUNT=0
-        for ID in $DIGESTS; do
-          COUNT=$((COUNT+1))
-          if [ $COUNT -gt 1 ]; then
-            echo "Deleting old digest ID $ID"
-            gh api --method DELETE "/orgs/$ORG/packages/container/$PACKAGE/versions/$ID"
-          fi
-        done
         
   start-service:
   
