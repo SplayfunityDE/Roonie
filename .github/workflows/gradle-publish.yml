@@ -73,7 +73,8 @@ jobs:
       uses: actions/delete-package-versions@v5
       with:
         package-name: roonie
-        min-versions-to-keep: 0
+        package-type: docker
+        delete-only-untagged-versions: true
 
     - name: Extract metadata (tags, labels) for Docker
       id: meta
@@ -98,13 +99,6 @@ jobs:
         subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
         subject-digest: ${{ steps.push.outputs.digest }}
         push-to-registry: true
-
-    - name: Authenticate GitHub CLI
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        echo "Authenticating gh CLI"
-        gh auth status
         
   start-service:
   
