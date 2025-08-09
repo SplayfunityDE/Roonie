@@ -93,11 +93,6 @@ jobs:
         subject-digest: ${{ steps.push.outputs.digest }}
         push-to-registry: true
 
-    - name: Install GitHub CLI
-      uses: cli/cli@v2
-      with:
-        version: latest
-
     - name: Authenticate GitHub CLI
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
