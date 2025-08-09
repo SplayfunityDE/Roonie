@@ -93,16 +93,29 @@ jobs:
         subject-digest: ${{ steps.push.outputs.digest }}
         push-to-registry: true
 
-    - name: Delete old "latest" digests
+    - name: Install GitHub CLI
+      uses: cli/cli@v2
+      with:
+        version: latest
+
+    - name: Authenticate GitHub CLI
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        REPO="${{ github.repository }}"
+        echo "Authenticating gh CLI"
+        gh auth status
+
+    - name: Delete old 'latest' images
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        REPO="SplayfunityDE/Roonie"
         IMAGE="ghcr.io/${REPO}"
         echo "Cleaning up old latest tags for $IMAGE"
         
-        # Liste alle Digests von "latest"
         DIGESTS=$(gh api "/user/packages/container/${REPO#*/}/versions" \
           --jq '.[] | select(.metadata.container.tags[]? == "latest") | .id')
-
+        
         COUNT=0
         for ID in $DIGESTS; do
           COUNT=$((COUNT+1))
@@ -110,7 +123,7 @@ jobs:
             echo "Deleting old digest ID $ID"
             gh api --method DELETE "/user/packages/container/${REPO#*/}/versions/$ID"
           fi
-        done        
+        done
           
   start-service:
   
