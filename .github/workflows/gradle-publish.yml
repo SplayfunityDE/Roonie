@@ -91,7 +91,26 @@ jobs:
       with:
         subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
         subject-digest: ${{ steps.push.outputs.digest }}
-        push-to-registry: true        
+        push-to-registry: true
+
+    - name: Delete old "latest" digests
+      run: |
+        REPO="${{ github.repository }}"
+        IMAGE="ghcr.io/${REPO}"
+        echo "Cleaning up old latest tags for $IMAGE"
+        
+        # Liste alle Digests von "latest"
+        DIGESTS=$(gh api "/user/packages/container/${REPO#*/}/versions" \
+          --jq '.[] | select(.metadata.container.tags[]? == "latest") | .id')
+
+        COUNT=0
+        for ID in $DIGESTS; do
+          COUNT=$((COUNT+1))
+          if [ $COUNT -gt 1 ]; then
+            echo "Deleting old digest ID $ID"
+            gh api --method DELETE "/user/packages/container/${REPO#*/}/versions/$ID"
+          fi
+        done        
           
   start-service:
   
