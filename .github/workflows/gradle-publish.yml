@@ -100,26 +100,28 @@ jobs:
         echo "Authenticating gh CLI"
         gh auth status
 
-    - name: Delete old 'latest' images
+    - name: Cleanup old latest images in GHCR
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        REPO="SplayfunityDE/Roonie"
-        IMAGE="ghcr.io/${REPO}"
-        echo "Cleaning up old latest tags for $IMAGE"
-        
-        DIGESTS=$(gh api "/user/packages/container/${REPO#*/}/versions" \
+        ORG="SplayfunityDE"
+        PACKAGE="roonie"
+
+        echo "Cleaning up old 'latest' tags in package $PACKAGE from org $ORG"
+
+        # Liste aller Versionen, die 'latest' tragen, neueste zuerst
+        DIGESTS=$(gh api "/orgs/$ORG/packages/container/$PACKAGE/versions" \
           --jq '.[] | select(.metadata.container.tags[]? == "latest") | .id')
-        
+
         COUNT=0
         for ID in $DIGESTS; do
           COUNT=$((COUNT+1))
           if [ $COUNT -gt 1 ]; then
             echo "Deleting old digest ID $ID"
-            gh api --method DELETE "/user/packages/container/${REPO#*/}/versions/$ID"
+            gh api --method DELETE "/orgs/$ORG/packages/container/$PACKAGE/versions/$ID"
           fi
         done
-          
+        
   start-service:
   
     runs-on: ubuntu-latest
