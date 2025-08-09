@@ -73,7 +73,7 @@ jobs:
       uses: actions/delete-package-versions@v5
       with:
         package-name: roonie
-        package-type: docker
+        package-type: container
         delete-only-untagged-versions: true
 
     - name: Extract metadata (tags, labels) for Docker
