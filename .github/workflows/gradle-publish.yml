@@ -74,7 +74,6 @@ jobs:
       with:
         package-name: roonie
         package-type: container
-        delete-only-untagged-versions: true
 
     - name: Extract metadata (tags, labels) for Docker
       id: meta
