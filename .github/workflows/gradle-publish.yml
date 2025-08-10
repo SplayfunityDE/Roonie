@@ -74,7 +74,7 @@ jobs:
       with:
         package-name: roonie
         package-type: container
-        min-versions-to-keep: 0
+        min-versions-to-keep: 1
 
     - name: Extract metadata (tags, labels) for Docker
       id: meta
