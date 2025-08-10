@@ -3,7 +3,7 @@
 <img align="right" src="https://avatars.githubusercontent.com/u/108355696?s=200&v=4" height="200" width="200">
 
 > [!Note]
-> Be careful! Any changes from `master` will be deployed directly to the production system via rsync!
+> Changed made in `master` are directly synced with the remote host!
 
 Roonie is the bot system of the [SPLAYFUNITY](https://splayfer.de) Discord server.
 
@@ -29,8 +29,9 @@ This repository uses the default SPLAYFUNITY MongoDB database.
 **Deployment**
 
 Deployment is accessing varios open source ressources and interfaces.
-- Github Actions
-- Maven shade plugin
-- ssh
-- rsync
-- docker compose
+- Github Actions & Docker Buildx
+- Ghcr
+- Gradle
+- Docker Compose
+
+
