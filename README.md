@@ -34,11 +34,12 @@ Deployment is accessing varios open source ressources and interfaces.
 - Gradle
 - Docker Compose
 
-## Setup 
+## Setup
+Before going on make sure to check [if docker is installed on your system](https://www.docker.com/blog/how-to-check-docker-version/) because it is required for all further steps.
 It is possible to provide the default Roonie service with and without a automatic workflow synchronization.
 The only key difference in these types of provisioning are the way versions get updated. Without a workflow sync the container service has to be updated manually from the container registry using `docker pull`. It also requires the container service to be stopped during an update.
 
-First we need to provide a `.env` File to give the service access to all credentials.
+In both steps you first need to provide a `.env` File to give the service access to all credentials.
 It should contain the following values:
 ```env
 MONGO_HOST=123.456.789.123
@@ -65,10 +66,26 @@ services:
       - /DATA:/bot
     env_file: /PATH/TO/ENV_FILE
 ```
-Replace `/DATA` with a configuration folder where the service saves some information using `.yaml` files and also replace `/PATH/TO/ENV_FILE` with the location of the actual .env file, you created priviosly.
+Replace `/DATA` with a configuration folder where the service saves some information using `.yaml` files and also replace `/PATH/TO/ENV_FILE` with the location of the actual .env file, you created previosly.
+You can now simply start Roonie using the `docker compose up -d` command.
 
 ### With worklow sync
 > [!Note]
 > This method requires admin privileges on this repository!
-To start off, you need to create the following directory on your host system:
 
+To start off, you need to create the following directory on your host system:
+```bash
+/opt/dockerfiles/roonie
+```
+Make sure to save all the files below in this folder!
+Your `/opt/dockerfiles/roonie/docker-compose.yaml` should look like this:
+```yaml
+services:
+  roonie:
+    image: ghcr.io/splayfunityde/roonie:latest
+    restart: always
+    volumes:
+      - /opt/dockerfiles/roonie:/bot
+    env_file: .env
+```
+In the last step you need to provide the `HOST`, `USERNAME`, `PORT` and `SSH_PRIVATE_KEY` in the repository secret. Now the pipeline publishes directly to the configured host!
