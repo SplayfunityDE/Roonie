@@ -5,9 +5,9 @@ name: Build and Deploy to Staging server
 
 on:
   push:
-    branches: [ ghcr-test ]
+    branches: [ master ]
   pull_request:
-    branches: [ ghcr-test ]
+    branches: [ master ]
 
 
 env:
@@ -151,7 +151,7 @@ jobs:
           docker compose -f ${REMOTE_PATH}/docker-compose.yaml down || true &&
 
           # Pull latest image
-          docker pull ${REGISTRY}/${IMAGE_NAME}:latest &&
+          docker pull ${REGISTRY}/${IMAGE_NAME}:${{ env.TAGS }} &&
 
           # Remove unused old images
           docker image prune -af &&
