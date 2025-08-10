@@ -71,6 +71,7 @@ jobs:
 
     - name: Cleanup old latest images in GHCR
       uses: actions/delete-package-versions@v5
+      continue-on-error: true
       with:
         package-name: roonie
         package-type: container
