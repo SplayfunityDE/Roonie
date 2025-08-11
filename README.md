@@ -89,3 +89,4 @@ services:
     env_file: .env
 ```
 In the last step you need to provide the `HOST`, `USERNAME`, `PORT` and `SSH_PRIVATE_KEY` in the repository secret. Now the pipeline publishes directly to the configured host!
+
