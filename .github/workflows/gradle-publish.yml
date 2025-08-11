@@ -142,6 +142,9 @@ jobs:
 
     - name: Set lowercase IMAGE_NAME
       run: echo "IMAGE_NAME=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+
+    - name: Sync Docker Compose File
+      run: rsync -avz docker-compose.yaml ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ env.REMOTE_PATH }}
         
     - name: Deploy and Restart Container
       run: |
