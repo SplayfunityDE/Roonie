@@ -61,6 +61,8 @@ You also have to make sure to authenticate yourself on ghcr because Roonie's vis
 ```bash
 echo <TOKEN> | docker login ghcr.io -u <GITHUB_USERNAME> --password-stdin
 ```
+- `TOKEN` - [Personal Access Token](https://docs.github.com/de/enterprise-cloud@latest/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) des berechtigten Github Accounts
+- `GITHUB_USERNAME` - Benutzername des berechtiten Github Accounts
 
 ### Without workflow sync
 To setup a the basic service without a sync to github actions you need to create a simple `docker-compose.yaml` to provide the environment for Roonie.
