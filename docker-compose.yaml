@@ -2,6 +2,4 @@ services:
   roonie:
     image: ghcr.io/splayfunityde/roonie:latest
     restart: always
-    volumes:
-      - /opt/dockerfiles/roonie:/bot
     env_file: .env
