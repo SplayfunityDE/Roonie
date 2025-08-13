@@ -72,11 +72,9 @@ services:
   roonie:
     image: ghcr.io/splayfunityde/roonie:latest
     restart: always
-    volumes:
-      - /DATA:/bot
     env_file: /PATH/TO/ENV_FILE
 ```
-Replace `/DATA` with a configuration folder where the service saves some information using `.yaml` files and also replace `/PATH/TO/ENV_FILE` with the location of the actual .env file, you created previosly.
+Replace `/PATH/TO/ENV_FILE` with the location of the actual .env file, you created previosly.
 You can now simply start Roonie using the `docker compose up -d` command.
 
 ### With worklow sync
@@ -91,8 +89,6 @@ services:
   roonie:
     image: ghcr.io/splayfunityde/roonie:latest
     restart: always
-    volumes:
-      - /opt/dockerfiles/roonie:/bot
     env_file: .env
 ```
 In the last step you need to provide the `HOST`, `USERNAME`, `PORT` and `SSH_PRIVATE_KEY` in the repository secret. Now the pipeline publishes directly to the configured host!
