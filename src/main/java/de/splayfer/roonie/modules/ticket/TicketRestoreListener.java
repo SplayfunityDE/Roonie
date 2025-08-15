@@ -18,15 +18,6 @@ public class TicketRestoreListener {
                 } else {
                     ticket.prune(list.get(ticket));
                 }
-            } else if (!Roonie.mainGuild.getThreadChannels().contains(ticket.getChannel())) {
-                //check only for threads
-                ticket.prune(list.get(ticket));
-
-            } else if (!Roonie.mainGuild.getForumChannelById(Channels.TICKETFORUM.getId()).getThreadChannels().contains(ticket.getPost())) {
-                //check only for post
-                ticket.setPost(Roonie.mainGuild.getForumChannelById(Channels.TICKETFORUM.getId()).createForumPost(Ticket.typeSymbol.get(ticket.getType()) + "-" + ticket.getCreator().getEffectiveName(), MessageCreateData.fromContent("\u200E")).complete().getThreadChannel());
-                ticket.getPost().sendMessageEmbeds(ticket.getPostEmbed()).queue();
-                ticket.updateMongoDB();
             }
         }
     }
