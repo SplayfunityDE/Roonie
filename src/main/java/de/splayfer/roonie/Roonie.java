@@ -68,7 +68,7 @@ public class Roonie {
             PATH = System.getenv("MEDIA_PATH");
         MongoDBDatabase.connect();
         builder = JDABuilder.createDefault(System.getenv("BOT_TOKEN"))
-                .setActivity(Activity.streaming("🌀SPLΛYFUNITY🌀", "https://twitch.tv/splayfer"))
+                .setActivity(Activity.streaming("🌀SPLΛYFUNITY-test🌀", "https://twitch.tv/splayfer"))
                 .setStatus(OnlineStatus.ONLINE)
                 .setChunkingFilter(ChunkingFilter.ALL)
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
