@@ -4,9 +4,20 @@ plugins {
 	id 'io.spring.dependency-management' version '1.1.7'
 }
 
-group = 'de.splayfunityde'
-version = '0.0.1-SNAPSHOT'
-description = 'roonie'
+group = 'de.splayfer'
+version = '1.0.0'
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'de.splayfer.roonie.RoonieApplication'
+    }
+    // optional: um sicherzugehen, dass du auch compiled class files bekommst
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
 
 java {
 	toolchain {
@@ -16,12 +27,53 @@ java {
 
 repositories {
 	mavenCentral()
+    maven {
+        url = uri('https://jitpack.io')
+    }
+
+    maven {
+        name "arbjergDevReleases"
+        url "https://maven.lavalink.dev/releases"
+    }
+
+
+    maven {
+        url = uri('https://repo.maven.apache.org/maven2/')
+    }
 }
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation("net.dv8tion:JDA:5.0.0-beta.18") { // replace $version with the latest version
+        // Optionally disable audio natives to reduce jar size by excluding `opus-java` and `tink`
+        // Gradle DSL:
+        // exclude module: 'opus-java' // required for encoding audio into opus, not needed if audio is already provided in opus encoding
+        // exclude module: 'tink' // required for encrypting and decrypting audio
+        // Kotlin DSL:
+        // exclude(module="opus-java") // required for encoding audio into opus, not needed if audio is already provided in opus encoding
+        // exclude(module="tink") // required for encrypting and decrypting audio
+    }
+    implementation('com.vdurmont:emoji-java:5.1.1')
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    implementation('dev.arbjerg:lavaplayer:2.2.4')
+    implementation('dev.lavalink.youtube:common:1.13.5')
+    compileOnly('org.projectlombok:lombok:1.18.40')
+    annotationProcessor("org.projectlombok:lombok:1.18.40")
+}
+
+group = 'de.splayfunityde'
+version = '1.0.0'
+description = 'roonie'
+java.sourceCompatibility = JavaVersion.VERSION_21
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(Javadoc) {
+    options.encoding = 'UTF-8'
 }
 
 tasks.named('test') {
