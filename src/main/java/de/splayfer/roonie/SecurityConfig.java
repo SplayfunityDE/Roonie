@@ -28,7 +28,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/authentication/accounts/login").permitAll() // Public endpoint
+                        //.requestMatchers("/authentication/accounts/login").permitAll() // No Public endpoint for internal roonie rest gateway
                         .anyRequest().authenticated() // Secured endpoints
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtService), UsernamePasswordAuthenticationFilter.class); // Add JWT filter
