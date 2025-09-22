@@ -5,9 +5,9 @@ name: Build and Deploy to Staging server
 
 on:
   push:
-    branches: [ master ]
+    branches: [ spring-migration ]
   pull_request:
-    branches: [ master ]
+    branches: [ spring-migration ]
 
 
 env:
