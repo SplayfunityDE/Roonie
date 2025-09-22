@@ -10,7 +10,7 @@ import java.util.Map;
 public class TicketController {
 
     @DeleteMapping("/{id}")
-    public void closeTicket(@PathVariable String id, @RequestBody String reason) {
+    public void closeTicket(@PathVariable String id, @RequestParam String reason) {
         Ticket.getFromChannel(id).close(reason);
     }
 
