@@ -74,7 +74,7 @@ jobs:
       uses: actions/delete-package-versions@v5
       continue-on-error: true
       with:
-        package-name: ${{ SERVICE_NAME }}
+        package-name: ${{ env.SERVICE_NAME }}
         package-type: container
         min-versions-to-keep: 1
 
@@ -156,7 +156,7 @@ jobs:
           docker pull ${REGISTRY}/${IMAGE_NAME}:${{ env.TAGS }} &&
 
           # Re-Pull und Restart container service
-          docker compose -f {REMOTE_PATH}/docker-compose.yaml up -d --force-recreate --no-deps ${{ SERVICE_NAME }} &&
+          docker compose -f {REMOTE_PATH}/docker-compose.yaml up -d --force-recreate --no-deps ${{ env.SERVICE_NAME }} &&
         
           # Remove unused old images
           docker image prune -af
