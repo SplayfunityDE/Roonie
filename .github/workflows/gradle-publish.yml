@@ -156,7 +156,7 @@ jobs:
           docker pull ${REGISTRY}/${IMAGE_NAME}:${{ env.TAGS }} &&
 
           # Re-Pull und Restart container service
-          docker compose -f {REMOTE_PATH}/docker-compose.yaml up -d --force-recreate --no-deps ${{ env.SERVICE_NAME }} &&
+          docker compose -f ${{ env.REMOTE_PATH }}/docker-compose.yaml up -d --force-recreate --no-deps ${{ env.SERVICE_NAME }} &&
         
           # Remove unused old images
           docker image prune -af
