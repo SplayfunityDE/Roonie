@@ -16,7 +16,6 @@ public class TicketController {
 
     @PutMapping("/{id}")
     public void updateTicket(@PathVariable String id, @RequestBody Map<String, String> body) {
-        System.out.println(body.toString());
         Ticket ticket = Ticket.getFromChannel(id);
         if (body.containsKey("supporter")) {
             if (body.get("supporter") != "") {
