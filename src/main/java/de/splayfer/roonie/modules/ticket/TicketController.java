@@ -14,7 +14,7 @@ public class TicketController {
         Ticket.getFromChannel(id).close(reason);
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public void updateTicket(@PathVariable String id, @RequestBody Map<String, String> body) {
         Ticket ticket = Ticket.getFromChannel(id);
         if (body.containsKey("supporter")) {
