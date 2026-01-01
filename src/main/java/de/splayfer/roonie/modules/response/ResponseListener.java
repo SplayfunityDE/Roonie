@@ -1,9 +1,10 @@
 package de.splayfer.roonie.modules.response;
 
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class ResponseListener extends ListenerAdapter {
 
@@ -24,7 +25,7 @@ public class ResponseListener extends ListenerAdapter {
                             event.getMessage().addReaction(Emoji.fromFormatted(response.getValue())).queue();
                         break;
                     case "url":
-                        event.getChannel().sendMessage(response.getValue()).setActionRow(Button.secondary("link", "Schau es dir an!").withUrl(response.getValue()).withEmoji(Emoji.fromFormatted("\uD83D\uDD17"))).queue();
+                        event.getChannel().sendMessage(response.getValue()).setComponents(ActionRow.of(Button.secondary("link", "Schau es dir an!").withUrl(response.getValue()).withEmoji(Emoji.fromFormatted("\uD83D\uDD17")))).queue();
                         break;
                 }
             }

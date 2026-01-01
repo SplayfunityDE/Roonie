@@ -5,6 +5,8 @@ import de.splayfer.roonie.utils.CommandManager;
 import de.splayfer.roonie.utils.enums.Guilds;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
@@ -12,7 +14,6 @@ import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -79,7 +80,7 @@ public class GiveawayManager {
                             List<Button> buttons = new ArrayList<>();
                             buttons.add(Button.secondary("giveaway.closed", "Giveaway wurde bereits beendet").withEmoji(Emoji.fromCustom("cancel", Long.parseLong("877158821779345428"), false)));
 
-                            m.editMessageEmbeds(banner.build(), main.build()).setActionRow(buttons).queue();
+                            m.editMessageEmbeds(banner.build(), main.build()).setComponents(ActionRow.of(buttons)).queue();
 
                             Message ping = channel.sendMessage(winmessage.toString()).complete();
                             ping.delete().queue();

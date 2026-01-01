@@ -13,7 +13,7 @@ import java.util.List;
 public class LevelInfoCommand extends ListenerAdapter {
 
     public void onButtonInteraction (ButtonInteractionEvent event) {
-        if (event.getButton().getId().equals("viewlevels")) {
+        if (event.getButton().getCustomId().equals("viewlevels")) {
             event.replyEmbeds(getLevelEmbed(event.getGuild(), true)).setEphemeral(true).queue();
         }
     }

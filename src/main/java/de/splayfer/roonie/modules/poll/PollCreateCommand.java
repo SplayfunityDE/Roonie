@@ -3,6 +3,14 @@ package de.splayfer.roonie.modules.poll;
 import de.splayfer.roonie.utils.DefaultMessage;
 import de.splayfer.roonie.utils.enums.Embeds;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
+import net.dv8tion.jda.api.components.buttons.ButtonStyle;
+import net.dv8tion.jda.api.components.label.Label;
+import net.dv8tion.jda.api.components.selections.EntitySelectMenu;
+import net.dv8tion.jda.api.components.selections.StringSelectMenu;
+import net.dv8tion.jda.api.components.textinput.TextInput;
+import net.dv8tion.jda.api.components.textinput.TextInputStyle;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
@@ -14,14 +22,7 @@ import net.dv8tion.jda.api.events.interaction.component.EntitySelectInteractionE
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
-import net.dv8tion.jda.api.interactions.components.selections.EntitySelectMenu;
-import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
-import net.dv8tion.jda.api.interactions.components.text.TextInput;
-import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
-import net.dv8tion.jda.api.interactions.modals.Modal;
+import net.dv8tion.jda.api.modals.Modal;
 
 import java.util.*;
 
@@ -37,13 +38,13 @@ public class PollCreateCommand extends ListenerAdapter {
                 interactionMap.put(event.getMember(), event.replyEmbeds(getSetupEmbed(poll)).setEphemeral(true).setComponents(getSetupActionRow(poll)).complete());
                 checkTimeout(event.getMember());
             } else
-                event.replyEmbeds(DefaultMessage.error("Vorgang bereits gestartet", "Du hast bereits eine Umfrage gestartet!")).addActionRow(Button.danger("poll.create.restart", "Neue Umfrage starten").withEmoji(Emoji.fromCustom("undo", 878590238782550076L, false)), Button.success("poll.create.resume", "Mit aktueller fortfahren").withEmoji(Emoji.fromCustom("text", 877158818088386580L, false))).setEphemeral(true).queue();
+                event.replyEmbeds(DefaultMessage.error("Vorgang bereits gestartet", "Du hast bereits eine Umfrage gestartet!")).setComponents(ActionRow.of(Button.danger("poll.create.restart", "Neue Umfrage starten").withEmoji(Emoji.fromCustom("undo", 878590238782550076L, false)), Button.success("poll.create.resume", "Mit aktueller fortfahren").withEmoji(Emoji.fromCustom("text", 877158818088386580L, false)))).setEphemeral(true).queue();
         }
     }
 
     public void onEntitySelectInteraction(EntitySelectInteractionEvent event) {
-        if (event.getSelectMenu().getId().startsWith("poll.create")) {
-            if ("channel".equals(event.getSelectMenu().getId().split("\\.")[2])) {
+        if (event.getSelectMenu().getCustomId().startsWith("poll.create")) {
+            if ("channel".equals(event.getSelectMenu().getCustomId().split("\\.")[2])) {
                 if (event.getMentions().getChannels().get(0).getType().equals(ChannelType.TEXT)) {
                     Poll poll = Poll.getFromMember(event.getMember());
                     poll.setChannel(event.getGuild().getTextChannelById(event.getMentions().getChannels().get(0).getId()));
@@ -55,13 +56,13 @@ public class PollCreateCommand extends ListenerAdapter {
     }
 
     public void onButtonInteraction(ButtonInteractionEvent event) {
-        if (event.getButton().getId().startsWith("poll.create")) {
+        if (event.getButton().getCustomId().startsWith("poll.create")) {
             Button button = null;
-            switch (event.getButton().getId().split("\\.")[2]) {
+            switch (event.getButton().getCustomId().split("\\.")[2]) {
                 case "topic":
                     event.replyModal(Modal.create("poll.create.topic", "Wähle das Thema!")
                             .addComponents(
-                                    ActionRow.of(TextInput.create("topic", "Thema", TextInputStyle.SHORT)
+                                    Label.of("Thema", TextInput.create("topic", TextInputStyle.SHORT)
                                             .setPlaceholder("Erläutere das Thema")
                                             .setRequiredRange(1, 50)
                                             .build()))
@@ -70,7 +71,7 @@ public class PollCreateCommand extends ListenerAdapter {
                 case "description":
                     event.replyModal(Modal.create("poll.create.description", "Setze die Beschreibung!")
                             .addComponents(
-                                    ActionRow.of(TextInput.create("description", "Beschreibung", TextInputStyle.PARAGRAPH)
+                                    Label.of("Beschreibung", TextInput.create("description", TextInputStyle.PARAGRAPH)
                                             .setPlaceholder("Beschreibe die Umfrage")
                                             .setRequiredRange(1, 100)
                                             .build()))
@@ -78,11 +79,11 @@ public class PollCreateCommand extends ListenerAdapter {
                     break;
                 case "buttonContent":
                     for (Button bt : Poll.getFromMember(event.getMember()).getButtons())
-                        if (bt.getId().equals(event.getButton().getId().split("\\.")[3]))
+                        if (bt.getCustomId().equals(event.getButton().getCustomId().split("\\.")[3]))
                             button = bt;
-                    event.replyModal(Modal.create("poll.create.buttonContent." + button.getId(), "Inhalt bearbeiten!")
+                    event.replyModal(Modal.create("poll.create.buttonContent." + button.getCustomId(), "Inhalt bearbeiten!")
                             .addComponents(
-                                    ActionRow.of(TextInput.create("content", "Neuer Inhalt", TextInputStyle.SHORT)
+                                    Label.of("Neuer Inhalt", TextInput.create("content", TextInputStyle.SHORT)
                                             .setPlaceholder("Gib den neuen Inhalt an")
                                             .setRequiredRange(1, 25)
                                             .build()))
@@ -90,14 +91,14 @@ public class PollCreateCommand extends ListenerAdapter {
                     break;
                 case "buttonColor":
                     for (Button bt : Poll.getFromMember(event.getMember()).getButtons())
-                        if (bt.getId().equals(event.getButton().getId().split("\\.")[3]))
+                        if (bt.getCustomId().equals(event.getButton().getCustomId().split("\\.")[3]))
                             button = bt;
-                    event.reply("Eingeben").addActionRow(StringSelectMenu.create("poll.create.buttonColor." + button.getId())
+                    event.reply("Eingeben").setComponents(ActionRow.of(StringSelectMenu.create("poll.create.buttonColor." + button.getCustomId())
                             .addOption("Grün", "poll.create.buttonColor.success", Emoji.fromFormatted("\uD83D\uDFE9"))
                             .addOption("Rot", "poll.create.buttonColor.danger", Emoji.fromFormatted("\uD83D\uDFE5"))
                             .addOption("Blau", "poll.create.buttonColor.primary", Emoji.fromFormatted("\uD83D\uDFE6"))
                             .addOption("Grau", "poll.create.buttonColor.secondary", Emoji.fromFormatted("⬜"))
-                            .setDefaultValues("poll.create.buttonColor." + button.getStyle().name().toLowerCase()).build()).setEphemeral(true).queue();
+                            .setDefaultValues("poll.create.buttonColor." + button.getStyle().name().toLowerCase()).build())).setEphemeral(true).queue();
                     break;
                 case "buttonContinue":
                     if (Poll.getFromMember(event.getMember()).getButtons().length >= 2) {
@@ -116,7 +117,7 @@ public class PollCreateCommand extends ListenerAdapter {
                             buttons[count] = pollButton;
                             count++;
                         }
-                        poll.setMessage(poll.getChannel().sendMessageEmbeds(Embeds.BANNER_UMFRAGE, information.build()).setActionRow(buttons).complete());
+                        poll.setMessage(poll.getChannel().sendMessageEmbeds(Embeds.BANNER_UMFRAGE, information.build()).setComponents(ActionRow.of(Arrays.asList(buttons))).complete());
                         poll.insertToMongoDB();
                         event.editMessageEmbeds(DefaultMessage.success("Umfrage erfolgreich erstellt!", "Die Umfrage wurde mit deinen angegebenen Details erfolgreich erstellt!")).queue();
                         interactionMap.remove(event.getMember());
@@ -167,7 +168,7 @@ public class PollCreateCommand extends ListenerAdapter {
                 }
                 case "buttonContent" -> {
                     for (Button bt : Poll.getFromMember(event.getMember()).getButtons())
-                        if (bt.getId().equals(event.getModalId().split("\\.")[3]))
+                        if (bt.getCustomId().equals(event.getModalId().split("\\.")[3]))
                             button = bt;
                     InteractionHook hook = buttonMap.get(button);
                     buttonMap.remove(button);
@@ -194,14 +195,14 @@ public class PollCreateCommand extends ListenerAdapter {
     }
 
     public void onStringSelectInteraction(StringSelectInteractionEvent event) {
-        if (event.getSelectMenu().getId().startsWith("poll.create")) {
+        if (event.getSelectMenu().getCustomId().startsWith("poll.create")) {
             EmbedBuilder embed;
             Button button = null;
             List<Button> list;
             switch (event.getValues().get(0).split("\\.")[2]) {
                 case "buttonEdit":
                     for (Button bt : Poll.getFromMember(event.getMember()).getButtons())
-                        if (bt.getId().equals(event.getValues().get(0).split("\\.")[3]))
+                        if (bt.getCustomId().equals(event.getValues().get(0).split("\\.")[3]))
                             button = bt;
                     embed = new EmbedBuilder();
                     embed.setColor(0x28346d);
@@ -209,10 +210,10 @@ public class PollCreateCommand extends ListenerAdapter {
                     embed.addField("Inhalt", button.getLabel(), true);
                     embed.addBlankField(true);
                     embed.addField("Farbe", getColorIcon(button.getStyle()) + " " + getColorName(button.getStyle()), true);
-                    buttonMap.put(button, event.replyEmbeds(embed.build()).setEphemeral(true).addActionRow(
-                            Button.secondary("poll.create.buttonContent." + button.getId(), "Inhalt bearbeiten"),
-                            Button.secondary("poll.create.buttonColor." + button.getId(), "Farbe ändern")
-                    ).complete());
+                    buttonMap.put(button, event.replyEmbeds(embed.build()).setEphemeral(true).setComponents(ActionRow.of(
+                            Button.secondary("poll.create.buttonContent." + button.getCustomId(), "Inhalt bearbeiten"),
+                            Button.secondary("poll.create.buttonColor." + button.getCustomId(), "Farbe ändern")
+                    )).complete());
                     break;
                 case "buttonAdd":
                     if (!(Poll.getFromMember(event.getMember()).getButtons().length >= 5)) {
@@ -226,16 +227,16 @@ public class PollCreateCommand extends ListenerAdapter {
                         button = Button.secondary("button" + (list.size() + 1), "default");
                         list.add(button);
                         Poll.getFromMember(event.getMember()).setButtons(list.toArray(new Button[list.size()]));
-                        buttonMap.put(button, event.replyEmbeds(embed.build()).setEphemeral(true).addActionRow(
-                                Button.secondary("poll.create.buttonContent." + button.getId(), "Inhalt festlegen"),
-                                Button.secondary("poll.create.buttonColor." + button.getId(), "Farbe wählen")
-                        ).complete());
+                        buttonMap.put(button, event.replyEmbeds(embed.build()).setEphemeral(true).setComponents(ActionRow.of(
+                                Button.secondary("poll.create.buttonContent." + button.getCustomId(), "Inhalt festlegen"),
+                                Button.secondary("poll.create.buttonColor." + button.getCustomId(), "Farbe wählen")
+                        )).complete());
                     } else
                         event.replyEmbeds(DefaultMessage.error("Buttonlimit erreicht!", "Du kannst maximal **5** Buttons in einer Umfrage hinzufügen.")).setEphemeral(true).queue();
                     break;
                 case "buttonColor":
                     for (Button bt : Poll.getFromMember(event.getMember()).getButtons())
-                        if (bt.getId().equals(event.getSelectMenu().getId().split("\\.")[3]))
+                        if (bt.getCustomId().equals(event.getSelectMenu().getCustomId().split("\\.")[3]))
                             button = bt;
                     InteractionHook hook = buttonMap.get(button);
                     buttonMap.remove(button);
@@ -298,7 +299,7 @@ public class PollCreateCommand extends ListenerAdapter {
             case 4 -> {
                 StringSelectMenu.Builder builder = StringSelectMenu.create("poll.create.buttons");
                 for (Button button : poll.getButtons())
-                    builder.addOption(button.getLabel(), "poll.create.buttonEdit." + button.getId(), "Klicke zum Bearbeiten!", Emoji.fromCustom("write", 1001784497626435584L, false));
+                    builder.addOption(button.getLabel(), "poll.create.buttonEdit." + button.getCustomId(), "Klicke zum Bearbeiten!", Emoji.fromCustom("write", 1001784497626435584L, false));
                 builder.addOption("Button hinzufügen", "poll.create.buttonAdd.", Emoji.fromCustom("icon-neu", 986654769101828166L, false));
                 actionRow.add(ActionRow.of(builder.build()));
                 actionRow.add(ActionRow.of(Button.primary("poll.create.buttonContinue", "Vervollständigen").withEmoji(Emoji.fromCustom("chat", 879356542791598160L, true))));

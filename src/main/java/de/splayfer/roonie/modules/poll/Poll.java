@@ -4,11 +4,11 @@ import de.splayfer.roonie.MongoDBDatabase;
 import de.splayfer.roonie.Roonie;
 import lombok.Getter;
 import lombok.Setter;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.bson.Document;
 
 import java.util.*;
@@ -94,7 +94,7 @@ public class Poll {
 
     public void insertToMongoDB() {
         List<String> values = new ArrayList<>();
-        message.getButtons().forEach(button -> values.add(button.getId()));
+        message.getComponents().forEach(component -> component.asActionRow().getButtons().forEach(button -> values.add(button.getCustomId())));
         mongoDB.insert("poll", new Document()
                 .append("channel", channel.getIdLong())
                 .append("topic", topic)
@@ -119,7 +119,7 @@ public class Poll {
         Document document = mongoDB.find("poll", new Document().append("channel", channel.getIdLong()).append("message", message.getIdLong())).first();
         MessageChannel msgChannel = (MessageChannel) Roonie.mainGuild.getGuildChannelById(document.getLong("channel"));
         Message msg = msgChannel.retrieveMessageById(document.getLong("message")).complete();
-        return new Poll(msgChannel, document.getString("topic"), document.getString("description"), msg, message.getActionRows().get(0).getButtons().toArray(new Button[message.getActionRows().get(0).getButtons().size()]));
+        return new Poll(msgChannel, document.getString("topic"), document.getString("description"), msg, message.getComponents().get(0).asActionRow().getButtons().toArray(new Button[message.getComponents().get(0).asActionRow().getButtons().size()]));
     }
 
     public boolean hasClicked(Member member, String buttonId) {
@@ -156,9 +156,10 @@ public class Poll {
         }
         mongoDB.updateLine("pollEntrys", new Document().append("channel", channel.getIdLong()).append("message", message.getIdLong()), buttonId, list);
         List<Button> buttons = new ArrayList<>();
-        for (String id : document.keySet())
-            if (message.getButtonById(id) != null)
-                buttons.add(message.getButtonById(id).withLabel(message.getButtonById(id).getLabel().substring(0, message.getButtonById(id).getLabel().length() - 2) + document.getList(id, Long.class).size() + ")"));
+        //Outdated with new jda version and shouldn't be necessary
+//        for (String id : document.keySet())
+//            if (message.getButtonById(id) != null)
+//                buttons.add(message.getButtonById(id).withLabel(message.getButtonById(id).getLabel().substring(0, message.getButtonById(id).getLabel().length() - 2) + document.getList(id, Long.class).size() + ")"));
         message.editMessageComponents(ActionRow.of(buttons)).queue();
     }
     

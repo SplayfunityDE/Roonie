@@ -2,12 +2,12 @@ package de.splayfer.roonie.modules.tempchannel;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Region;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
+import net.dv8tion.jda.api.components.buttons.ButtonStyle;
+import net.dv8tion.jda.api.components.selections.StringSelectMenu;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
-import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import net.dv8tion.jda.api.utils.messages.MessageEditBuilder;
@@ -56,7 +56,7 @@ public class TempchannelPageSystem {
 
         mb.setEmbeds(banner.build(), builder.build());
 
-        mb.setActionRow(Button.primary("tc_menu_configure", "Verwalte deinen Kanal!").withEmoji(Emoji.fromCustom("chat", 879356542791598160L, true)), Button.secondary("tc_controlname", "Name").withEmoji(Emoji.fromFormatted("<:icons_edit:859388129625374720>")), Button.secondary("tc_controllimit", "Limit").withEmoji(Emoji.fromFormatted("<:icons_edit:859388129625374720>")));
+        mb.setComponents(ActionRow.of(Button.primary("tc_menu_configure", "Verwalte deinen Kanal!").withEmoji(Emoji.fromCustom("chat", 879356542791598160L, true)), Button.secondary("tc_controlname", "Name").withEmoji(Emoji.fromFormatted("<:icons_edit:859388129625374720>")), Button.secondary("tc_controllimit", "Limit").withEmoji(Emoji.fromFormatted("<:icons_edit:859388129625374720>"))));
 
         return mb.build();
 
@@ -90,7 +90,7 @@ public class TempchannelPageSystem {
         builder.setImage("https://cdn.discordapp.com/attachments/985551183479463998/986627378417655858/auto_faqw.png");
 
         mb.setEmbeds(banner.build(), builder.build());
-        mb.setActionRow(Button.primary("tc_menu_configure", "Verwalte deinen Kanal!").withEmoji(Emoji.fromCustom("chat", 879356542791598160L, true)), Button.secondary("tc_controlname", "Name").withEmoji(Emoji.fromFormatted("<:icons_edit:859388129625374720>")), Button.secondary("tc_controllimit", "Limit").withEmoji(Emoji.fromFormatted("<:icons_edit:859388129625374720>")));
+        mb.setComponents(ActionRow.of(Button.primary("tc_menu_configure", "Verwalte deinen Kanal!").withEmoji(Emoji.fromCustom("chat", 879356542791598160L, true)), Button.secondary("tc_controlname", "Name").withEmoji(Emoji.fromFormatted("<:icons_edit:859388129625374720>")), Button.secondary("tc_controllimit", "Limit").withEmoji(Emoji.fromFormatted("<:icons_edit:859388129625374720>"))));
 
         return mb.build();
 
@@ -472,10 +472,10 @@ public class TempchannelPageSystem {
         List<Button> buttonTemp = new ArrayList<>();
 
         for (Button button : buttons) {
-            if (button.getId().equals(selfMenu)) {
-                buttonTemp.add(button.asDisabled().withStyle(ButtonStyle.PRIMARY).withId(button.getId()));
+            if (button.getCustomId().equals(selfMenu)) {
+                buttonTemp.add(button.asDisabled().withStyle(ButtonStyle.PRIMARY).withCustomId(button.getCustomId()));
             } else {
-                buttonTemp.add(button.withId(button.getId()));
+                buttonTemp.add(button.withCustomId(button.getCustomId()));
             }
         }
         return ActionRow.of(buttonTemp);

@@ -3,11 +3,12 @@ package de.splayfer.roonie.modules.management.commands;
 import de.splayfer.roonie.config.Config;
 import de.splayfer.roonie.utils.enums.Embeds;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.selections.StringSelectMenu;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 
 public class SetupCommand extends ListenerAdapter {
 
@@ -27,11 +28,11 @@ public class SetupCommand extends ListenerAdapter {
             deleteEmbed.setTitle(":warning: Alle Nachrichten werden nach 30 Sekunden gelöscht!");
 
             event.getChannel().sendTyping().queue();
-            Message commandMessage = event.getChannel().sendMessageEmbeds(Embeds.BANNER_COMMANDS, commandEmbed.build(), deleteEmbed.build()).setActionRow(StringSelectMenu.create("selectCommandInfo")
+            Message commandMessage = event.getChannel().sendMessageEmbeds(Embeds.BANNER_COMMANDS, commandEmbed.build(), deleteEmbed.build()).setComponents(ActionRow.of(StringSelectMenu.create("selectCommandInfo")
                     .addOption("Level Commands", "levelcommands", "Klicke hier, um diese Commands anzeigen zu lassen!", Emoji.fromCustom("level", Long.parseLong("909085962934562896"), false))
                     .addOption("Musik Commands", "musiccommands", "Klicke hier, um diese Commands anzeigen zu lassen!", Emoji.fromCustom("music", Long.parseLong("886624918983278622"), true))
                     .addOption("Sonstige", "sonstige", "Klicke hier, um diese Commands anzeigen zu lassen!", Emoji.fromFormatted("\uD83D\uDDD2"))
-                    .build()).complete();
+                    .build())).complete();
 
             Config.setConfigChannel("commands", event.getChannel(), commandMessage);
         }

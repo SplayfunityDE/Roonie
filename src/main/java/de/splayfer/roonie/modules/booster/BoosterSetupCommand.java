@@ -2,10 +2,11 @@ package de.splayfer.roonie.modules.booster;
 
 import de.splayfer.roonie.config.Config;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 import java.util.*;
 
@@ -34,7 +35,7 @@ public class BoosterSetupCommand {
         List<Button> buttons = new ArrayList<>();
         buttons.add(Button.secondary("boostinfo", "Erfahre mehr!").withEmoji(Emoji.fromCustom(event.getJDA().getEmojiById("906135368439570472"))));
 
-        Message m = event.getChannel().sendMessageEmbeds(banner.build(), message.build()).setActionRow(buttons).complete();
+        Message m = event.getChannel().sendMessageEmbeds(banner.build(), message.build()).setComponents(ActionRow.of(buttons)).complete();
         Config.setConfigChannel("booster", event.getChannel(), m);
     }
 }

@@ -5,6 +5,12 @@ import de.splayfer.roonie.modules.response.Response;
 import de.splayfer.roonie.utils.DefaultMessage;
 import de.splayfer.roonie.utils.enums.Embeds;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
+import net.dv8tion.jda.api.components.label.Label;
+import net.dv8tion.jda.api.components.selections.StringSelectMenu;
+import net.dv8tion.jda.api.components.textinput.TextInput;
+import net.dv8tion.jda.api.components.textinput.TextInputStyle;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;
@@ -13,12 +19,7 @@ import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
-import net.dv8tion.jda.api.interactions.components.text.TextInput;
-import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
-import net.dv8tion.jda.api.interactions.modals.Modal;
+import net.dv8tion.jda.api.modals.Modal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,7 @@ public class BoosterNotification extends ListenerAdapter {
                         "<:point:940963558693425172> Gewinnspiele ohne Bedingungen", false);
                 message.addField("<a:chat:880875728915275786> Wie beantrage ich meine Vorteile?", "Klicke hierzu einfach auf den Button unter dieser Nachricht!", false);
                 message.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
-                event.getUser().openPrivateChannel().complete().sendMessageEmbeds(Embeds.BANNER_BOOSTER, message.build()).setActionRow(Button.secondary("boost.vorteile", "Hol dir deine Vorteile!").withEmoji(Emoji.fromCustom("boost_icon", 985150841830899752L, false))).queue();
+                event.getUser().openPrivateChannel().complete().sendMessageEmbeds(Embeds.BANNER_BOOSTER, message.build()).setComponents(ActionRow.of(Button.secondary("boost.vorteile", "Hol dir deine Vorteile!").withEmoji(Emoji.fromCustom("boost_icon", 985150841830899752L, false)))).queue();
             }
         }
     }
@@ -61,7 +62,7 @@ public class BoosterNotification extends ListenerAdapter {
                         "<:point:940963558693425172> Gewinnspiele ohne Bedingungen", false);
                 message.addField("<a:chat:880875728915275786> Gib uns dein Feedback!", "Klicke auf den Button unter dieser Nachricht und teile uns mit, wie dir die Zeit als Booster bei uns gefallen hat!", false);
                 message.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
-                event.getUser().openPrivateChannel().complete().sendMessageEmbeds(Embeds.BANNER_BOOSTER, message.build()).setActionRow(Button.secondary("boost.feedback", "Gib uns Feedback!").withEmoji(Emoji.fromCustom("level", 909085962934562896L, false))).queue();
+                event.getUser().openPrivateChannel().complete().sendMessageEmbeds(Embeds.BANNER_BOOSTER, message.build()).setComponents(ActionRow.of(Button.secondary("boost.feedback", "Gib uns Feedback!").withEmoji(Emoji.fromCustom("level", 909085962934562896L, false)))).queue();
             }
         }
     }
@@ -87,8 +88,8 @@ public class BoosterNotification extends ListenerAdapter {
     }
 
     public void onButtonInteraction(ButtonInteractionEvent event) {
-        if (event.getButton().getId().startsWith("boost.")) {
-            switch (event.getButton().getId().split("\\.")[1]) {
+        if (event.getButton().getCustomId().startsWith("boost.")) {
+            switch (event.getButton().getCustomId().split("\\.")[1]) {
                 case "vorteile":
                     EmbedBuilder message = new EmbedBuilder();
                     message.setColor(0xff73fa);
@@ -96,7 +97,7 @@ public class BoosterNotification extends ListenerAdapter {
                     message.setTitle("Wähle deine Vorteile");
                     message.setDescription("> Wähle im Menü unter dieser Nachricht, den Vorteil aus, zu dem du Hilfe benötigst!");
                     message.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
-                    event.replyEmbeds(Embeds.BANNER_BOOSTER_PERKS, message.build()).setEphemeral(true).addActionRow(StringSelectMenu.create("boost.select")
+                    event.replyEmbeds(Embeds.BANNER_BOOSTER_PERKS, message.build()).setEphemeral(true).setComponents(ActionRow.of(StringSelectMenu.create("boost.select")
 
                             .addOption("Exklusiver Rang", "rang", "Erhalte deinen eigenen Rang und werde höher angezeigt!", Emoji.fromCustom("name", 878587314367000606L, false))
                             .addOption("Starte eine Diskussion", "diskussion", "Erstelle einen Thread unter einem Textkanal!", Emoji.fromCustom("promotion", 893878976236359801L, false))
@@ -106,19 +107,19 @@ public class BoosterNotification extends ListenerAdapter {
 
                             .setPlaceholder("Wähle deine Vorteile aus!")
                             .setMaxValues(1)
-                            .build()).queue();
+                            .build())).queue();
                     break;
                 case "claim":
-                    switch (event.getButton().getId().split("\\.")[2]) {
+                    switch (event.getButton().getCustomId().split("\\.")[2]) {
                         case "command":
                             event.replyModal(Modal.create("boost.claim.command.modal", "\uD83D\uDCE2〣Lege die Nachricht fest!")
                                     .addComponents(
-                                            ActionRow.of(TextInput.create("command", "Command", TextInputStyle.PARAGRAPH)
+                                            Label.of("Command", TextInput.create("command", TextInputStyle.PARAGRAPH)
                                                     .setPlaceholder("Gib den Textcommand an!")
                                                     .setMaxLength(200)
                                                     .setRequired(true)
                                                     .build()),
-                                            ActionRow.of(TextInput.create("reaction", "Reaktion", TextInputStyle.PARAGRAPH)
+                                            Label.of("Reaktion", TextInput.create("reaction", TextInputStyle.PARAGRAPH)
                                                     .setPlaceholder("Gib die Reaktion auf den Command an!")
                                                     .setMaxLength(200)
                                                     .setRequired(true)
@@ -130,7 +131,7 @@ public class BoosterNotification extends ListenerAdapter {
                 case "feedback":
                     event.replyModal(Modal.create("boost.feedback", "✨〣Feedback abgeben!")
                             .addComponents(
-                                    ActionRow.of(TextInput.create("feedback", "Feedback", TextInputStyle.PARAGRAPH)
+                                    Label.of("Feedback", TextInput.create("feedback", TextInputStyle.PARAGRAPH)
                                     .setPlaceholder("Gib uns dein Feedback!")
                                     .setMaxLength(200)
                                     .setRequired(true)
@@ -142,7 +143,7 @@ public class BoosterNotification extends ListenerAdapter {
     }
 
     public void onStringSelectInteraction(StringSelectInteractionEvent event) {
-        if (event.getSelectMenu().getId().equals("boost.select")) {
+        if (event.getSelectMenu().getCustomId().equals("boost.select")) {
             EmbedBuilder message;
             switch (event.getValues().get(0)) {
                 case "rang":
@@ -170,7 +171,7 @@ public class BoosterNotification extends ListenerAdapter {
                         message.setDescription("> Richte als Booster deinen eigenen Textcommand ein!");
                         message.addField("<a:chat:879356542791598160> Wie erstelle ich den Command?", "Klicke einfach auf den Button, und du kannst direkt loslegen!", false);
                         message.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
-                        event.replyEmbeds(Embeds.BANNER_BOOSTER_PERKS_COMMNAD, message.build()).addActionRow(Button.primary("boost.claim.command", "Starte jetzt!").withEmoji(Emoji.fromCustom("text", 877158818088386580L, false))).setEphemeral(true).queue();
+                        event.replyEmbeds(Embeds.BANNER_BOOSTER_PERKS_COMMNAD, message.build()).setComponents(ActionRow.of(Button.primary("boost.claim.command", "Starte jetzt!").withEmoji(Emoji.fromCustom("text", 877158818088386580L, false)))).setEphemeral(true).queue();
                     } else
                         event.replyEmbeds(DefaultMessage.error("Bereits verwendet", "Du kannst maximal einen Command als Booster einrichten! Wenn du deinen Command ändern möchtest, wende dich bitte an den Support!")).setEphemeral(true).queue();
                     break;
@@ -188,7 +189,7 @@ public class BoosterNotification extends ListenerAdapter {
                     message.setTitle("Giveaways ohne Vorraussetzungen");
                     message.setDescription("> Du kannst an Givewaways nun teilnehmen, auch wenn die dafür benötigten Vorraussetzungen nicht erfüllst!");
                     message.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
-                    event.replyEmbeds(Embeds.BANNER_BOOSTER_PERKS_GIVEAWAY, message.build()).addActionRow(Button.secondary("link", "Springe zu den Giveaways!").withUrl("https://discord.com/channels/873506353551925308/905384567077228586").withEmoji(Emoji.fromCustom("giveaway", 898562734680064082L, true))).setEphemeral(true).queue();
+                    event.replyEmbeds(Embeds.BANNER_BOOSTER_PERKS_GIVEAWAY, message.build()).setComponents(ActionRow.of(Button.secondary("link", "Springe zu den Giveaways!").withUrl("https://discord.com/channels/873506353551925308/905384567077228586").withEmoji(Emoji.fromCustom("giveaway", 898562734680064082L, true)))).setEphemeral(true).queue();
                     break;
             }
         }

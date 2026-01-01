@@ -3,6 +3,8 @@ package de.splayfer.roonie.modules.tempchannel;
 import de.splayfer.roonie.utils.enums.Roles;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -10,7 +12,6 @@ import net.dv8tion.jda.api.entities.PermissionOverride;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import net.dv8tion.jda.api.utils.messages.MessageEditBuilder;
@@ -171,9 +172,9 @@ public class Tempchannel {
 
         mb.setEmbeds(eb.build());
         if(member.equals(viewing)) {
-            mb.setActionRow(ban.asDisabled(), mute.asDisabled());
+            mb.setComponents(ActionRow.of(ban.asDisabled(), mute.asDisabled()));
         }else {
-            mb.setActionRow(ban, mute);
+            mb.setComponents(ActionRow.of(ban, mute));
         }
         return mb.build();
     }
@@ -205,9 +206,9 @@ public class Tempchannel {
 
         mb.setEmbeds(eb.build());
         if(member.equals(viewing)) {
-            mb.setActionRow(ban.asDisabled(), mute.asDisabled());
+            mb.setComponents(ActionRow.of(ban.asDisabled(), mute.asDisabled()));
         }else {
-            mb.setActionRow(ban, mute);
+            mb.setComponents(ActionRow.of(ban, mute));
         }
         return mb.build();
     }

@@ -3,6 +3,13 @@ package de.splayfer.roonie.modules.giveaway;
 import de.splayfer.roonie.utils.DefaultMessage;
 import de.splayfer.roonie.utils.enums.Embeds;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
+import net.dv8tion.jda.api.components.label.Label;
+import net.dv8tion.jda.api.components.selections.EntitySelectMenu;
+import net.dv8tion.jda.api.components.selections.StringSelectMenu;
+import net.dv8tion.jda.api.components.textinput.TextInput;
+import net.dv8tion.jda.api.components.textinput.TextInputStyle;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
@@ -13,13 +20,7 @@ import net.dv8tion.jda.api.events.interaction.component.EntitySelectInteractionE
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import net.dv8tion.jda.api.interactions.components.selections.EntitySelectMenu;
-import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
-import net.dv8tion.jda.api.interactions.components.text.TextInput;
-import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
-import net.dv8tion.jda.api.interactions.modals.Modal;
+import net.dv8tion.jda.api.modals.Modal;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -39,20 +40,20 @@ public class GiveawayCreateCommand extends ListenerAdapter {
                 event.replyEmbeds(getSetupEmbed(giveaway)).setComponents(getSetupActionRow(giveaway)).setEphemeral(true).queue();
                 checkTimeout(event.getMember());
             } else
-                event.replyEmbeds(DefaultMessage.error("Vorgang bereits gestartet", "Du hast bereits ein Giveaway gestartet!")).addActionRow(Button.danger("giveaway.create.restart", "Neue Umfrage starten").withEmoji(Emoji.fromCustom("undo", 878590238782550076L, false)), Button.success("giveaway.create.resume", "Mit aktueller fortfahren").withEmoji(Emoji.fromCustom("text", 877158818088386580L, false))).setEphemeral(true).queue();
+                event.replyEmbeds(DefaultMessage.error("Vorgang bereits gestartet", "Du hast bereits ein Giveaway gestartet!")).setComponents(ActionRow.of(Button.danger("giveaway.create.restart", "Neue Umfrage starten").withEmoji(Emoji.fromCustom("undo", 878590238782550076L, false)), Button.success("giveaway.create.resume", "Mit aktueller fortfahren").withEmoji(Emoji.fromCustom("text", 877158818088386580L, false)))).setEphemeral(true).queue();
         }
     }
 
     public void onEntitySelectInteraction(EntitySelectInteractionEvent event) {
-        if (event.getSelectMenu().getId().startsWith("giveaway.create")) {
-            switch (event.getSelectMenu().getId().split("\\.")[2]) {
+        if (event.getSelectMenu().getCustomId().startsWith("giveaway.create")) {
+            switch (event.getSelectMenu().getCustomId().split("\\.")[2]) {
                 case "channel":
                     Giveaway.getFromMember(event.getMember()) .setChannel(event.getGuild().getTextChannelById(event.getMentions().getChannels().get(0).getId()));
                     updateHook(event.getMember());
                     event.deferEdit().queue();
                     break;
                 case "requirement":
-                    switch (event.getSelectMenu().getId().split("\\.")[3]) {
+                    switch (event.getSelectMenu().getCustomId().split("\\.")[3]) {
                         case "role":
                             Giveaway.getFromMember(event.getMember()).setRequirement(List.of("role", event.getMentions().getRoles().get(0).getId()));
                             menuMap.get(event.getMember()).deleteOriginal().queue();
@@ -67,8 +68,8 @@ public class GiveawayCreateCommand extends ListenerAdapter {
     }
 
     public void onStringSelectInteraction(StringSelectInteractionEvent event) {
-        if (event.getSelectMenu().getId().startsWith("giveaway.create")) {
-            switch (event.getSelectMenu().getId().split("\\.")[2]) {
+        if (event.getSelectMenu().getCustomId().startsWith("giveaway.create")) {
+            switch (event.getSelectMenu().getCustomId().split("\\.")[2]) {
                 case "requirement":
                     switch (event.getValues().get(0).split("\\.")[3]) {
                         case "none":
@@ -76,12 +77,12 @@ public class GiveawayCreateCommand extends ListenerAdapter {
                             updateHook(event.getMember());
                             break;
                         case "role":
-                            menuMap.put(event.getMember(), event.reply("Eingeben").addActionRow(EntitySelectMenu.create("giveaway.create.requirement.role", EntitySelectMenu.SelectTarget.ROLE).build()).setEphemeral(true).complete());
+                            menuMap.put(event.getMember(), event.reply("Eingeben").setComponents(ActionRow.of(EntitySelectMenu.create("giveaway.create.requirement.role", EntitySelectMenu.SelectTarget.ROLE).build())).setEphemeral(true).complete());
                             break;
                         case "level":
                             event.replyModal(Modal.create("giveaway.create.requirement.level", "Setze die Levelanforderung!")
                                     .addComponents(
-                                            ActionRow.of(TextInput.create("level", "Level", TextInputStyle.SHORT)
+                                            Label.of("Level", TextInput.create("level", TextInputStyle.SHORT)
                                                     .setPlaceholder("Gib das Level an")
                                                     .setRequiredRange(1, 3)
                                                     .build()))
@@ -95,13 +96,13 @@ public class GiveawayCreateCommand extends ListenerAdapter {
     }
 
     public void onButtonInteraction(ButtonInteractionEvent event) {
-        if (event.getButton().getId().startsWith("giveaway.create")) {
+        if (event.getButton().getCustomId().startsWith("giveaway.create")) {
             Giveaway giveaway;
-            switch (event.getButton().getId().split("\\.")[2]) {
+            switch (event.getButton().getCustomId().split("\\.")[2]) {
                 case "prize":
                     event.replyModal(Modal.create("giveaway.create.prize", "Wähle den Preis!")
                             .addComponents(
-                                    ActionRow.of(TextInput.create("prize", "Preis", TextInputStyle.SHORT)
+                                    Label.of("Preis", TextInput.create("prize", TextInputStyle.SHORT)
                                             .setPlaceholder("Gib den Preis an")
                                             .setRequiredRange(1, 50)
                                             .build()))
@@ -109,29 +110,29 @@ public class GiveawayCreateCommand extends ListenerAdapter {
                     break;
                 case "duration":
                     event.replyModal(Modal.create("giveaway.create.duration", "Wähle die Dauer!")
-                            .addActionRow(
-                                    TextInput.create("duration", "Dauer", TextInputStyle.SHORT)
+                            .addComponents(
+                                    Label.of("Dauer", TextInput.create("duration", TextInputStyle.SHORT)
                                             .setPlaceholder("Beispiel: 4d 2h 8m")
                                             .setRequiredRange(1, 50)
-                                            .build())
+                                            .build()))
                             .build()).queue();
                     break;
                 case "amount":
                     event.replyModal(Modal.create("giveaway.create.amount", "Wähle die Gewinneranzahl!")
-                            .addActionRow(
-                                    TextInput.create("amount", "Anzahl Gewinner", TextInputStyle.SHORT)
+                            .addComponents(
+                                    Label.of("Anzahl Gewinner", TextInput.create("amount", TextInputStyle.SHORT)
                                             .setPlaceholder("Gib die Anzahl der Gewinner an")
                                             .setRequiredRange(1, 3)
-                                            .build())
+                                            .build()))
                             .build()).queue();
                     break;
                 case "picture":
                     event.replyModal(Modal.create("giveaway.create.picture", "Wähle ein Bild!")
-                            .addActionRow(
-                                    TextInput.create("picture", "Anzahl Gewinner", TextInputStyle.SHORT)
+                            .addComponents(
+                                    Label.of("Anzahl Gewinner", TextInput.create("picture", TextInputStyle.SHORT)
                                             .setPlaceholder("Gib den Url an oder lass das Feld leer")
                                             .setRequired(false)
-                                            .build())
+                                            .build()))
                             .build()).queue();
                     break;
                 case "continue":
@@ -143,7 +144,7 @@ public class GiveawayCreateCommand extends ListenerAdapter {
                     information.addField(":clock10: Endet in", "<t:" + giveaway.getDuration() + ":R>", true);
                     information.addField("Klicke auf den unteren Button um teilzunehmen!", "", false);
                     information.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
-                    giveaway.setMessage(giveaway.getChannel().sendMessageEmbeds(Embeds.BANNER_GIVEAWAY, information.build()).setActionRow(Button.primary("giveaway.enter", "Jetzt teilnehmen!")).complete());
+                    giveaway.setMessage(giveaway.getChannel().sendMessageEmbeds(Embeds.BANNER_GIVEAWAY, information.build()).setComponents(ActionRow.of(Button.primary("giveaway.enter", "Jetzt teilnehmen!"))).complete());
                     giveaway.insertToMongoDB();
                     event.editMessageEmbeds(DefaultMessage.success("Giveaway erfolgreich erstellt!", "Die Umfrage wurde mit deinen angegebenen Details erfolgreich in " + giveaway.getChannel().getAsMention() + " erstellt!")).setComponents().queue();
                     interactionMap.remove(event.getMember());

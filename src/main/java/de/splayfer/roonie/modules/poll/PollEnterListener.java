@@ -12,14 +12,14 @@ public class PollEnterListener extends ListenerAdapter {
                 if (Poll.isPoll(event.getChannel(), event.getMessage())) {
                     Poll poll = Poll.getFromMongoBD(event.getChannel(), event.getMessage());
                     if (poll.hasVoted(event.getMember())) {
-                        if (poll.hasClicked(event.getMember(), event.getButton().getId()))
-                            poll.updateVote(event.getMember(), event.getButton().getId(), VoteAction.UNVOTE);
+                        if (poll.hasClicked(event.getMember(), event.getButton().getCustomId()))
+                            poll.updateVote(event.getMember(), event.getButton().getCustomId(), VoteAction.UNVOTE);
                         else {
                             poll.updateVote(event.getMember(), poll.getVote(event.getMember()), VoteAction.UNVOTE);
-                            poll.updateVote(event.getMember(), event.getButton().getId(), VoteAction.VOTE);
+                            poll.updateVote(event.getMember(), event.getButton().getCustomId(), VoteAction.VOTE);
                         }
                     } else
-                        poll.updateVote(event.getMember(), event.getButton().getId(), VoteAction.VOTE);
+                        poll.updateVote(event.getMember(), event.getButton().getCustomId(), VoteAction.VOTE);
                     event.deferEdit().queue();
                 }
             }

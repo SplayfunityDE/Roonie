@@ -5,9 +5,13 @@ import de.splayfer.roonie.utils.DefaultMessage;
 import de.splayfer.roonie.utils.enums.Roles;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
+import net.dv8tion.jda.api.components.label.Label;
+import net.dv8tion.jda.api.components.textinput.TextInput;
+import net.dv8tion.jda.api.components.textinput.TextInputStyle;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -15,11 +19,7 @@ import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionE
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import net.dv8tion.jda.api.interactions.components.text.TextInput;
-import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
-import net.dv8tion.jda.api.interactions.modals.Modal;
+import net.dv8tion.jda.api.modals.Modal;
 
 import java.util.*;
 
@@ -28,7 +28,7 @@ public class TicketListener extends ListenerAdapter {
     HashMap<Long, Message> messageCache = new HashMap<>();
 
     public void onStringSelectInteraction(StringSelectInteractionEvent event) {
-        if (event.getSelectMenu().getId().equals("support.create")) {
+        if (event.getSelectMenu().getCustomId().equals("support.create")) {
             int type = 0;
             switch (event.getValues().get(0)) {
                 case "question":
@@ -55,19 +55,19 @@ public class TicketListener extends ListenerAdapter {
     }
 
     public void onButtonInteraction(ButtonInteractionEvent event) {
-        if (event.getButton().getId().startsWith("ticket.")) {
+        if (event.getButton().getCustomId().startsWith("ticket.")) {
             Ticket ticket;
-            switch (event.getButton().getId().split("\\.")[1]) {
+            switch (event.getButton().getCustomId().split("\\.")[1]) {
                 case "claim":
                     ticket = Ticket.getFromPost(event.getChannelId());
                     if (ticket.getSupporter() == null) {
                         ticket.getChannel().addThreadMember(event.getMember()).queue();
                         ticket.setSupporter(event.getMember());
                         ticket.updateMongoDB();
-                        event.replyEmbeds(DefaultMessage.success("Ticket erfolgreich geclaimt", "Du bearbeitest nun das Ticket von " + ticket.getCreator().getAsMention())).setActionRow(Button.success("link", "Schau es dir jetzt an!").withUrl(ticket.getChannel().getJumpUrl()).withEmoji(Emoji.fromFormatted("\uD83D\uDD0E"))).setEphemeral(true).queue();
+                        event.replyEmbeds(DefaultMessage.success("Ticket erfolgreich geclaimt", "Du bearbeitest nun das Ticket von " + ticket.getCreator().getAsMention())).setComponents(ActionRow.of(Button.success("link", "Schau es dir jetzt an!").withUrl(ticket.getChannel().getJumpUrl()).withEmoji(Emoji.fromFormatted("\uD83D\uDD0E")))).setEphemeral(true).queue();
                         event.editButton(Button.secondary("ticket.claim", "Bereits geclaimt").withEmoji(Emoji.fromFormatted("\uD83D\uDD10"))).queue();
                     } else if (ticket.getSupporter().equals(event.getMember())) {
-                        InteractionHook hook = event.replyEmbeds(DefaultMessage.error("Ticket bereits geclaimt", "Das angegebene Ticket wird bereits von dir geclaimt!")).setActionRow(Button.danger("ticket.unclaim", "Claim aufheben").withEmoji(Emoji.fromFormatted("\uD83D\uDD13"))).setEphemeral(true).complete();
+                        InteractionHook hook = event.replyEmbeds(DefaultMessage.error("Ticket bereits geclaimt", "Das angegebene Ticket wird bereits von dir geclaimt!")).setComponents(ActionRow.of(Button.danger("ticket.unclaim", "Claim aufheben").withEmoji(Emoji.fromFormatted("\uD83D\uDD13")))).setEphemeral(true).complete();
                         messageCache.put(hook.retrieveOriginal().complete().getIdLong(), event.getMessage());
                         new Timer().schedule(new TimerTask() {
                             @Override
@@ -77,7 +77,7 @@ public class TicketListener extends ListenerAdapter {
                             }
                         }, 1000 * 60 * 14);
                     } else if (event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
-                        InteractionHook hook = event.replyEmbeds(DefaultMessage.error("Ticket bereits geclaimt", "Das angegebene Ticket wurde bereits von " + ticket.getSupporter().getAsMention() + " geclaimt!", new MessageEmbed.Field("\uD83D\uDEAB Rechte entziehen", "Als Administrator kannst du einem Teammitglied die Claim-Rechte temporär entziehen, klicke hierfür auf den Button unter dieser Nachricht!", false))).setActionRow(Button.secondary("ticket.unclaim", "Claim-Rechte entziehen").withEmoji(Emoji.fromFormatted("\uD83D\uDEAB"))).setEphemeral(true).complete();
+                        InteractionHook hook = event.replyEmbeds(DefaultMessage.error("Ticket bereits geclaimt", "Das angegebene Ticket wurde bereits von " + ticket.getSupporter().getAsMention() + " geclaimt!", new MessageEmbed.Field("\uD83D\uDEAB Rechte entziehen", "Als Administrator kannst du einem Teammitglied die Claim-Rechte temporär entziehen, klicke hierfür auf den Button unter dieser Nachricht!", false))).setComponents(ActionRow.of(Button.secondary("ticket.unclaim", "Claim-Rechte entziehen").withEmoji(Emoji.fromFormatted("\uD83D\uDEAB")))).setEphemeral(true).complete();
                         messageCache.put(hook.retrieveOriginal().complete().getIdLong(), event.getMessage());
                         new Timer().schedule(new TimerTask() {
                             @Override
@@ -111,7 +111,7 @@ public class TicketListener extends ListenerAdapter {
                         }
                     event.replyModal(Modal.create("ticket.close", "Ticket schließen")
                             .addComponents(
-                                    ActionRow.of(TextInput.create("reason", "Grund", TextInputStyle.SHORT)
+                                    Label.of("Grund", TextInput.create("reason", TextInputStyle.SHORT)
                                             .setPlaceholder("(Optional) Gib einen Grund an")
                                             .setRequiredRange(1, 200)
                                             .setRequired(false)

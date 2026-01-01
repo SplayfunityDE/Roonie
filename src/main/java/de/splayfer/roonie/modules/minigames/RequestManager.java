@@ -5,6 +5,8 @@ import de.splayfer.roonie.Roonie;
 import de.splayfer.roonie.utils.DefaultMessage;
 import de.splayfer.roonie.utils.enums.Embeds;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
@@ -13,7 +15,6 @@ import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.bson.Document;
 
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class RequestManager extends ListenerAdapter {
         buttons.add(Button.primary("join." + id, "Nimm die Herausforderung an!").withEmoji(Emoji.fromFormatted("⚔")));
 
         dm.sendTyping().queue();
-        dm.sendMessageEmbeds(Embeds.BANNER_MINIGAME, mainEmbed.build()).setActionRow(buttons).queue();
+        dm.sendMessageEmbeds(Embeds.BANNER_MINIGAME, mainEmbed.build()).setComponents(ActionRow.of(buttons)).queue();
 
     }
 
@@ -63,14 +64,14 @@ public class RequestManager extends ListenerAdapter {
         buttons.add(Button.secondary("minigames.tutorial", "Lies dir die Spielregeln durch!").withEmoji(Emoji.fromCustom("text", Long.parseLong("886623802954498069"), false)));
         buttons.add(Button.danger("minigames.cancel", "Spiel abbrechen").withEmoji(Emoji.fromCustom("cross", 880711722288169032L, true)));
 
-        channel.sendMessageEmbeds(Embeds.BANNER_WAITING, mainEmbed.build()).setActionRow(buttons).queue();
+        channel.sendMessageEmbeds(Embeds.BANNER_WAITING, mainEmbed.build()).setComponents(ActionRow.of(buttons)).queue();
 
     }
 
     public void onButtonInteraction (ButtonInteractionEvent event) {
-        if (event.getButton().getId().startsWith("minigames.")) {
+        if (event.getButton().getCustomId().startsWith("minigames.")) {
             TicTacToeGame game = TicTacToeGame.getFromMongoDB(event.getChannel().asThreadChannel());
-            switch (event.getButton().getId().split("\\.")[1]) {
+            switch (event.getButton().getCustomId().split("\\.")[1]) {
                 case "tutorial":
                     break;
                 case "cancel":
@@ -81,9 +82,9 @@ public class RequestManager extends ListenerAdapter {
                         event.replyEmbeds(DefaultMessage.error("Game bereits gestartet", "Es scheint als ist das Game bereits gestartet! Du kannst nur Runden im Wartemodus vorzeitig beenden!")).setEphemeral(true).queue();
                     break;
             }
-        } else if (event.getButton().getId().startsWith("join.")) {
+        } else if (event.getButton().getCustomId().startsWith("join.")) {
             TicTacToeGame game = TicTacToeGame.getFromMongoDB(event.getChannel().asThreadChannel());
-            long id = Long.parseLong(event.getButton().getId().substring(5));
+            long id = Long.parseLong(event.getButton().getCustomId().substring(5));
             boolean check = false;
             for (Document document : mongoDB.findAll("tictactoe"))
                 if (document.getLong("channel").equals(id))
@@ -105,7 +106,7 @@ public class RequestManager extends ListenerAdapter {
 
                         game.setStatus("playing");
                         game.insertToMongoDB();
-                        event.replyEmbeds(DefaultMessage.success("Einladung erfolgreich angenommen!", "Du hast die Einladung erfolgreich angenommen und kannst nun dem Game beitreten. Klicke dazu einfach auf den Button unter dieser Nachricht!")).setEphemeral(true).addActionRow(Button.secondary("link", "Trete dem Game jetzt bei!").withUrl("https://discord.com/channels/" + guild.getId() + "/" + id).withEmoji(Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false))).queue();
+                        event.replyEmbeds(DefaultMessage.success("Einladung erfolgreich angenommen!", "Du hast die Einladung erfolgreich angenommen und kannst nun dem Game beitreten. Klicke dazu einfach auf den Button unter dieser Nachricht!")).setEphemeral(true).setComponents(ActionRow.of(Button.secondary("link", "Trete dem Game jetzt bei!").withUrl("https://discord.com/channels/" + guild.getId() + "/" + id).withEmoji(Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false)))).queue();
                     } else {
                         //get guild
                         Guild guild = null;
@@ -113,7 +114,7 @@ public class RequestManager extends ListenerAdapter {
                             for (ThreadChannel threadChannel : g.getThreadChannels())
                                 if (threadChannel.getId().equals(id))
                                     guild = g;
-                        event.replyEmbeds(DefaultMessage.error("Herausforderung bereits angenommen!", "Du hast die folgende Herausforderung bereits angenommen. Über den Button unter dieser Nachricht kannst du dem Game beitreten!")).setEphemeral(true).addActionRow(Button.secondary("link", "Trete dem Game jetzt bei!").withUrl("https://discord.com/channels/" + guild.getId() + "/" + id).withEmoji(Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false))).queue();
+                        event.replyEmbeds(DefaultMessage.error("Herausforderung bereits angenommen!", "Du hast die folgende Herausforderung bereits angenommen. Über den Button unter dieser Nachricht kannst du dem Game beitreten!")).setEphemeral(true).setComponents(ActionRow.of(Button.secondary("link", "Trete dem Game jetzt bei!").withUrl("https://discord.com/channels/" + guild.getId() + "/" + id).withEmoji(Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false)))).queue();
                     }
                 } else
                     event.replyEmbeds(DefaultMessage.error("Anfrage zurückgezogen", "Der Nutzer hat die Herausforderung zurückgezogen.")).setEphemeral(true).queue();

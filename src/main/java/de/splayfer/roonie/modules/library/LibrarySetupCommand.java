@@ -1,20 +1,16 @@
 package de.splayfer.roonie.modules.library;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
+import net.dv8tion.jda.api.components.selections.StringSelectMenu;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class LibrarySetupCommand extends ListenerAdapter {
 
@@ -35,7 +31,7 @@ public class LibrarySetupCommand extends ListenerAdapter {
                 channel.sendMessage("https://cdn.discordapp.com/attachments/883278317753626655/892417910054740018/splayfunity_bookshelf1.png").queue();
                 List<Button> buttons = new ArrayList<>();
                 buttons.add(Button.secondary("unlocklibrary", "Jetzt freischalten!").withEmoji(Emoji.fromFormatted("\uD83D\uDD12")));
-                channel.sendMessage("> Klicke jetzt einfach auf den Button unter dieser <a:chat:879356542791598160> Nachricht und schau dich um!").setActionRow(buttons).queue();
+                channel.sendMessage("> Klicke jetzt einfach auf den Button unter dieser <a:chat:879356542791598160> Nachricht und schau dich um!").setComponents(ActionRow.of(buttons)).queue();
                 break;
             case 2:
                 //server templates
@@ -58,7 +54,7 @@ public class LibrarySetupCommand extends ListenerAdapter {
                         .addOption("Content Creator", "content", "Klicke hier, um diese Kategorie auszuwählen!", Emoji.fromFormatted("\uD83D\uDCFD"))
                         .addOption("Projekt", "projekt", "Klicke hier, um diese Kategorie auszuwählen!", Emoji.fromCustom(event.getJDA().getEmojiById("892461354533941268")));
                 templates.setMaxValues(templates.getOptions().size());
-                channel.sendMessageEmbeds(bannerEmbed.build(), servertemplates.build()).setActionRow(templates.build()).queue();
+                channel.sendMessageEmbeds(bannerEmbed.build(), servertemplates.build()).setComponents(ActionRow.of(templates.build())).queue();
                 break;
             case 3:
                 //server designs
@@ -73,14 +69,14 @@ public class LibrarySetupCommand extends ListenerAdapter {
                 serverbanner.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
                 serverbanner.addField(":question: Wie funktionieren die Kategorien?", "Das System ist ganz einfach! Wir unterteilen alle Desgins in Kategorien. Du musst einfach nur im Menü unter dieser Nachricht das passende Menü auswählen und bekommst alle Server, die unter diese Kategorie fallen per Direktnachricht zugeschickt!", false);
                 serverbanner.addField("\uD83D\uDCA1 Tipp!", "Du kannst dir auch mehrere Kategorien gleichzeitig zuschicken lassen!", false);
-                channel.sendMessageEmbeds(serverbannerheadline.build(), serverbanner.build()).setActionRow(StringSelectMenu.create("serverbanner")
+                channel.sendMessageEmbeds(serverbannerheadline.build(), serverbanner.build()).setComponents(ActionRow.of(StringSelectMenu.create("serverbanner")
                         .setPlaceholder("\uD83C\uDFA8 Wähle deine Banner Kategorien!")
                         .addOption("Banner-Maker (Coming Soon)", "maker", "Klicke, um diese Banner anzusehen", Emoji.fromCustom("staff", Long.parseLong("879285803531010118"), true))
                         .addOption("Server-Verwaltung", "verwaltung", "Klicke, um diese Banner anzusehen", Emoji.fromCustom("symbol_verwaltung", Long.parseLong("925823049272528967"), false))
                         .addOption("Rollenverteilung", "rollenverteilung", "Klicke, um diese Banner anzusehen", Emoji.fromFormatted("\uD83C\uDFAD"))
                         .addOption("Werbung", "werbung", "Klicke, um diese Banner anzusehen", Emoji.fromCustom("promotion", Long.parseLong("893878976236359801"), false))
                         .addOption("Sonstiges", "sonstiges", "Klicke, um diese Banner anzusehen", Emoji.fromFormatted("\uD83D\uDDD2"))
-                        .build()).queue();
+                        .build())).queue();
                 break;
         }
     }

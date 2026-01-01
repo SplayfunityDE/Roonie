@@ -41,7 +41,7 @@ public class Config {
     }
 
     public static MessageChannel getConfigChannel(String identifier) {
-        return Roonie.mainGuild.getChannelById(MessageChannel.class, mongoDB.find("config", "identifier", identifier).first().getLong("channel"));
+        return Roonie.mainGuild.getTextChannelById(mongoDB.find("config", "identifier", identifier).first().getLong("channel"));
     }
 
     public static long getConfigMessageId(String identifier) {

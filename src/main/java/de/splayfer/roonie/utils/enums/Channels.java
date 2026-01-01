@@ -23,7 +23,7 @@ public enum Channels {
     }
 
     public MessageChannel getMessageChannel(Guild guild) {
-        return guild.getChannelById(MessageChannel.class, id);
+        return guild.getTextChannelById(id);
     }
 
     public GuildChannel getGuildChannel(Guild guild) {

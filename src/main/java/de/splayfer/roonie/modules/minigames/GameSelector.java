@@ -3,14 +3,15 @@ package de.splayfer.roonie.modules.minigames;
 import de.splayfer.roonie.utils.DefaultMessage;
 import de.splayfer.roonie.utils.enums.Embeds;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
+import net.dv8tion.jda.api.components.selections.StringSelectMenu;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ public class GameSelector extends ListenerAdapter {
     @Override
     public void onStringSelectInteraction (StringSelectInteractionEvent event) {
 
-        if (event.getSelectMenu().getId().equals("minigames.topic")) {
+        if (event.getSelectMenu().getCustomId().equals("minigames.topic")) {
             EmbedBuilder mainEmbed;
             switch (event.getValues().get(0)) {
 
@@ -44,11 +45,11 @@ public class GameSelector extends ListenerAdapter {
                             .addOption("Statistiken", "stats", "Rufe deine Statistiken ab", Emoji.fromCustom("stats", Long.parseLong("937041708967927818"), false))
                             .build()).queue();
 
-                    event.getHook().sendMessageEmbeds(Embeds.BANNER_MINIGAME, mainEmbed.build()).setEphemeral(true).addActionRow(StringSelectMenu.create("minigames.search")
+                    event.getHook().sendMessageEmbeds(Embeds.BANNER_MINIGAME, mainEmbed.build()).setEphemeral(true).setComponents(ActionRow.of(StringSelectMenu.create("minigames.search")
                             .setRequiredRange(1, 1)
                             .setPlaceholder("Wähle deinen Spielmodus!")
                             .addOption("TicTacToe", "tictactoe", "Wer 3 Symbole in einer Reihe hat gewinnt", Emoji.fromCustom("tictactoe", Long.parseLong("937046989458247692"), false))
-                            .build()).queue();
+                            .build())).queue();
 
                     break;
 
@@ -69,11 +70,11 @@ public class GameSelector extends ListenerAdapter {
                             .addOption("Statistiken", "stats", "Rufe deine Statistiken ab", Emoji.fromCustom("stats", Long.parseLong("937041708967927818"), false))
                             .build()).queue();
 
-                    event.getHook().sendMessageEmbeds(Embeds.BANNER_MINIGAME, mainEmbed.build()).setEphemeral(true).addActionRow(StringSelectMenu.create("minigames.challenge")
+                    event.getHook().sendMessageEmbeds(Embeds.BANNER_MINIGAME, mainEmbed.build()).setEphemeral(true).setComponents(ActionRow.of(StringSelectMenu.create("minigames.challenge")
                             .setRequiredRange(1, 1)
                             .setPlaceholder("Wähle deinen Spielmodus!")
                             .addOption("TicTacToe", "tictactoe", "Wer 3 Symbole in einer Reihe hat gewinnt", Emoji.fromCustom("tictactoe", Long.parseLong("937046989458247692"), false))
-                            .build()).queue();
+                            .build())).queue();
 
                     break;
 
@@ -102,7 +103,7 @@ public class GameSelector extends ListenerAdapter {
 
             }
 
-        } else if (event.getSelectMenu().getId().equals("minigames.challenge")) {
+        } else if (event.getSelectMenu().getCustomId().equals("minigames.challenge")) {
             EmbedBuilder mainEmbed;
             switch (event.getValues().get(0)) {
 
@@ -110,7 +111,7 @@ public class GameSelector extends ListenerAdapter {
 
                     ThreadChannel threadChannel = event.getChannel().asTextChannel().createThreadChannel("\uD83C\uDFB2│" + "game", false).complete();
 
-                    event.replyEmbeds(DefaultMessage.success("Minigame erfolgreich geladen!", "Das Minigame wurde erfolgreich geladen und du kannst deinen Spieler nun einladen! Klicke auf den Button unter dieser Nachricht um das Game zu aktivieren")).setEphemeral(true).addActionRow(Button.secondary("link", "Tritt dem Game bei!").withUrl("https://discord.com/channels/" + event.getGuild().getId() + "/" + threadChannel.getId()).withEmoji(Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false))).queue();
+                    event.replyEmbeds(DefaultMessage.success("Minigame erfolgreich geladen!", "Das Minigame wurde erfolgreich geladen und du kannst deinen Spieler nun einladen! Klicke auf den Button unter dieser Nachricht um das Game zu aktivieren")).setEphemeral(true).setComponents(ActionRow.of(Button.secondary("link", "Tritt dem Game bei!").withUrl("https://discord.com/channels/" + event.getGuild().getId() + "/" + threadChannel.getId()).withEmoji(Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false)))).queue();
 
                     mainEmbed = new EmbedBuilder();
                     mainEmbed.setColor(0x28346d);
@@ -134,7 +135,7 @@ public class GameSelector extends ListenerAdapter {
 
             }
 
-        } else if (event.getSelectMenu().getId().equals("minigames.search")) {
+        } else if (event.getSelectMenu().getCustomId().equals("minigames.search")) {
             EmbedBuilder mainEmbed;
             if (Queue.checkForGame()) {
 
@@ -142,7 +143,7 @@ public class GameSelector extends ListenerAdapter {
 
                 TicTacToeGame game = Queue.getQueueGame();
 
-                event.replyEmbeds(DefaultMessage.success("Minigame erfolgreich geladen!", "Das Minigame wurde erfolgreich geladen und es wird nun auf einen Mitspieler gewartet! Klicke auf den Button unter dieser Nachricht um das Game zu aktivieren")).setEphemeral(true).addActionRow(Button.secondary("link", "Tritt dem Game bei!").withUrl("https://discord.com/channels/" + event.getGuild().getId() + "/" + game).withEmoji(Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false))).queue();
+                event.replyEmbeds(DefaultMessage.success("Minigame erfolgreich geladen!", "Das Minigame wurde erfolgreich geladen und es wird nun auf einen Mitspieler gewartet! Klicke auf den Button unter dieser Nachricht um das Game zu aktivieren")).setEphemeral(true).setComponents(ActionRow.of(Button.secondary("link", "Tritt dem Game bei!").withUrl("https://discord.com/channels/" + event.getGuild().getId() + "/" + game).withEmoji(Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false)))).queue();
 
                 //save to yml
                 game.setPlayer2(event.getMember());
@@ -174,7 +175,7 @@ public class GameSelector extends ListenerAdapter {
                     case "tictactoe":
                         ThreadChannel threadChannel = event.getChannel().asTextChannel().createThreadChannel("\uD83C\uDFB2│" + "game", false).complete();
 
-                        event.replyEmbeds(DefaultMessage.success("Minigame erfolgreich geladen!", "Das Minigame wurde erfolgreich geladen und es wird nun auf einen Mitspieler gewartet! Klicke auf den Button unter dieser Nachricht um das Game zu aktivieren")).setEphemeral(true).addActionRow(Button.secondary("link", "Tritt dem Game bei!").withUrl("https://discord.com/channels/" + event.getGuild().getId() + "/" + threadChannel.getId()).withEmoji(Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false))).queue();
+                        event.replyEmbeds(DefaultMessage.success("Minigame erfolgreich geladen!", "Das Minigame wurde erfolgreich geladen und es wird nun auf einen Mitspieler gewartet! Klicke auf den Button unter dieser Nachricht um das Game zu aktivieren")).setEphemeral(true).setComponents(ActionRow.of(Button.secondary("link", "Tritt dem Game bei!").withUrl("https://discord.com/channels/" + event.getGuild().getId() + "/" + threadChannel.getId()).withEmoji(Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false)))).queue();
 
                         mainEmbed = new EmbedBuilder();
                         mainEmbed.setColor(0x28346d);
@@ -186,7 +187,7 @@ public class GameSelector extends ListenerAdapter {
                         List<Button> buttons = new ArrayList<>();
                         buttons.add(Button.secondary("minigames.tutorial", "Lies dir die Spielregeln durch!").withEmoji(Emoji.fromCustom("text", Long.parseLong("886623802954498069"), false)));
 
-                        threadChannel.sendMessageEmbeds(Embeds.BANNER_WAITING, mainEmbed.build()).setActionRow(buttons).queue();
+                        threadChannel.sendMessageEmbeds(Embeds.BANNER_WAITING, mainEmbed.build()).setComponents(ActionRow.of(buttons)).queue();
                         threadChannel.addThreadMember(event.getMember()).queue();
                         //save to yml
 

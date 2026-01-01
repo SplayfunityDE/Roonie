@@ -2,10 +2,11 @@ package de.splayfer.roonie.modules.ticket;
 
 import de.splayfer.roonie.utils.enums.Embeds;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.selections.StringSelectMenu;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 
 public class TicketSetupCommand extends ListenerAdapter {
 
@@ -21,10 +22,10 @@ public class TicketSetupCommand extends ListenerAdapter {
         embedBuilder.addField("<:icon_neu:986654769101828166> Hole dir Infos...", "> Du bist neu? Erkundige dich hier jederzeit über Funktionen, Kanäle, etc.", false);
         embedBuilder.setImage("https://cdn.discordapp.com/attachments/985551183479463998/986627378417655858/auto_faqw.png");
 
-        event.getChannel().sendMessageEmbeds(Embeds.BANNER_TICKET, embedBuilder.build()).setActionRow(StringSelectMenu.create("support.create")
+        event.getChannel().sendMessageEmbeds(Embeds.BANNER_TICKET, embedBuilder.build()).setComponents(ActionRow.of(StringSelectMenu.create("support.create")
                 .addOption("Stelle eine Frage", "question", "Stelle unserem Team eine Frage!", Emoji.fromCustom("support", 880028066733236264L, false))
                 .addOption("Bug melden", "bug", "Teile uns einen Bug mit!", Emoji.fromCustom("warning", 877158816419020820L, false))
                 .addOption("Nutzer melden", "report", "Weise auf das Fehlverhalten eines Nutzers hin!", Emoji.fromCustom("cancel", 877158821779345428L, false))
-                .build()).queue();
+                .build())).queue();
     }
 }

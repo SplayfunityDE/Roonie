@@ -3,15 +3,15 @@ package de.splayfer.roonie.modules.level;
 import de.splayfer.roonie.Roonie;
 import de.splayfer.roonie.utils.enums.Roles;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
-import net.dv8tion.jda.api.utils.messages.MessageData;
 
 import java.util.*;
 
@@ -185,6 +185,6 @@ public class LevelListener extends ListenerAdapter {
                 embedBuilder.addField("Neue Vorteile", "`KEINE`", false);
                 break;
         }
-        return new MessageCreateBuilder().setEmbeds(embedBuilder.build()).setActionRow(Button.secondary("viewlevels", "Alle Vorteile ansehen!").withEmoji(Emoji.fromFormatted("\uD83C\uDF81"))).build();
+        return new MessageCreateBuilder().setEmbeds(embedBuilder.build()).setComponents(ActionRow.of(Button.secondary("viewlevels", "Alle Vorteile ansehen!").withEmoji(Emoji.fromFormatted("\uD83C\uDF81")))).build();
     }
 }

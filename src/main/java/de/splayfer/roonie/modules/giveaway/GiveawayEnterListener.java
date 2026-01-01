@@ -11,7 +11,7 @@ import java.util.Objects;
 public class GiveawayEnterListener extends ListenerAdapter {
 
     public void onButtonInteraction (ButtonInteractionEvent event) {
-        if (Objects.requireNonNull(event.getButton().getId()).equals("giveaway.enter")) {
+        if (Objects.requireNonNull(event.getButton().getCustomId()).equals("giveaway.enter")) {
             if (Giveaway.isGiveaway(event.getMessage())) {
                 Giveaway giveaway = Giveaway.getFromMessage(event.getMessage());
                 if (giveaway.checkRequirement(event.getMember())) {

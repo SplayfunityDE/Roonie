@@ -1,11 +1,12 @@
 package de.splayfer.roonie.modules.library;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
+import net.dv8tion.jda.api.components.selections.StringSelectMenu;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class NitroGamesListener extends ListenerAdapter {
                     entryEmbed.setTitle("Wähle dein Game!");
                     entryEmbed.setDescription("Wähle aus, zu welchem Game du einen Code erhalten möchtest!");
                     entryEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
-                    event.replyEmbeds(bannerEmbed.build(), entryEmbed.build()).setEphemeral(true).addActionRow(StringSelectMenu.create("nitrogames.select")
+                    event.replyEmbeds(bannerEmbed.build(), entryEmbed.build()).setEphemeral(true).setComponents(ActionRow.of(StringSelectMenu.create("nitrogames.select")
                             .setPlaceholder("Wähle dein Game aus!")
                             .setRequiredRange(1, 25)
 
@@ -47,7 +48,7 @@ public class NitroGamesListener extends ListenerAdapter {
                             .addOption("Light From The Butt", "https://ptb.discord.com/store/skus/594073512906588179/light-from-the-butt", Emoji.fromCustom("controller", Long.parseLong("935910478289440788"), false))
                             .addOption("PollyDestroyer Music", "https://ptb.discord.com/store/skus/571432807067549696/pollydestroyer-music", Emoji.fromCustom("controller", Long.parseLong("935910478289440788"), false))
                             .addOption("Reworld", "https://ptb.discord.com/store/skus/610933633653669891", Emoji.fromCustom("controller", Long.parseLong("935910478289440788"), false))
-                            .build()).queue();
+                            .build())).queue();
                 }
                 case "tutorialGames" -> {
                     bannerEmbed = new EmbedBuilder();
@@ -60,7 +61,7 @@ public class NitroGamesListener extends ListenerAdapter {
                     entryEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
                     buttons = new ArrayList<>();
                     buttons.add(Button.secondary("link", "Schau es dir jetzt an!").withEmoji(Emoji.fromCustom("text", Long.parseLong("886623802954498069"), false)).withUrl("https://www.youtube.com/watch?v=YiZdlhnq-Qw&t"));
-                    event.replyEmbeds(bannerEmbed.build(), entryEmbed.build()).setEphemeral(true).addActionRow(buttons).queue();
+                    event.replyEmbeds(bannerEmbed.build(), entryEmbed.build()).setEphemeral(true).setComponents(ActionRow.of(buttons)).queue();
                 }
                 case "furhterGames" -> {
                     bannerEmbed = new EmbedBuilder();
@@ -73,11 +74,11 @@ public class NitroGamesListener extends ListenerAdapter {
                     entryEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
                     buttons = new ArrayList<>();
                     buttons.add(Button.secondary("nitrogames.link", "Erfahre mehr!").withEmoji(Emoji.fromFormatted("\uD83D\uDD0E")).withUrl("https://support.discord.com/hc/de/articles/360034828852-Wo-sind-die-Nitro-Spiele-"));
-                    event.replyEmbeds(bannerEmbed.build(), entryEmbed.build()).setEphemeral(true).addActionRow(buttons).queue();
+                    event.replyEmbeds(bannerEmbed.build(), entryEmbed.build()).setEphemeral(true).setComponents(ActionRow.of(buttons)).queue();
                 }
             }
 
-        } else if (event.getSelectMenu().getId().equals("nitrogames.select")) {
+        } else if (event.getSelectMenu().getCustomId().equals("nitrogames.select")) {
             StringBuilder links = new StringBuilder();
             for (String s : event.getValues()) {
                 links.append(" ").append(s);

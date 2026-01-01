@@ -5,11 +5,12 @@ import de.splayfer.roonie.general.schedule.BotCounter;
 import de.splayfer.roonie.utils.DefaultMessage;
 import de.splayfer.roonie.utils.enums.Channels;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +44,7 @@ public class WelcomeListener extends ListenerAdapter {
             buttons.add(Button.secondary("welcome.question", "Stelle eine Frage!").withUrl(Channels.TICKETPANEL.getGuildChannel(Roonie.mainGuild).getJumpUrl()).withEmoji(Emoji.fromFormatted("❓")));
             buttons.add(Button.success("welcome.features", "Schau dir unsere Features an!").withEmoji(Emoji.fromCustom("level", 909085962934562896L, false)));
             try {
-                event.getUser().openPrivateChannel().complete().sendMessageEmbeds(bannerEmbed.build(), mainEmbed.build()).setActionRow(buttons).queue();
+                event.getUser().openPrivateChannel().complete().sendMessageEmbeds(bannerEmbed.build(), mainEmbed.build()).setComponents(ActionRow.of(buttons)).queue();
             } catch (Exception e) {
             }
         } else
@@ -52,7 +53,7 @@ public class WelcomeListener extends ListenerAdapter {
 
     public void onButtonInteraction (ButtonInteractionEvent event) {
         if (!event.isFromGuild()) {
-            switch (event.getButton().getId()) {
+            switch (event.getButton().getCustomId()) {
                 case "welcome.features":
                     event.replyEmbeds(DefaultMessage.error("IN ARBEIT", "Diese Funktion ist zurzeit in Arbeit!")).setEphemeral(true).queue();
                     break;

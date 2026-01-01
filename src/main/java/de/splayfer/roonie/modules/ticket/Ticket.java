@@ -7,11 +7,12 @@ import de.splayfer.roonie.utils.enums.Embeds;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import org.bson.Document;
 
@@ -87,17 +88,17 @@ public class Ticket {
         else
             threadChannel = Roonie.mainGuild.getTextChannelById(Channels.TICKETPANEL.getId()).createThreadChannel(typeSymbol.get(type) + "-" + creator.getEffectiveName(), true).complete();
         Ticket ticket = new Ticket(threadChannel, null, creator, null, type, new Date());
-        ThreadChannel post = Roonie.mainGuild.getForumChannelById(Channels.TICKETFORUM.getId()).createForumPost(typeSymbol.get(type) + "-" + creator.getEffectiveName(), MessageCreateData.fromEmbeds(ticket.getPostEmbed())).addActionRow(Button.primary("ticket.claim", "Ticket claimen").withEmoji(Emoji.fromFormatted("\uD83D\uDD12"))).complete().getThreadChannel();
+        ThreadChannel post = Roonie.mainGuild.getForumChannelById(Channels.TICKETFORUM.getId()).createForumPost(typeSymbol.get(type) + "-" + creator.getEffectiveName(), MessageCreateData.fromEmbeds(ticket.getPostEmbed())).addComponents(ActionRow.of(Button.primary("ticket.claim", "Ticket claimen").withEmoji(Emoji.fromFormatted("\uD83D\uDD12")))).complete().getThreadChannel();
         ticket.setPost(post);
         mongoDB.insert("ticket", ticket.getAsDocument());
 
         //create embeds & update permissions
         ticket.channel.addThreadMember(creator).queue();
-        ticket.channel.sendMessageEmbeds(ticket.getMainEmbeds()).setActionRow(
+        ticket.channel.sendMessageEmbeds(ticket.getMainEmbeds()).setComponents(ActionRow.of(
                 Button.danger("ticket.close", "Ticket schließen").withEmoji(Emoji.fromFormatted("\uD83D\uDD12")),
                 Button.secondary("ticket.export", "Chatverlauf exportieren").withEmoji(Emoji.fromCustom(Roonie.emojiServerGuild.getEmojiById("878586042821787658"))),
                 Button.success("ticket.archiv", "Ticket archivieren").withEmoji(Emoji.fromCustom(Roonie.emojiServerGuild.getEmojiById("883415478700232735")))
-        ).queue();
+        )).queue();
         return ticket;
     }
 

@@ -4,13 +4,14 @@ import de.splayfer.roonie.MongoDBDatabase;
 import de.splayfer.roonie.Roonie;
 import de.splayfer.roonie.utils.enums.Embeds;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.selections.StringSelectMenu;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import net.dv8tion.jda.api.utils.FileUpload;
 
 import javax.imageio.ImageIO;
@@ -29,7 +30,7 @@ public class TicTacToe extends ListenerAdapter {
 
     public void onStringSelectInteraction (StringSelectInteractionEvent event) {
 
-        if (event.getSelectMenu().getId().equals("minigames.tictatoe")) {
+        if (event.getSelectMenu().getCustomId().equals("minigames.tictatoe")) {
             int number = Integer.parseInt(event.getValues().get(0));
             TicTacToeGame game = TicTacToeGame.getFromMongoDB(event.getChannel().asThreadChannel());
             if (!checkEnd(game)) {
@@ -95,7 +96,7 @@ public class TicTacToe extends ListenerAdapter {
         File file = new File(Roonie.PATH + File.separator + "media" + File.separator + "tictactoe" + File.separator + "tictactoe_empty.png");
 
         channel.sendTyping().queue();
-        channel.sendFiles(FileUpload.fromData(file)).setActionRow(StringSelectMenu.create("minigames.tictatoe")
+        channel.sendFiles(FileUpload.fromData(file)).setComponents(ActionRow.of(StringSelectMenu.create("minigames.tictatoe")
                 .setPlaceholder(player1.getEffectiveName() + " ist nun an der Reihe!")
                 .addOption("Oben Links", "1" , "", Emoji.fromCustom("tictactoe", 937046989458247692L, false))
                 .addOption("Oben Mitte", "2" , "", Emoji.fromCustom("tictactoe", 937046989458247692L, false))
@@ -106,7 +107,7 @@ public class TicTacToe extends ListenerAdapter {
                 .addOption("Unten Links", "7" , "", Emoji.fromCustom("tictactoe", 937046989458247692L, false))
                 .addOption("Unten Mitte", "8" , "", Emoji.fromCustom("tictactoe", 937046989458247692L, false))
                 .addOption("Unten Rechts", "9" , "", Emoji.fromCustom("tictactoe", 937046989458247692L, false))
-                .build()).complete();
+                .build())).complete();
     }
 
     public String getSymbol(Member member) {
@@ -192,7 +193,7 @@ public class TicTacToe extends ListenerAdapter {
         ThreadChannel channel = game.getChannel();
 
         Member current = game.getMemberTurn();
-        Message message = channel.sendFiles(FileUpload.fromData(tempFile)).setActionRow(StringSelectMenu.create("minigames.tictatoe")
+        Message message = channel.sendFiles(FileUpload.fromData(tempFile)).setComponents(ActionRow.of(StringSelectMenu.create("minigames.tictatoe")
                 .setPlaceholder(current.getEffectiveName() + " ist nun an der Reihe!")
                 .addOption("Oben Links", "1" , "", Emoji.fromCustom("tictactoe", 937046989458247692L, false))
                 .addOption("Oben Mitte", "2" , "", Emoji.fromCustom("tictactoe", 937046989458247692L, false))
@@ -203,7 +204,7 @@ public class TicTacToe extends ListenerAdapter {
                 .addOption("Unten Links", "7" , "", Emoji.fromCustom("tictactoe", 937046989458247692L, false))
                 .addOption("Unten Mitte", "8" , "", Emoji.fromCustom("tictactoe", 937046989458247692L, false))
                 .addOption("Unten Rechts", "9" , "", Emoji.fromCustom("tictactoe", 937046989458247692L, false))
-                .build()).complete();
+                .build())).complete();
 
         tempFile.delete();
 

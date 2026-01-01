@@ -3,11 +3,12 @@ package de.splayfer.roonie.modules.minigames;
 import de.splayfer.roonie.config.Config;
 import de.splayfer.roonie.utils.enums.Embeds;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.selections.SelectMenu;
+import net.dv8tion.jda.api.components.selections.StringSelectMenu;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
-import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 
 public class MinigamesSetupCommand extends ListenerAdapter {
 
@@ -24,7 +25,7 @@ public class MinigamesSetupCommand extends ListenerAdapter {
                 .addOption("Herausfordern", "challenge", "Fordere einen anderen Spieler heraus", Emoji.fromFormatted("⚔"))
                 .addOption("Statistiken ansehen", "stats", "Schau dir deine aktuellen Statistiken an", Emoji.fromCustom("stats", Long.parseLong("937041708967927818"), false))
                 .build();
-        event.getChannel().sendMessageEmbeds(Embeds.BANNER_MINIGAME, mainEmbed.build()).setActionRow(test).complete();
+        event.getChannel().sendMessageEmbeds(Embeds.BANNER_MINIGAME, mainEmbed.build()).setComponents(ActionRow.of(test)).complete();
         Config.setConfigChannel("minigames", event.getChannel());
     }
 }

@@ -47,14 +47,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    implementation("net.dv8tion:JDA:5.0.0-beta.18") { // replace $version with the latest version
-        // Optionally disable audio natives to reduce jar size by excluding `opus-java` and `tink`
-        // Gradle DSL:
-        // exclude module: 'opus-java' // required for encoding audio into opus, not needed if audio is already provided in opus encoding
-        // exclude module: 'tink' // required for encrypting and decrypting audio
-        // Kotlin DSL:
-        // exclude(module="opus-java") // required for encoding audio into opus, not needed if audio is already provided in opus encoding
-        // exclude(module="tink") // required for encrypting and decrypting audio
+    implementation("net.dv8tion:JDA:6.2.0") { // replace $version with the latest version
     }
     // JJWT 0.11.5 modular setup
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'

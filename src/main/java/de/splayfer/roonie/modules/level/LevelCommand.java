@@ -1,12 +1,13 @@
 package de.splayfer.roonie.modules.level;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,15 +59,15 @@ public class LevelCommand extends ListenerAdapter {
                 old = "_" + oldvalue;
             List<Button> buttons = new ArrayList<>();
             buttons.add(Button.secondary("level.undo_" + event.getSubcommandName() + "_" + member.getId() + "_" + amount + old, "Rückgängig").withEmoji(Emoji.fromCustom("undo", 878590238782550076L, false)));
-            event.replyEmbeds(bb.build(), mb.build()).setEphemeral(true).addActionRow(buttons).queue();
+            event.replyEmbeds(bb.build(), mb.build()).setEphemeral(true).addComponents(ActionRow.of(buttons)).queue();
 
         }
 
     }
 
     public void onButtonInteraction (ButtonInteractionEvent event) {
-        if (event.getButton().getId().startsWith("level.undo")) {
-            String[] args = event.getButton().getId().split("_");
+        if (event.getButton().getCustomId().startsWith("level.undo")) {
+            String[] args = event.getButton().getCustomId().split("_");
             Member member = event.getGuild().getMemberById(args[2]);
             System.out.println(args[3]);
             int amount = Integer.parseInt(args[3]);

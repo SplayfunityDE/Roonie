@@ -3,11 +3,12 @@ package de.splayfer.roonie.modules.economy;
 import de.splayfer.roonie.utils.DefaultMessage;
 import de.splayfer.roonie.utils.enums.Embeds;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 import java.util.*;
 
@@ -38,7 +39,7 @@ public class DailyCommand extends ListenerAdapter {
                 EconomyManager.addMoneyToUser(event.getMember(), round);
                 event.replyEmbeds(Embeds.BANNER_ECONOMY, main.build()).setEphemeral(true).queue();
             } else
-                event.replyEmbeds(DefaultMessage.error("Noch nicht verfügbar", "Huch. Es scheint als ist dieser Command nur alle 24h verwendbar...")).setEphemeral(true).addActionRow(Button.secondary("link", "Bruh").withEmoji(Emoji.fromCustom("kekw", 925673040728166470L, false)).withUrl("https://www.youtube.com/watch?v=mKue4WuagL8")).queue();
+                event.replyEmbeds(DefaultMessage.error("Noch nicht verfügbar", "Huch. Es scheint als ist dieser Command nur alle 24h verwendbar...")).setEphemeral(true).setComponents(ActionRow.of(Button.secondary("link", "Bruh").withEmoji(Emoji.fromCustom("kekw", 925673040728166470L, false)).withUrl("https://www.youtube.com/watch?v=mKue4WuagL8"))).queue();
         }
     }
 

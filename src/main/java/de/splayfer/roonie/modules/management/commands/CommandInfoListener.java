@@ -1,6 +1,7 @@
 package de.splayfer.roonie.modules.management.commands;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -9,7 +10,7 @@ public class CommandInfoListener extends ListenerAdapter {
 
     public void onStringSelectInteraction (StringSelectInteractionEvent selectionMenuEvent) {
 
-        if (selectionMenuEvent.getSelectMenu().getId().equals("selectCommandInfo")) {
+        if (selectionMenuEvent.getSelectMenu().getCustomId().equals("selectCommandInfo")) {
             EmbedBuilder bannerEmbed;
             switch (selectionMenuEvent.getValues().get(0)) {
 
@@ -29,7 +30,7 @@ public class CommandInfoListener extends ListenerAdapter {
                     lvlEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/918508681014960188/banner_border.png");
 
                     selectionMenuEvent.replyEmbeds(bannerEmbed.build(), lvlEmbed.build()).setEphemeral(true).queue();
-                    selectionMenuEvent.getMessage().editMessageEmbeds(selectionMenuEvent.getMessage().getEmbeds()).setActionRow(selectionMenuEvent.getSelectMenu()).queue();
+                    selectionMenuEvent.getMessage().editMessageEmbeds(selectionMenuEvent.getMessage().getEmbeds()).setComponents(ActionRow.of(selectionMenuEvent.getSelectMenu())).queue();
 
                     break;
 
@@ -50,7 +51,7 @@ public class CommandInfoListener extends ListenerAdapter {
                     musicEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/918508681014960188/banner_border.png");
 
                     selectionMenuEvent.replyEmbeds(bannerEmbed.build(), musicEmbed.build()).setEphemeral(true).queue();
-                    selectionMenuEvent.getMessage().editMessageEmbeds(selectionMenuEvent.getMessage().getEmbeds()).setActionRow(selectionMenuEvent.getSelectMenu()).queue();
+                    selectionMenuEvent.getMessage().editMessageEmbeds(selectionMenuEvent.getMessage().getEmbeds()).setComponents(ActionRow.of(selectionMenuEvent.getSelectMenu())).queue();
                     break;
 
                 case "sonstige":
@@ -67,7 +68,7 @@ public class CommandInfoListener extends ListenerAdapter {
                     sonstigesEmbed.setImage("https://cdn.discordapp.com/attachments/880725442481520660/918508681014960188/banner_border.png");
 
                     selectionMenuEvent.replyEmbeds(bannerEmbed.build(), sonstigesEmbed.build()).setEphemeral(true).queue();
-                    selectionMenuEvent.getMessage().editMessageEmbeds(selectionMenuEvent.getMessage().getEmbeds()).setActionRow(selectionMenuEvent.getSelectMenu()).queue();
+                    selectionMenuEvent.getMessage().editMessageEmbeds(selectionMenuEvent.getMessage().getEmbeds()).setComponents(ActionRow.of(selectionMenuEvent.getSelectMenu())).queue();
                     break;
 
             }

@@ -1,11 +1,12 @@
 package de.splayfer.roonie.modules.level;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +56,7 @@ public class XpCommand extends ListenerAdapter {
             }
             List<Button> buttons = new ArrayList<>();
             buttons.add(Button.secondary("xp.undo_" + event.getSubcommandName() + "_" + member.getId() + "_" + amount + old, "Rückgängig").withEmoji(Emoji.fromCustom("undo", 878590238782550076L, false)));
-            event.replyEmbeds(bb.build(), mb.build()).setEphemeral(true).addActionRow(buttons).queue();
+            event.replyEmbeds(bb.build(), mb.build()).setEphemeral(true).setComponents(ActionRow.of(buttons)).queue();
         }
     }
 }

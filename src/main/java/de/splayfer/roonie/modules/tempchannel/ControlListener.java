@@ -3,8 +3,14 @@ package de.splayfer.roonie.modules.tempchannel;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.Region;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
+import net.dv8tion.jda.api.components.label.Label;
+import net.dv8tion.jda.api.components.selections.SelectOption;
+import net.dv8tion.jda.api.components.selections.StringSelectMenu;
+import net.dv8tion.jda.api.components.textinput.TextInput;
+import net.dv8tion.jda.api.components.textinput.TextInputStyle;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
@@ -15,14 +21,10 @@ import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionE
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import net.dv8tion.jda.api.interactions.components.selections.SelectOption;
-import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
-import net.dv8tion.jda.api.interactions.components.text.TextInput;
-import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
-import net.dv8tion.jda.api.interactions.modals.Modal;
+import net.dv8tion.jda.api.modals.Modal;
 import net.dv8tion.jda.api.utils.messages.MessageEditData;
 
+import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -114,12 +116,12 @@ public class ControlListener extends ListenerAdapter {
                     reply2.setDescription("Klicke nun auf den Button unter dieser Nachricht, um die Aktivität zu starten!");
                     reply2.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
 
-                    event.replyEmbeds(TcEmbeds.SUCCESS_BANNER.getEmbed(), reply2.build()).setEphemeral(true).addActionRow(linked).queue();
+                    event.replyEmbeds(TcEmbeds.SUCCESS_BANNER.getEmbed(), reply2.build()).setEphemeral(true).setComponents(ActionRow.of(linked)).queue();
 
                     EmbedBuilder userreply = new EmbedBuilder();
                     userreply.setDescription("Klicke nun auf den Button unter dieser Nachricht, um die Aktivität zu starten!");
 
-                    tchannel.getVoiceChannel().sendMessageEmbeds(userreply.build()).setActionRow(linked).queue();
+                    tchannel.getVoiceChannel().sendMessageEmbeds(userreply.build()).setComponents(ActionRow.of(linked)).queue();
                     return;
 
                 case "controlmod":
@@ -143,8 +145,8 @@ public class ControlListener extends ListenerAdapter {
                 case "controlmembers":
                     String id = event.getSelectedOptions().get(0).getValue().split("_")[2];
                     if(id.equals("id")) {
-                        TextInput.Builder fname = TextInput.create("tc_field_memberid", "ID des Mitglieds", TextInputStyle.SHORT).setPlaceholder("000000000000000000").setRequiredRange(18, 20).setRequired(true);
-                        Modal modal = Modal.create("tc_moderatemember", "Mitglied mit ID auswählen").addActionRow(fname.build()).build();
+                        TextInput.Builder fname = TextInput.create("tc_field_memberid", TextInputStyle.SHORT).setPlaceholder("000000000000000000").setRequiredRange(18, 20).setRequired(true);
+                        Modal modal = Modal.create("tc_moderatemember", "Mitglied mit ID auswählen").addComponents(Label.of("ID des Mitglieds", fname.build())).build();
 
                         event.replyModal(modal).queue();
                         String getId = event.getMessage().getEmbeds().get(0).getFooter().getText().substring(4);
@@ -316,18 +318,18 @@ public class ControlListener extends ListenerAdapter {
                 switch(args[1]) {
 
                     case "controlname":
-                        TextInput.Builder fname1 = TextInput.create("tc_field_name", "Neuer Name", TextInputStyle.SHORT).setPlaceholder(channel.getVoiceChannel().getName()).setRequiredRange(0, 50);
+                        TextInput.Builder fname1 = TextInput.create("tc_field_name", TextInputStyle.SHORT).setPlaceholder(channel.getVoiceChannel().getName()).setRequiredRange(0, 50);
                         if(channel.nameUpdated) {
                             fname1.setPlaceholder(channel.getName("⏳")).setValue(channel.name);
                         }
-                        Modal modal1 = Modal.create("tc_setname", "Kanalnamen setzen").addActionRow(fname1.build()).build();
+                        Modal modal1 = Modal.create("tc_setname", "Kanalnamen setzen").addComponents(Label.of("Neuer Name", fname1.build())).build();
 
                         event.replyModal(modal1).queue();
                         break;
 
                     case "controllimit":
-                        TextInput fname2 = TextInput.create("tc_field_limit", "Neues Limit", TextInputStyle.SHORT).setPlaceholder("0-99").setRequiredRange(1, 2).setValue(String.valueOf(channel.getVoiceChannel().getUserLimit())).build();
-                        Modal modal2 = Modal.create("tc_setlimit", "Kanallimit setzen").addActionRow(fname2).build();
+                        TextInput.Builder fname2 = TextInput.create("tc_field_limit", TextInputStyle.SHORT).setPlaceholder("0-99").setRequiredRange(1, 2).setValue(String.valueOf(channel.getVoiceChannel().getUserLimit()));
+                        Modal modal2 = Modal.create("tc_setlimit", "Kanallimit setzen").addComponents(Label.of("Neues Limit", fname2.build())).build();
 
                         event.replyModal(modal2).queue();
                         break;
@@ -357,12 +359,12 @@ public class ControlListener extends ListenerAdapter {
                             list.setDefaultValues(selected);
                         }
 
-                        event.replyEmbeds(response.build()).addActionRow(list.build()).setEphemeral(true).queue(); break;
+                        event.replyEmbeds(response.build()).setComponents(ActionRow.of(list.build())).setEphemeral(true).queue(); break;
 
                     case "ban":
                         Member member = event.getGuild().getMemberById(event.getComponentId().split("_")[2]);
 
-                        channel.getVoiceChannel().upsertPermissionOverride(member).deny(Permission.ALL_VOICE_PERMISSIONS).grant(Permission.VIEW_CHANNEL).queue();
+                        channel.getVoiceChannel().upsertPermissionOverride(member).deny(Permission.VOICE_CONNECT).grant(Permission.VIEW_CHANNEL).queue();
                         if(member.getVoiceState().inAudioChannel() && member.getVoiceState().getChannel().getId().equals(channel.getVoiceChannel().getId())) {
                             member.getGuild().kickVoiceMember(member).queue();
                         }

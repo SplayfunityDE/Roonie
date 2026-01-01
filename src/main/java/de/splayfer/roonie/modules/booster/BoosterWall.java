@@ -4,11 +4,12 @@ import de.splayfer.roonie.Roonie;
 import de.splayfer.roonie.config.Config;
 import de.splayfer.roonie.utils.enums.Embeds;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.utils.FileUpload;
 
 import javax.imageio.ImageIO;
@@ -152,8 +153,8 @@ public class BoosterWall extends ListenerAdapter {
                 message.setImage("attachment://boosterBanner.png");
 
                 List<Button> buttons = new ArrayList<>();
-                buttons.add(Button.secondary(msg.getActionRows().get(0).getButtons().get(0).getId(), msg.getActionRows().get(0).getButtons().get(0).getLabel()).withEmoji(msg.getActionRows().get(0).getButtons().get(0).getEmoji()));
-                msg.editMessageAttachments(FileUpload.fromData(tempFile, "boosterBanner.png")).setEmbeds(Embeds.BANNER_BOOSTER, message.build()).setActionRow(buttons).queue();
+                buttons.add(Button.secondary(msg.getComponents().get(0).asActionRow().getButtons().get(0).getCustomId(), msg.getComponents().get(0).asActionRow().getButtons().get(0).getLabel()).withEmoji(msg.getComponents().get(0).asActionRow().getButtons().get(0).getEmoji()));
+                msg.editMessageAttachments(FileUpload.fromData(tempFile, "boosterBanner.png")).setEmbeds(Embeds.BANNER_BOOSTER, message.build()).setComponents(ActionRow.of(buttons)).queue();
                 tempFile.deleteOnExit();
             }
         }
@@ -162,7 +163,7 @@ public class BoosterWall extends ListenerAdapter {
 
         public void onButtonInteraction(ButtonInteractionEvent event) {
 
-            if (event.getButton().getId().equals("boostinfo")) {
+            if (event.getButton().getCustomId().equals("boostinfo")) {
                 EmbedBuilder banner = new EmbedBuilder();
                 banner.setColor(0x28346d);
                 banner.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905401313720954920/banner_booster.png");

@@ -1,7 +1,8 @@
 package de.splayfer.roonie.modules.library;
 
 import de.splayfer.roonie.utils.DefaultMessage;
-import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.selections.SelectOption;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
@@ -10,7 +11,6 @@ import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionE
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.interactions.components.selections.SelectOption;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -30,18 +30,18 @@ public class TemplateListener extends ListenerAdapter {
 
     @Override
     public void onStringSelectInteraction(@NotNull StringSelectInteractionEvent event) {
-        if (event.getSelectMenu().getId().equals("servertemplates")) {
+        if (event.getSelectMenu().getCustomId().equals("servertemplates")) {
             Member member = event.getMember();
             InteractionHook hook = event.deferReply(true).complete();
             for (SelectOption selectedOption : event.getSelectedOptions()) {
                 if (!sendTemplate(selectedOption, member)) {
-                    event.getMessage().editMessageEmbeds(event.getMessage().getEmbeds()).setActionRow(event.getSelectMenu()).queue();
+                    event.getMessage().editMessageEmbeds(event.getMessage().getEmbeds()).setComponents(ActionRow.of(event.getSelectMenu())).queue();
                     return;
                 }
             }
             String categorysString = getCategoryString(event.getSelectedOptions());
             hook.editOriginalEmbeds(DefaultMessage.success("Vorlagen erfolgreich gesendet", "Dir wurden erfolgreich die Servervorlagen mit den folgenden Details zugesendet", new MessageEmbed.Field("<:text:886623802954498069> Kategorie(n)", categorysString, false))).queue();
-            event.getMessage().editMessageEmbeds(event.getMessage().getEmbeds()).setActionRow(event.getSelectMenu()).queue();
+            event.getMessage().editMessageEmbeds(event.getMessage().getEmbeds()).setComponents(ActionRow.of(event.getSelectMenu())).queue();
         }
     }
 
