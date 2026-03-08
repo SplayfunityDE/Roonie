@@ -9,9 +9,11 @@ version = '1.0.0'
 
 jar {
     manifest {
-        attributes 'Main-Class': 'de.splayfer.roonie.RoonieApplication'
+        attributes(
+                'Main-Class': 'de.splayfer.roonie.RoonieApplication',
+                'Enable-Native-Access': 'ALL-UNNAMED'
+        )
     }
-    // optional: um sicherzugehen, dass du auch compiled class files bekommst
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
@@ -47,8 +49,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    implementation("net.dv8tion:JDA:6.2.0") { // replace $version with the latest version
-    }
+    implementation("net.dv8tion:JDA:6.3.1")
     // JJWT 0.11.5 modular setup
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
@@ -57,6 +58,16 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
     implementation('dev.arbjerg:lavaplayer:2.2.4')
     implementation('dev.lavalink.youtube:common:1.13.5')
+
+    // Interface to use for libraries
+    implementation("club.minnced:jdave-api:0.1.7")
+
+    // Compiled natives for libdave for the specified platform
+    implementation("club.minnced:jdave-native-linux-x86-64:0.1.7")
+    implementation("club.minnced:jdave-native-linux-aarch64:0.1.7")
+    implementation("club.minnced:jdave-native-win-x86-64:0.1.7")
+    implementation("club.minnced:jdave-native-darwin:0.1.7")
+
     compileOnly('org.projectlombok:lombok:1.18.40')
     annotationProcessor("org.projectlombok:lombok:1.18.40")
 }
@@ -64,7 +75,7 @@ dependencies {
 group = 'de.splayfunityde'
 version = '1.0.0'
 description = 'roonie'
-java.sourceCompatibility = JavaVersion.VERSION_21
+java.sourceCompatibility = JavaVersion.VERSION_25
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'

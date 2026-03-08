@@ -1,7 +1,8 @@
-FROM amazoncorretto:21
+FROM ubuntu:latest
 
-RUN mkdir /bot
-COPY media /bot/media
-COPY build/libs/roonie-1.0.0.jar /bot
+RUN apt-get update && apt-get install -y openjdk-25-jdk-headless
 
-ENTRYPOINT ["java", "-jar", "/bot/roonie-1.0.0.jar"]
+WORKDIR /bot
+COPY build/libs/roonie-1.0.0.jar /bot/app.jar
+
+ENTRYPOINT ["java", "-jar", "/bot/app.jar"]
