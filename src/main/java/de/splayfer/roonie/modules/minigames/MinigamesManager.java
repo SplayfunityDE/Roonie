@@ -9,10 +9,6 @@ public class MinigamesManager {
 
     static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("minigames");
 
-    public static void init() {
-        Roonie.builder.addEventListeners(new DeleteListener(), new GameSelector(), new RequestManager(), new MinigamesSetupCommand(), new TicTacToe());
-    }
-
     public static void addMatchToMember(Member member, String game) {
         insertStats(member, game);
         mongoDB.updateLine(game, "guildMember", member.getIdLong(), "matches", getMatches(member, game) + 1);

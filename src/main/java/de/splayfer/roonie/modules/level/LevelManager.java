@@ -1,8 +1,7 @@
 package de.splayfer.roonie.modules.level;
 
 import de.splayfer.roonie.MongoDBDatabase;
-import de.splayfer.roonie.Roonie;
-import de.splayfer.roonie.utils.CommandManager;
+import de.splayfer.roonie.utils.SlashCommandManager;
 import de.splayfer.roonie.utils.enums.Guilds;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
@@ -10,17 +9,19 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import org.bson.Document;
+import org.springframework.stereotype.Component;
 
-public class LevelManager extends ListenerAdapter {
+@Component
+public class LevelManager extends ListenerAdapter implements SlashCommandManager {
 
     static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
 
-    public static void init() {
-        Roonie.builder.addEventListeners(new LevelListener(), new LevelInfoCommand(), new RankCommand(), new LevelCommand(), new XpCommand());
-
-        CommandManager.addCommands(Guilds.MAIN,
+    @Override
+    public SlashCommandData[] slashCommands() {
+        return new SlashCommandData[]{
                 Commands.slash("rank", "\uD83D\uDCCB │ Zeigt dir deinen aktuellen Rank an")
                         .addOption(OptionType.USER, "nutzer", "Wähle einen bestimmten Nutzer", false),
                 Commands.slash("levels", "✨ │ Schau dir unsere Level-Vorteile an"),
@@ -45,9 +46,8 @@ public class LevelManager extends ListenerAdapter {
                                 new SubcommandData("set", "\uD83D\uDCC3 │ Setze dem Nutzer die Anzahl seiner Xp")
                                         .addOption(OptionType.USER, "nutzer", "\uD83D\uDC65 │ Nutzer, dessen Xp du verwalten möchtest", true)
                                         .addOption(OptionType.INTEGER, "anzahl", "\uD83D\uDCD1 │ Anzahl der zu verwaltenden Xp", true))
-                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)));
-
-        LevelListener.checkVoiceMembers();
+                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
+        };
     }
 
     public static void addXpToUser(Member member, int amount) {

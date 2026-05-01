@@ -15,8 +15,6 @@ import java.util.*;
 
 public class TicTacToeGame {
 
-    static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("minigames");
-
     @Getter
     @Setter
     private ThreadChannel channel;
@@ -65,66 +63,6 @@ public class TicTacToeGame {
 
     public static TicTacToeGame create(ThreadChannel channel, String type, Member player1) {
         return new TicTacToeGame(channel, "waiting", type, player1, null, 1, null);
-    }
-
-    public static TicTacToeGame getFromDocument(Document document) {
-        HashMap<Integer, String> map = new HashMap<>();
-        document.getList("fields", String.class).forEach(field -> map.put(Integer.parseInt(field.split(":")[0]), field.split(":")[1]));
-        return new TicTacToeGame(Roonie.mainGuild.getThreadChannelById(document.getLong("channel")), document.getString("status"), document.getString("type"), Roonie.mainGuild.getMemberById(document.getLong("player1")), Roonie.mainGuild.getMemberById(document.getLong("player2")), document.getInteger("turn"), map);
-    }
-
-    public static TicTacToeGame getFromMongoDB(ThreadChannel channel) {
-        return getFromDocument(mongoDB.find("tictactoe", "channel", channel.getIdLong()).first());
-    }
-
-    public void insertToMongoDB() {
-        Document document = new Document()
-                .append("channel", channel.getIdLong())
-                .append("status", status)
-                .append("type", type)
-                .append("player1", player1.getIdLong())
-                .append("player2", player2.getIdLong())
-                .append("turn", turn);
-        List<String> list = new ArrayList<>();
-        fields.forEach((num, symbol) -> list.add(num + ":" + symbol));
-        document.append("fields", list);
-        if (mongoDB.exists("tictactoe", "channel", channel.getIdLong()))
-            mongoDB.update(
-                    "tictactoe", mongoDB.find("tictactoe", "channel", channel.getIdLong()).first(), document);
-        else
-            mongoDB.insert("tictactoe", document);
-    }
-
-    public void removeFromMongoDB() {
-        mongoDB.drop("tictactoe", new Document("channel", channel.getIdLong()));
-    }
-
-    public static boolean isGameChannel(MessageChannelUnion channel) {
-        if (channel.getType().equals(ChannelType.GUILD_PRIVATE_THREAD))
-            return mongoDB.exists("tictactoe", "channel", channel.getIdLong());
-        return false;
-    }
-
-    public static boolean checkPlayer(Member member) {
-        boolean check = true;
-        //if player is game owner
-        long playerID = member.getIdLong();
-        for (Document doc : mongoDB.findAll("tictactoe")) {
-            if (doc.getLong("player1").equals(playerID))
-                check = false;
-            else
-            if (doc.containsKey("player2"))
-                if (doc.getLong("player2").equals(playerID) && doc.getString("status").equals("playing") && doc.getString("type").equals("request"))
-                    check = false;
-        }
-        return check;
-    }
-
-    public static TicTacToeGame getFromMember(Member member) {
-        for (Document doc : mongoDB.findAll("tictactoe"))
-            if (doc.getLong("player1").equals(member.getIdLong()) || doc.getLong("player2").equals(member.getIdLong()))
-                return TicTacToeGame.getFromDocument(doc);
-        return null;
     }
 
     public Member getMemberTurn() {

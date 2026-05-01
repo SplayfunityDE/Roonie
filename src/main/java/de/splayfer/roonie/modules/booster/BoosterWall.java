@@ -2,7 +2,10 @@ package de.splayfer.roonie.modules.booster;
 
 import de.splayfer.roonie.Roonie;
 import de.splayfer.roonie.config.Config;
+import de.splayfer.roonie.config.ConfigManager;
+import de.splayfer.roonie.utils.Properties;
 import de.splayfer.roonie.utils.enums.Embeds;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.entities.Member;
@@ -11,6 +14,8 @@ import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.utils.FileUpload;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -21,144 +26,149 @@ import java.io.IOException;
 import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+@Component
+@RequiredArgsConstructor
 public class BoosterWall extends ListenerAdapter {
+
+    private final Roonie roonie;
+    private final Properties properties;
+    private final ConfigManager configManager;
 
     protected static BufferedImage background;
 
-    public static Runnable updateBoosterStats = new Runnable() {
-        @Override
-        public void run() {
-            if (Config.existsConfig("booster")) {
-                List<Member> boosterList;
-                if (Roonie.mainGuild.getBoosters().size() > 40)
-                    boosterList = Roonie.mainGuild.getBoosters().subList(0, 15);
-                else
-                    boosterList = Roonie.mainGuild.getBoosters();
-                try {
-                    background = ImageIO.read(new File(Roonie.PATH + File.separator + "media" + File.separator + "boosterImg" + File.separator + "boosterBannerTemplate.png"));
-                } catch (IOException exception) {
-                    exception.printStackTrace();
-                }
-
-                BufferedImage container = new BufferedImage(1920, 1080, BufferedImage.TYPE_INT_ARGB);
-
-                Graphics g = container.getGraphics();
-                g.drawImage(background, 0, 0, null);
-
-                Font openSans = null;
-                try {
-                    openSans = Font.createFont(Font.TRUETYPE_FONT, new File(Roonie.PATH + File.separator + "media" + File.separator + "fonts" + File.separator + "OpenSans_Condensed-ExtraBold.ttf"));
-                } catch (FontFormatException e) {
-                    e.printStackTrace();
-                } catch (IOException exception) {
-                    exception.printStackTrace();
-                }
-                GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-                ge.registerFont(openSans);
-
-                int i = 1;
-                for (Member m : boosterList) {
-
-                    int aspect = 0;
-
-                    AttributedString name;
-                    if (m.getEffectiveName().length() > 25) {
-                        name = new AttributedString(m.getEffectiveName().substring(0, 22) + "...");
-                        name.addAttribute(TextAttribute.FONT, openSans.deriveFont(35f));
-                        aspect = 5;
-                    } else if (m.getEffectiveName().length() > 15) {
-                        name = new AttributedString(m.getEffectiveName());
-                        name.addAttribute(TextAttribute.FONT, openSans.deriveFont(35f));
-                        aspect = 5;
-                    } else {
-                        name = new AttributedString(m.getEffectiveName());
-                        name.addAttribute(TextAttribute.FONT, openSans.deriveFont(50f));
-                    }
-
-
-                    switch (i) {
-                        case 1:
-                            g.drawString(name.getIterator(), 175, 430 - aspect);
-                            break;
-                        case 2:
-                            g.drawString(name.getIterator(), 175, 550 - aspect);
-                            break;
-                        case 3:
-                            g.drawString(name.getIterator(), 175, 670 - aspect);
-                            break;
-                        case 4:
-                            g.drawString(name.getIterator(), 175, 785 - aspect);
-                            break;
-                        case 5:
-                            g.drawString(name.getIterator(), 175, 900 - aspect);
-                            break;
-                        case 6:
-                            g.drawString(name.getIterator(), 790, 430 - aspect);
-                            break;
-                        case 7:
-                            g.drawString(name.getIterator(), 790, 550 - aspect);
-                            break;
-                        case 8:
-                            g.drawString(name.getIterator(), 790, 670 - aspect);
-                            break;
-                        case 9:
-                            g.drawString(name.getIterator(), 790, 785 - aspect);
-                            break;
-                        case 10:
-                            g.drawString(name.getIterator(), 790, 900 - aspect);
-                            break;
-                        case 11:
-                            g.drawString(name.getIterator(), 1400, 430 - aspect);
-                            break;
-                        case 12:
-                            g.drawString(name.getIterator(), 1400, 550 - aspect);
-                            break;
-                        case 13:
-                            g.drawString(name.getIterator(), 1400, 670 - aspect);
-                            break;
-                        case 14:
-                            g.drawString(name.getIterator(), 1400, 785 - aspect);
-                            break;
-                        case 15:
-                            g.drawString(name.getIterator(), 1400, 900 - aspect);
-                            break;
-                    }
-                    i++;
-                }
-                //stacking images
-                g.dispose();
-
-                try {
-                    ImageIO.write(container, "png", new File(Roonie.PATH + File.separator + "media" + File.separator + "boosterImg" + File.separator + "boosterBanner.png"));
-                } catch (IOException exception) {
-                    exception.printStackTrace();
-                }
-
-                File tempFile = new File(Roonie.PATH + File.separator + "media" + File.separator + "boosterImg" + File.separator + "boosterBanner.png");
-
-            /*
-            Message m = Channels.MEDIACHANNEL.getMessageChannel(Roonie.mainGuild).sendFiles(FileUpload.fromData(tempFile)).complete();
-            String picUrl = m.getAttachments().get(0).getUrl();
-            m.delete().queueAfter(10, TimeUnit.SECONDS);
-             */
-                Message msg = Config.getConfigChannel("booster").retrieveMessageById(Config.getConfigMessageId("booster")).complete();
-
-                EmbedBuilder message = new EmbedBuilder();
-                message.setColor(0x28346d);
-                message.setTitle(msg.getEmbeds().get(1).getTitle());
-                message.setDescription(msg.getEmbeds().get(1).getDescription());
-                message.addField(msg.getEmbeds().get(1).getFields().get(0));
-                message.addField(msg.getEmbeds().get(1).getFields().get(1));
-                message.setImage("attachment://boosterBanner.png");
-
-                List<Button> buttons = new ArrayList<>();
-                buttons.add(Button.secondary(msg.getComponents().get(0).asActionRow().getButtons().get(0).getCustomId(), msg.getComponents().get(0).asActionRow().getButtons().get(0).getLabel()).withEmoji(msg.getComponents().get(0).asActionRow().getButtons().get(0).getEmoji()));
-                msg.editMessageAttachments(FileUpload.fromData(tempFile, "boosterBanner.png")).setEmbeds(Embeds.BANNER_BOOSTER, message.build()).setComponents(ActionRow.of(buttons)).queue();
-                tempFile.deleteOnExit();
+    @Scheduled(initialDelay = 5, fixedDelay = 30, timeUnit = TimeUnit.MINUTES)
+    public void updateBoosterWall() {
+        if (Config.existsConfig("booster")) {
+            List<Member> boosterList;
+            if (roonie.getMainGuild().getBoosters().size() > 40)
+                boosterList = roonie.getMainGuild().getBoosters().subList(0, 15);
+            else
+                boosterList = roonie.getMainGuild().getBoosters();
+            try {
+                background = ImageIO.read(new File(properties.getPath() + File.separator + "media" + File.separator + "boosterImg" + File.separator + "boosterBannerTemplate.png"));
+            } catch (IOException exception) {
+                exception.printStackTrace();
             }
+
+            BufferedImage container = new BufferedImage(1920, 1080, BufferedImage.TYPE_INT_ARGB);
+
+            Graphics g = container.getGraphics();
+            g.drawImage(background, 0, 0, null);
+
+            Font openSans = null;
+            try {
+                openSans = Font.createFont(Font.TRUETYPE_FONT, new File(properties.getPath() + File.separator + "media" + File.separator + "fonts" + File.separator + "OpenSans_Condensed-ExtraBold.ttf"));
+            } catch (FontFormatException e) {
+                e.printStackTrace();
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(openSans);
+
+            int i = 1;
+            for (Member m : boosterList) {
+
+                int aspect = 0;
+
+                AttributedString name;
+                if (m.getEffectiveName().length() > 25) {
+                    name = new AttributedString(m.getEffectiveName().substring(0, 22) + "...");
+                    name.addAttribute(TextAttribute.FONT, openSans.deriveFont(35f));
+                    aspect = 5;
+                } else if (m.getEffectiveName().length() > 15) {
+                    name = new AttributedString(m.getEffectiveName());
+                    name.addAttribute(TextAttribute.FONT, openSans.deriveFont(35f));
+                    aspect = 5;
+                } else {
+                    name = new AttributedString(m.getEffectiveName());
+                    name.addAttribute(TextAttribute.FONT, openSans.deriveFont(50f));
+                }
+
+
+                switch (i) {
+                    case 1:
+                        g.drawString(name.getIterator(), 175, 430 - aspect);
+                        break;
+                    case 2:
+                        g.drawString(name.getIterator(), 175, 550 - aspect);
+                        break;
+                    case 3:
+                        g.drawString(name.getIterator(), 175, 670 - aspect);
+                        break;
+                    case 4:
+                        g.drawString(name.getIterator(), 175, 785 - aspect);
+                        break;
+                    case 5:
+                        g.drawString(name.getIterator(), 175, 900 - aspect);
+                        break;
+                    case 6:
+                        g.drawString(name.getIterator(), 790, 430 - aspect);
+                        break;
+                    case 7:
+                        g.drawString(name.getIterator(), 790, 550 - aspect);
+                        break;
+                    case 8:
+                        g.drawString(name.getIterator(), 790, 670 - aspect);
+                        break;
+                    case 9:
+                        g.drawString(name.getIterator(), 790, 785 - aspect);
+                        break;
+                    case 10:
+                        g.drawString(name.getIterator(), 790, 900 - aspect);
+                        break;
+                    case 11:
+                        g.drawString(name.getIterator(), 1400, 430 - aspect);
+                        break;
+                    case 12:
+                        g.drawString(name.getIterator(), 1400, 550 - aspect);
+                        break;
+                    case 13:
+                        g.drawString(name.getIterator(), 1400, 670 - aspect);
+                        break;
+                    case 14:
+                        g.drawString(name.getIterator(), 1400, 785 - aspect);
+                        break;
+                    case 15:
+                        g.drawString(name.getIterator(), 1400, 900 - aspect);
+                        break;
+                }
+                i++;
+            }
+            //stacking images
+            g.dispose();
+
+            try {
+                ImageIO.write(container, "png", new File(properties.getPath() + File.separator + "media" + File.separator + "boosterImg" + File.separator + "boosterBanner.png"));
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+
+            File tempFile = new File(properties.getPath() + File.separator + "media" + File.separator + "boosterImg" + File.separator + "boosterBanner.png");
+
+        /*
+        Message m = Channels.MEDIACHANNEL.getMessageChannel(Roonie.mainGuild).sendFiles(FileUpload.fromData(tempFile)).complete();
+        String picUrl = m.getAttachments().get(0).getUrl();
+        m.delete().queueAfter(10, TimeUnit.SECONDS);
+         */
+            Message msg = configManager.getConfigChannel("booster").retrieveMessageById(Config.getConfigMessageId("booster")).complete();
+
+            EmbedBuilder message = new EmbedBuilder();
+            message.setColor(0x28346d);
+            message.setTitle(msg.getEmbeds().get(1).getTitle());
+            message.setDescription(msg.getEmbeds().get(1).getDescription());
+            message.addField(msg.getEmbeds().get(1).getFields().get(0));
+            message.addField(msg.getEmbeds().get(1).getFields().get(1));
+            message.setImage("attachment://boosterBanner.png");
+
+            List<Button> buttons = new ArrayList<>();
+            buttons.add(Button.secondary(msg.getComponents().get(0).asActionRow().getButtons().get(0).getCustomId(), msg.getComponents().get(0).asActionRow().getButtons().get(0).getLabel()).withEmoji(msg.getComponents().get(0).asActionRow().getButtons().get(0).getEmoji()));
+            msg.editMessageAttachments(FileUpload.fromData(tempFile, "boosterBanner.png")).setEmbeds(Embeds.BANNER_BOOSTER, message.build()).setComponents(ActionRow.of(buttons)).queue();
+            tempFile.deleteOnExit();
         }
-    };
+    }
 
 
         public void onButtonInteraction(ButtonInteractionEvent event) {

@@ -4,6 +4,7 @@ import de.splayfer.roonie.MongoDBDatabase;
 import de.splayfer.roonie.Roonie;
 import de.splayfer.roonie.utils.DefaultMessage;
 import de.splayfer.roonie.utils.enums.Embeds;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
@@ -16,19 +17,26 @@ import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.bson.Document;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Component
+@RequiredArgsConstructor
 public class RequestManager extends ListenerAdapter {
+
+    private final Roonie roonie;
+    private final TicTacToe ticTacToe;
+    private final TicTacToeGameManager ticTacToeGameManager;
 
     static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("minigames");
 
-    public static void sendGameRequest(User user, String id) {
+    public void sendGameRequest(User user, String id) {
 
         PrivateChannel dm = user.openPrivateChannel().complete();
-        TicTacToeGame game = TicTacToeGame.getFromMongoDB(Roonie.mainGuild.getThreadChannelById(id));
+        TicTacToeGame game = ticTacToeGameManager.getFromMongoDB(roonie.getMainGuild().getThreadChannelById(id));
 
         EmbedBuilder mainEmbed = new EmbedBuilder();
         mainEmbed.setColor(0x28346d);
@@ -70,20 +78,20 @@ public class RequestManager extends ListenerAdapter {
 
     public void onButtonInteraction (ButtonInteractionEvent event) {
         if (event.getButton().getCustomId().startsWith("minigames.")) {
-            TicTacToeGame game = TicTacToeGame.getFromMongoDB(event.getChannel().asThreadChannel());
+            TicTacToeGame game = ticTacToeGameManager.getFromMongoDB(event.getChannel().asThreadChannel());
             switch (event.getButton().getCustomId().split("\\.")[1]) {
                 case "tutorial":
                     break;
                 case "cancel":
                     if (Objects.equals(game.getStatus(), "waiting")) {
                         event.getChannel().delete().queue();
-                        game.removeFromMongoDB();
+                        ticTacToeGameManager.removeFromMongoDB(game);
                     } else
                         event.replyEmbeds(DefaultMessage.error("Game bereits gestartet", "Es scheint als ist das Game bereits gestartet! Du kannst nur Runden im Wartemodus vorzeitig beenden!")).setEphemeral(true).queue();
                     break;
             }
         } else if (event.getButton().getCustomId().startsWith("join.")) {
-            TicTacToeGame game = TicTacToeGame.getFromMongoDB(event.getChannel().asThreadChannel());
+            TicTacToeGame game = ticTacToeGameManager.getFromMongoDB(event.getChannel().asThreadChannel());
             long id = Long.parseLong(event.getButton().getCustomId().substring(5));
             boolean check = false;
             for (Document document : mongoDB.findAll("tictactoe"))
@@ -94,7 +102,7 @@ public class RequestManager extends ListenerAdapter {
                     if (game.getStatus().equals("waiting")) {
                         //get guild
                         Guild guild = null;
-                        for (Guild g : Roonie.shardMan.getGuilds()) {
+                        for (Guild g : event.getJDA().getGuilds()) {
                             for (ThreadChannel threadChannel : g.getThreadChannels()) {
                                 if (threadChannel.getId().equals(id)) {
                                     guild = g;
@@ -102,15 +110,15 @@ public class RequestManager extends ListenerAdapter {
                             }
                         }
                         game.getChannel().addThreadMember(game.getPlayer2()).queue();
-                            TicTacToe.startGame(game.getPlayer1(), game.getPlayer2(), game.getChannel());
+                        ticTacToe.startGame(game.getPlayer1(), game.getPlayer2(), game.getChannel());
 
                         game.setStatus("playing");
-                        game.insertToMongoDB();
+                        ticTacToeGameManager.insertToMongoDB(game);
                         event.replyEmbeds(DefaultMessage.success("Einladung erfolgreich angenommen!", "Du hast die Einladung erfolgreich angenommen und kannst nun dem Game beitreten. Klicke dazu einfach auf den Button unter dieser Nachricht!")).setEphemeral(true).setComponents(ActionRow.of(Button.secondary("link", "Trete dem Game jetzt bei!").withUrl("https://discord.com/channels/" + guild.getId() + "/" + id).withEmoji(Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false)))).queue();
                     } else {
                         //get guild
                         Guild guild = null;
-                        for (Guild g : Roonie.shardMan.getGuilds())
+                        for (Guild g : event.getJDA().getGuilds())
                             for (ThreadChannel threadChannel : g.getThreadChannels())
                                 if (threadChannel.getId().equals(id))
                                     guild = g;

@@ -1,29 +1,31 @@
 package de.splayfer.roonie.modules.economy;
 
 import de.splayfer.roonie.MongoDBDatabase;
-import de.splayfer.roonie.Roonie;
-import de.splayfer.roonie.utils.CommandManager;
+import de.splayfer.roonie.utils.SlashCommandManager;
 import de.splayfer.roonie.utils.enums.Guilds;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import org.bson.Document;
+import org.springframework.stereotype.Component;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class EconomyManager {
+@Component
+public class EconomyManager implements SlashCommandManager {
 
     static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
 
-    public static void init() {
-        Roonie.builder.addEventListeners(new CoinBomb(), new MoneyCommand(), new DailyCommand());
-
-        CommandManager.addCommands(Guilds.MAIN,
+    @Override
+    public SlashCommandData[] slashCommands() {
+        return new SlashCommandData[]{
                 Commands.slash("money", "\uD83D\uDCB3 │ Zeigt dir den aktuellen Kontostand an")
                         .addOption(OptionType.USER, "nutzer", "\uD83D\uDC65 │ Nutzer, welchen du anzeigen möchtest", false),
                 Commands.slash("leaderboard", "\uD83D\uDCCA │ Zeigt dir die Rangliste mit den aktuell besten Casino Spielern an"),
-                Commands.slash("daily", "\uD83D\uDCC5 │ Hole dir deine tägliche Menge an Coins"));
+                Commands.slash("daily", "\uD83D\uDCC5 │ Hole dir deine tägliche Menge an Coins")
+        };
     }
 
     public static void addMoneyToUser(Member member, int amount) {

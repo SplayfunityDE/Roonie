@@ -1,10 +1,14 @@
 package de.splayfer.roonie.general.schedule;
 
 import de.splayfer.roonie.Roonie;
+import de.splayfer.roonie.utils.Properties;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Icon;
 import net.dv8tion.jda.api.entities.Member;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -15,26 +19,33 @@ import java.io.IOException;
 import java.text.AttributedString;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
+@Component
+@RequiredArgsConstructor
 public class BannerCounter {
+
+    private final Roonie roonie;
+    private final Properties properties;
 
     protected static BufferedImage background;
 
-    public static void updateBannerMemberCount() {
-        String membercount = String.valueOf(Roonie.mainGuild.getMemberCount());
-        int onlineMemberCountInt = (int) Roonie.mainGuild.getMembers().stream().filter(member -> !member.getOnlineStatus().equals(OnlineStatus.OFFLINE)).count();
+    @Scheduled(initialDelay = 5, fixedDelay = 30, timeUnit = TimeUnit.MINUTES)
+    public void updateBannerMemberCount() {
+        String membercount = String.valueOf(roonie.getMainGuild().getMemberCount());
+        int onlineMemberCountInt = (int) roonie.getMainGuild().getMembers().stream().filter(member -> !member.getOnlineStatus().equals(OnlineStatus.OFFLINE)).count();
         String onlinecount = String.valueOf(onlineMemberCountInt);
         Font doctorGlitch = null;
 
         try {
-            doctorGlitch = Font.createFont(Font.TRUETYPE_FONT, new File(Roonie.PATH + File.separator + "media" + File.separator + "fonts" + File.separator + "Doctor Glitch.otf"));
+            doctorGlitch = Font.createFont(Font.TRUETYPE_FONT, new File(properties.getPath() + File.separator + "media" + File.separator + "fonts" + File.separator + "Doctor Glitch.otf"));
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             ge.registerFont(doctorGlitch);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
         try {
-            background = ImageIO.read(new File(Roonie.PATH + File.separator + "media" + File.separator + "bannerMemberCountimages" + File.separator + "mainbanner.png"));
+            background = ImageIO.read(new File(properties.getPath() + File.separator + "media" + File.separator + "bannerMemberCountimages" + File.separator + "mainbanner.png"));
         } catch (IOException exception) {
             exception.printStackTrace();
         }
@@ -109,21 +120,14 @@ public class BannerCounter {
         g.dispose();
 
         try {
-            ImageIO.write(container, "png", new File(Roonie.PATH + File.separator + "media" + File.separator + "bannerMemberCountimages" + File.separator + "cache" + File.separator + "banner.png"));
+            ImageIO.write(container, "png", new File(properties.getPath() + File.separator + "media" + File.separator + "bannerMemberCountimages" + File.separator + "cache" + File.separator + "banner.png"));
         } catch (IOException exception) {
             exception.printStackTrace();
         }
-        File finalBanner = new File(Roonie.PATH + File.separator + "media" + File.separator + "bannerMemberCountimages" + File.separator + "cache" + File.separator + "banner.png");
+        File finalBanner = new File(properties.getPath() + File.separator + "media" + File.separator + "bannerMemberCountimages" + File.separator + "cache" + File.separator + "banner.png");
         try {
-            Roonie.mainGuild.getManager().setBanner(Icon.from(finalBanner)).queue();
+            roonie.getMainGuild().getManager().setBanner(Icon.from(finalBanner)).queue();
         } catch (Exception exception) {
         }
-
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                updateBannerMemberCount();
-            }
-        }, 1000 * 60 * 10);
     }
 }

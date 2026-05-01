@@ -1,15 +1,20 @@
 package de.splayfer.roonie.modules.music;
 
 import de.splayfer.roonie.Roonie;
+import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+@Service
 public class PlayerManager {
+
+    private final Roonie roonie;
 
     public ConcurrentHashMap<Long, MusicController> controller;
 
-    public PlayerManager() {
+    public PlayerManager(Roonie roonie) {
         this.controller = new ConcurrentHashMap<>();
+        this.roonie = roonie;
     }
 
     public MusicController getController(long guildid) {
@@ -19,7 +24,7 @@ public class PlayerManager {
             mc = this.controller.get(guildid);
         }
         else {
-            mc = new MusicController(Roonie.shardMan.getGuildById(guildid));
+            mc = new MusicController(roonie.getShardMan().getGuildById(guildid), roonie, this);
 
             this.controller.put(guildid, mc);
         }

@@ -12,10 +12,12 @@ import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.List;
 
+@Component
 public class TemplateListener extends ListenerAdapter {
 
     HashMap<String, String> initCategories() {

@@ -5,11 +5,13 @@ import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInterac
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.Command;
 import org.bson.Document;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Component
 public class AutoComplete extends ListenerAdapter {
 
     static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");

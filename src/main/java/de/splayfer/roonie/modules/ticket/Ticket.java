@@ -68,46 +68,6 @@ public class Ticket {
         return Objects.hash(channel, post, creator, supporter, type, createDate);
     }
 
-    public static Ticket getFromDocument(Document document) {
-        Member supporter = null;
-        if (document.getString("supporter") != null)
-            supporter = Roonie.mainGuild.getMemberById(document.getString("supporter"));
-        return new Ticket(Roonie.mainGuild.getThreadChannelById(document.getString("channel")), Roonie.mainGuild.getThreadChannelById(document.getString("post")), Roonie.mainGuild.getMemberById(document.getString("creator")), supporter, document.getInteger("type"), document.getDate("createDate"));
-    }
-    public static Ticket getFromChannel(String id) {
-        return Ticket.getFromDocument(mongoDB.find("ticket", "channel", id).first());
-    }
-    public static Ticket getFromPost(String id) {
-        return Ticket.getFromDocument(mongoDB.find("ticket", "post", id).first());
-    }
-
-    public static Ticket create(Member creator, int type) {
-        ThreadChannel threadChannel;
-        if (creator.getGuild().getBoostCount() >= 7) //check for server boost level
-            threadChannel = Roonie.mainGuild.getTextChannelById(Channels.TICKETPANEL.getId()).createThreadChannel(typeSymbol.get(type) + "-" + creator.getEffectiveName(), true).setInvitable(false).complete();
-        else
-            threadChannel = Roonie.mainGuild.getTextChannelById(Channels.TICKETPANEL.getId()).createThreadChannel(typeSymbol.get(type) + "-" + creator.getEffectiveName(), true).complete();
-        Ticket ticket = new Ticket(threadChannel, null, creator, null, type, new Date());
-        ThreadChannel post = Roonie.mainGuild.getForumChannelById(Channels.TICKETFORUM.getId()).createForumPost(typeSymbol.get(type) + "-" + creator.getEffectiveName(), MessageCreateData.fromEmbeds(ticket.getPostEmbed())).addComponents(ActionRow.of(Button.primary("ticket.claim", "Ticket claimen").withEmoji(Emoji.fromFormatted("\uD83D\uDD12")))).complete().getThreadChannel();
-        ticket.setPost(post);
-        mongoDB.insert("ticket", ticket.getAsDocument());
-
-        //create embeds & update permissions
-        ticket.channel.addThreadMember(creator).queue();
-        ticket.channel.sendMessageEmbeds(ticket.getMainEmbeds()).setComponents(ActionRow.of(
-                Button.danger("ticket.close", "Ticket schließen").withEmoji(Emoji.fromFormatted("\uD83D\uDD12")),
-                Button.secondary("ticket.export", "Chatverlauf exportieren").withEmoji(Emoji.fromCustom(Roonie.emojiServerGuild.getEmojiById("878586042821787658"))),
-                Button.success("ticket.archiv", "Ticket archivieren").withEmoji(Emoji.fromCustom(Roonie.emojiServerGuild.getEmojiById("883415478700232735")))
-        )).queue();
-        return ticket;
-    }
-
-    public static Ticket fromUser(Member creator) {;
-        if (mongoDB.exists("ticket", "creator", creator.getId()))
-            return Ticket.getFromDocument(mongoDB.find("ticket", "creator", creator.getId()).first());
-        return null;
-    }
-
     public void close(String reason) {
         if (channel != null)
             channel.delete().queue();
@@ -152,20 +112,6 @@ public class Ticket {
 
     public void updateMongoDB() {
         mongoDB.update("ticket", mongoDB.find("ticket", "channel", channel.getId()).first(), this.getAsDocument());
-    }
-
-    public static List<Ticket> getAllTickets() {
-        List<Ticket> tickets = new ArrayList<>();
-        for (Document doc : mongoDB.findAll("ticket"))
-            tickets.add(Ticket.getFromDocument(doc));
-        return tickets;
-    }
-
-    public static HashMap<Ticket, String> getAllTicketsWithId() {
-        HashMap<Ticket, String> tickets = new HashMap<>();
-        for (Document doc : mongoDB.findAll("ticket"))
-            tickets.put(Ticket.getFromDocument(doc), doc.getString("channel"));
-        return tickets;
     }
 
     public List<MessageEmbed> getMainEmbeds() {

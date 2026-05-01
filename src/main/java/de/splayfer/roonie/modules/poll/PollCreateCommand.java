@@ -2,6 +2,7 @@ package de.splayfer.roonie.modules.poll;
 
 import de.splayfer.roonie.utils.DefaultMessage;
 import de.splayfer.roonie.utils.enums.Embeds;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
@@ -23,10 +24,15 @@ import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionE
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.modals.Modal;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+@Component
+@RequiredArgsConstructor
 public class PollCreateCommand extends ListenerAdapter {
+
+    private final PollManager pollManager;
 
     static HashMap<Member, InteractionHook> interactionMap = new HashMap<>();
     static HashMap<Button, InteractionHook> buttonMap = new HashMap<>();
@@ -118,7 +124,7 @@ public class PollCreateCommand extends ListenerAdapter {
                             count++;
                         }
                         poll.setMessage(poll.getChannel().sendMessageEmbeds(Embeds.BANNER_UMFRAGE, information.build()).setComponents(ActionRow.of(Arrays.asList(buttons))).complete());
-                        poll.insertToMongoDB();
+                        pollManager.insertToMongoDB(poll);
                         event.editMessageEmbeds(DefaultMessage.success("Umfrage erfolgreich erstellt!", "Die Umfrage wurde mit deinen angegebenen Details erfolgreich erstellt!")).queue();
                         interactionMap.remove(event.getMember());
                         buttonMap.forEach((bt, hook) -> {

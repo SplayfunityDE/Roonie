@@ -7,9 +7,11 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public class LevelInfoCommand extends ListenerAdapter {
 
     public void onButtonInteraction (ButtonInteractionEvent event) {

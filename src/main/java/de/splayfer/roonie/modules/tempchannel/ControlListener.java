@@ -23,6 +23,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.modals.Modal;
 import net.dv8tion.jda.api.utils.messages.MessageEditData;
+import org.springframework.stereotype.Component;
 
 import java.awt.*;
 import java.text.SimpleDateFormat;
@@ -33,6 +34,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
+@Component
 public class ControlListener extends ListenerAdapter {
 
     public static HashMap<String, Tempchannel> tempChannels = new HashMap<>();

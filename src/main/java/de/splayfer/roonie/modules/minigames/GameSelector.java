@@ -2,6 +2,7 @@ package de.splayfer.roonie.modules.minigames;
 
 import de.splayfer.roonie.utils.DefaultMessage;
 import de.splayfer.roonie.utils.enums.Embeds;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
@@ -12,6 +13,7 @@ import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +21,14 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
+@Component
+@RequiredArgsConstructor
 public class GameSelector extends ListenerAdapter {
+
+    private final RequestManager requestManager;
+    private final TicTacToe ticTacToe;
+    private final TicTacToeGameManager ticTacToeGameManager;
+    private final Queue queue;
 
     @Override
     public void onStringSelectInteraction (StringSelectInteractionEvent event) {
@@ -124,7 +133,7 @@ public class GameSelector extends ListenerAdapter {
                     threadChannel.addThreadMember(event.getMember()).queue();
 
                     //save to yml
-                    TicTacToeGame.create(threadChannel, "request", event.getMember()).insertToMongoDB();
+                    ticTacToeGameManager.insertToMongoDB(TicTacToeGame.create(threadChannel, "request", event.getMember()));
                     /*
                     yml.set(threadChannel.getId() + ".game", event.getValues().get(0));
                     yml.set(threadChannel.getId() + ".status", "waiting");
@@ -137,18 +146,18 @@ public class GameSelector extends ListenerAdapter {
 
         } else if (event.getSelectMenu().getCustomId().equals("minigames.search")) {
             EmbedBuilder mainEmbed;
-            if (Queue.checkForGame()) {
+            if (queue.checkForGame()) {
 
                 //game found
 
-                TicTacToeGame game = Queue.getQueueGame();
+                TicTacToeGame game = queue.getQueueGame();
 
                 event.replyEmbeds(DefaultMessage.success("Minigame erfolgreich geladen!", "Das Minigame wurde erfolgreich geladen und es wird nun auf einen Mitspieler gewartet! Klicke auf den Button unter dieser Nachricht um das Game zu aktivieren")).setEphemeral(true).setComponents(ActionRow.of(Button.secondary("link", "Tritt dem Game bei!").withUrl("https://discord.com/channels/" + event.getGuild().getId() + "/" + game).withEmoji(Emoji.fromCustom("text", Long.parseLong("877158818088386580"), false)))).queue();
 
                 //save to yml
                 game.setPlayer2(event.getMember());
                 game.setStatus("playing");
-                game.insertToMongoDB();
+                ticTacToeGameManager.insertToMongoDB(game);
                 /*
                 yml.set(game + ".player2", event.getMember().getId());
                 yml.set(game + ".status", "playing");
@@ -164,7 +173,7 @@ public class GameSelector extends ListenerAdapter {
                 t.schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        TicTacToe.startGame(player1, player2, channel);
+                        ticTacToe.startGame(player1, player2, channel);
                     }
                 }, 5000);
             } else {
@@ -191,7 +200,7 @@ public class GameSelector extends ListenerAdapter {
                         threadChannel.addThreadMember(event.getMember()).queue();
                         //save to yml
 
-                        TicTacToeGame.create(threadChannel, "queue", event.getMember()).insertToMongoDB();
+                        ticTacToeGameManager.insertToMongoDB(TicTacToeGame.create(threadChannel, "queue", event.getMember()));
                         /*
                         yml.set(threadChannel.getId() + ".game", event.getValues().get(0));
                         yml.set(threadChannel.getId() + ".status", "waiting");
@@ -206,8 +215,8 @@ public class GameSelector extends ListenerAdapter {
     }
 
     public void onMessageReceived (MessageReceivedEvent event) {
-        if (TicTacToeGame.isGameChannel(event.getChannel())) {
-            TicTacToeGame game = TicTacToeGame.getFromMongoDB(event.getChannel().asThreadChannel());
+        if (ticTacToeGameManager.isGameChannel(event.getChannel())) {
+            TicTacToeGame game = ticTacToeGameManager.getFromMongoDB(event.getChannel().asThreadChannel());
             if (game.getPlayer1() == event.getMember()) {
                 if (game.getPlayer2() == null) {
                     String[] args = event.getMessage().getContentStripped().split(" ");
@@ -217,10 +226,10 @@ public class GameSelector extends ListenerAdapter {
                             if (event.getMessage().getMentions().getMembers().size() == 1) {
                                 if (!event.getMessage().getMentions().getMembers().get(0).getUser().isBot()) {
                                     if (!event.getMessage().getMentions().getMembers().get(0).getId().equals(event.getAuthor().getId())) {
-                                        if (TicTacToeGame.checkPlayer(event.getMessage().getMentions().getMembers().get(0))) {
+                                        if (ticTacToeGameManager.checkPlayer(event.getMessage().getMentions().getMembers().get(0))) {
                                             game.setPlayer2(event.getMessage().getMentions().getMembers().get(0));
-                                            game.insertToMongoDB();
-                                            RequestManager.sendGameRequest(event.getMessage().getMentions().getMembers().get(0).getUser(), event.getChannel().getId());
+                                            ticTacToeGameManager.insertToMongoDB(game);
+                                            requestManager.sendGameRequest(event.getMessage().getMentions().getMembers().get(0).getUser(), event.getChannel().getId());
                                             RequestManager.setWaitingStatus(event.getChannel().asThreadChannel());
                                         } else
                                             event.getChannel().sendMessageEmbeds(DefaultMessage.error("Der Nutzer befindet sich bereits in einem Game!")).complete().delete().queueAfter(8, TimeUnit.SECONDS);
@@ -234,10 +243,10 @@ public class GameSelector extends ListenerAdapter {
                             if (event.getMessage().getMentions().getUsers().size() == 1) {
                                 if (!event.getMessage().getMentions().getUsers().get(0).isBot()) {
                                     if (!event.getMessage().getMentions().getUsers().get(0).getId().equals(event.getAuthor().getId())) {
-                                        if (TicTacToeGame.checkPlayer(event.getGuild().getMember(event.getMessage().getMentions().getUsers().get(0)))) {
+                                        if (ticTacToeGameManager.checkPlayer(event.getGuild().getMember(event.getMessage().getMentions().getUsers().get(0)))) {
                                             game.setPlayer2(event.getMember());
-                                            game.insertToMongoDB();
-                                            RequestManager.sendGameRequest(event.getMessage().getMentions().getUsers().get(0), event.getChannel().getId());
+                                            ticTacToeGameManager.insertToMongoDB(game);
+                                            requestManager.sendGameRequest(event.getMessage().getMentions().getUsers().get(0), event.getChannel().getId());
                                             RequestManager.setWaitingStatus(event.getChannel().asThreadChannel());
                                         } else
                                             event.getChannel().sendMessageEmbeds(DefaultMessage.error("Der Nutzer befindet sich bereits in einem Game!")).complete().delete().queueAfter(8, TimeUnit.SECONDS);
@@ -262,10 +271,10 @@ public class GameSelector extends ListenerAdapter {
                                 event.getChannel().sendMessageEmbeds(DefaultMessage.error("Bitte erwähne den Nutzer oder gib seine ID an!")).complete().delete().queueAfter(8, TimeUnit.SECONDS);
                             }
                             if (checkID) {
-                                if (TicTacToeGame.checkPlayer(member)) {
+                                if (ticTacToeGameManager.checkPlayer(member)) {
                                     game.setPlayer2(member);
-                                    game.insertToMongoDB();
-                                    RequestManager.sendGameRequest(member.getUser(), event.getChannel().getId());
+                                    ticTacToeGameManager.insertToMongoDB(game);
+                                    requestManager.sendGameRequest(member.getUser(), event.getChannel().getId());
                                     RequestManager.setWaitingStatus(event.getChannel().asThreadChannel());
                                 } else
                                     event.getChannel().sendMessageEmbeds(DefaultMessage.error("Der Nutzer befindet sich bereits in einem Game!")).complete().delete().queueAfter(8, TimeUnit.SECONDS);

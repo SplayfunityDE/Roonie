@@ -2,6 +2,7 @@ package de.splayfer.roonie.modules.level;
 
 import de.splayfer.roonie.Roonie;
 import de.splayfer.roonie.utils.enums.Roles;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
@@ -12,10 +13,17 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
+@Component
+@RequiredArgsConstructor
 public class LevelListener extends ListenerAdapter {
+
+    private final Roonie roonie;
 
     private static List<Member> messageCoolDown = new ArrayList<>();
 
@@ -91,42 +99,37 @@ public class LevelListener extends ListenerAdapter {
         return check;
     }
 
-    //Todo: Der Nutzer soll xp sammeln, nur wenn 2 Leute im call sind
-    public static void checkVoiceMembers() {
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                for (Member member: Roonie.mainGuild.getMembers()) {
-                    if (member.getVoiceState().inAudioChannel() && member.getVoiceState().getChannel().getType().equals(ChannelType.VOICE)) {
-                        if (!(member.getVoiceState().isMuted() || member.getVoiceState().isDeafened() || member.getVoiceState().isSelfMuted())) {
-                            int voiceminutes = LevelManager.getXp(member) + 10;
-                            int level = LevelManager.getLevel(member);
+    @Scheduled(initialDelay = 5, fixedDelay = 30, timeUnit = TimeUnit.MINUTES)
+    public void checkVoiceMembers() {
+        for (Member member: roonie.getMainGuild().getMembers()) {
+            if (member.getVoiceState().inAudioChannel() && member.getVoiceState().getChannel().getType().equals(ChannelType.VOICE)) {
+                if (!(member.getVoiceState().isMuted() || member.getVoiceState().isDeafened() || member.getVoiceState().isSelfMuted())) {
+                    int voiceminutes = LevelManager.getXp(member) + 10;
+                    int level = LevelManager.getLevel(member);
 
-                            //wenn neues level erreicht
+                    //wenn neues level erreicht
 
-                            int levelstep = LevelManager.getLevelStep(level);
-                            if (voiceminutes >= levelstep + 1) {
-                                voiceminutes = voiceminutes - levelstep;
-                                LevelManager.setXp(member, voiceminutes);
-                                LevelManager.addLevelToUser(member, 1);
-                                member.getVoiceState().getChannel().asVoiceChannel().sendMessage(member.getAsMention()).queue();
-                                member.getVoiceState().getChannel().asVoiceChannel().sendMessage(levelUp(member)).queue();
-                            } else
-                                LevelManager.addXpToUser(member, 10);
-                        }
-                    }
+                    int levelstep = LevelManager.getLevelStep(level);
+                    if (voiceminutes >= levelstep + 1) {
+                        voiceminutes = voiceminutes - levelstep;
+                        LevelManager.setXp(member, voiceminutes);
+                        LevelManager.addLevelToUser(member, 1);
+                        member.getVoiceState().getChannel().asVoiceChannel().sendMessage(member.getAsMention()).queue();
+                        member.getVoiceState().getChannel().asVoiceChannel().sendMessage(levelUp(member)).queue();
+                    } else
+                        LevelManager.addXpToUser(member, 10);
                 }
             }
-        }, 180000, 180000);
+        }
     }
 
-    public static MessageCreateData levelUp(Member member) {
+    public MessageCreateData levelUp(Member member) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setColor(0xfead33);
         embedBuilder.setTitle(":star: Neues Level auf SPLΛYFUNITY erreicht!");
         embedBuilder.setDescription("**GG**! Du hast ein neues Level erreicht!\n" +
                 "<:name:878587314367000606> Neues Level: " + LevelManager.getLevel(member));
-        Guild guild = Roonie.mainGuild;
+        Guild guild = roonie.getMainGuild();
         switch (LevelManager.getLevel(member)) {
             case 5:
                 guild.getManager().getGuild().addRoleToMember(member.getUser(), Roles.LVL5.getRole(guild)).queue();

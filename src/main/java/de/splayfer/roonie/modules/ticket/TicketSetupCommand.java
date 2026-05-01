@@ -7,7 +7,9 @@ import net.dv8tion.jda.api.components.selections.StringSelectMenu;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TicketSetupCommand extends ListenerAdapter {
 
     public static void setup(SlashCommandInteractionEvent event) {

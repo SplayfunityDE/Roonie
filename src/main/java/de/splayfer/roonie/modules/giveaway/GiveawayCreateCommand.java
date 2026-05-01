@@ -2,6 +2,7 @@ package de.splayfer.roonie.modules.giveaway;
 
 import de.splayfer.roonie.utils.DefaultMessage;
 import de.splayfer.roonie.utils.enums.Embeds;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
@@ -21,12 +22,17 @@ import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionE
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.modals.Modal;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
 
+@Component
+@RequiredArgsConstructor
 public class GiveawayCreateCommand extends ListenerAdapter {
+
+    private final GiveawayManager giveawayManager;
 
     static HashMap<Member, InteractionHook> interactionMap = new HashMap<>();
     static HashMap<Member, InteractionHook> menuMap = new HashMap<>();
@@ -145,7 +151,7 @@ public class GiveawayCreateCommand extends ListenerAdapter {
                     information.addField("Klicke auf den unteren Button um teilzunehmen!", "", false);
                     information.setImage("https://cdn.discordapp.com/attachments/880725442481520660/905443533824077845/auto_faqw.png");
                     giveaway.setMessage(giveaway.getChannel().sendMessageEmbeds(Embeds.BANNER_GIVEAWAY, information.build()).setComponents(ActionRow.of(Button.primary("giveaway.enter", "Jetzt teilnehmen!"))).complete());
-                    giveaway.insertToMongoDB();
+                    giveawayManager.insertToMongoDB(giveaway);
                     event.editMessageEmbeds(DefaultMessage.success("Giveaway erfolgreich erstellt!", "Die Umfrage wurde mit deinen angegebenen Details erfolgreich in " + giveaway.getChannel().getAsMention() + " erstellt!")).setComponents().queue();
                     interactionMap.remove(event.getMember());
                     event.deferEdit().queue();

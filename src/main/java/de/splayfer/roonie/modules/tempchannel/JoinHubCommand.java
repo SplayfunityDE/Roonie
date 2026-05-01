@@ -7,7 +7,9 @@ import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.springframework.stereotype.Component;
 
+@Component
 public class JoinHubCommand extends ListenerAdapter {
 
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {

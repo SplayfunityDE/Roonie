@@ -9,14 +9,16 @@ public class MusicController {
     private Guild guild;
     private AudioPlayer player;
     private Queue queue;
+    private PlayerManager playerManager;
 
-    public MusicController(Guild guild) {
+    public MusicController(Guild guild, Roonie roonie, PlayerManager playerManager) {
         this.guild = guild;
-        this.player = Roonie.audioPlayerManager.createPlayer();
+        this.player = roonie.getAudioPlayerManager().createPlayer();
         this.queue = new Queue(this);
+        this.playerManager = playerManager;
 
         this.guild.getAudioManager().setSendingHandler(new AudioPlayerSendHandler(player));
-        this.player.addListener(new TrackScheduler());
+        this.player.addListener(new TrackScheduler(playerManager, roonie));
         this.player.setVolume(10);
     }
 

@@ -1,18 +1,17 @@
 package de.splayfer.roonie.modules.music;
 
-import de.splayfer.roonie.Roonie;
-import de.splayfer.roonie.modules.music.commands.*;
-import de.splayfer.roonie.utils.CommandManager;
-import de.splayfer.roonie.utils.enums.Guilds;
+import de.splayfer.roonie.utils.SlashCommandManager;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import org.springframework.stereotype.Component;
 
-public class MusicManager {
+@Component
+public class MusicManager implements SlashCommandManager {
 
-    public static void init() {
-        Roonie.builder.addEventListeners(new PlayCommand(), new StopCommand(), new ResumeCommand(), new SkipCommand(), new PauseCommand(), new ShuffelCommand(), new LeaveListener());
-
-        CommandManager.addCommands(Guilds.MAIN,
+    @Override
+    public SlashCommandData[] slashCommands() {
+        return new SlashCommandData[]{
                 Commands.slash("play", "▶ │ Spiele Inhalte von YouTube, Spotify, Soundcloud, Twitch und vielem mehr")
                         .addOption(OptionType.STRING, "inhalt", "� │ Inhalt, welchen du wiedergeben möchtest", true)
                         .addOption(OptionType.BOOLEAN, "warteschlange", "� │ Gib, ob der Inhalt in die Warteschlange hinzugeügt werden soll", false),
@@ -20,7 +19,7 @@ public class MusicManager {
                 Commands.slash("resume", "⏯ │ Setzt den aktuellen Inhalt fort"),
                 Commands.slash("stop", "⏹ │ Stoppt den aktuell gespielten Inhalt"),
                 Commands.slash("skip", "⏯ │ Übersprint den aktuellen Titel der Warteschleife"),
-                Commands.slash("shuffel", "� │ Würfelt die aktuellen Titel der Warteschleifen durcheinander"));
+                Commands.slash("shuffel", "� │ Würfelt die aktuellen Titel der Warteschleifen durcheinander")
+        };
     }
-
 }

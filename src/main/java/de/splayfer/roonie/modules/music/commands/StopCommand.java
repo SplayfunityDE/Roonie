@@ -3,17 +3,24 @@ package de.splayfer.roonie.modules.music.commands;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import de.splayfer.roonie.Roonie;
 import de.splayfer.roonie.modules.music.MusicController;
+import de.splayfer.roonie.modules.music.PlayerManager;
 import de.splayfer.roonie.utils.enums.Embeds;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.managers.AudioManager;
+import org.springframework.stereotype.Component;
 
+@Component
+@RequiredArgsConstructor
 public class StopCommand extends ListenerAdapter {
+
+    private final PlayerManager playerManager;
 
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (event.getName().equals("stop")) {
-            MusicController controller = Roonie.playerManager.getController(event.getGuild().getIdLong());
+            MusicController controller = playerManager.getController(event.getGuild().getIdLong());
             AudioManager manager = event.getGuild().getAudioManager();
             AudioPlayer player = controller.getPlayer();
             player.stopTrack();

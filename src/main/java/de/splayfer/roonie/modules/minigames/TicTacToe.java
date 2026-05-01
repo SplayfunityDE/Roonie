@@ -1,8 +1,9 @@
 package de.splayfer.roonie.modules.minigames;
 
 import de.splayfer.roonie.MongoDBDatabase;
-import de.splayfer.roonie.Roonie;
+import de.splayfer.roonie.utils.Properties;
 import de.splayfer.roonie.utils.enums.Embeds;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.selections.StringSelectMenu;
@@ -13,6 +14,7 @@ import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.utils.FileUpload;
+import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -22,7 +24,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.*;
 
+@Component
+@RequiredArgsConstructor
 public class TicTacToe extends ListenerAdapter {
+
+    private final Properties properties;
+    private final TicTacToeGameManager ticTacToeGameManager;
 
     protected static int crossAbstand = 182;
     protected static int circleAbstand = 179;
@@ -32,7 +39,7 @@ public class TicTacToe extends ListenerAdapter {
 
         if (event.getSelectMenu().getCustomId().equals("minigames.tictatoe")) {
             int number = Integer.parseInt(event.getValues().get(0));
-            TicTacToeGame game = TicTacToeGame.getFromMongoDB(event.getChannel().asThreadChannel());
+            TicTacToeGame game = ticTacToeGameManager.getFromMongoDB(event.getChannel().asThreadChannel());
             if (!checkEnd(game)) {
                 if (game.getMemberTurn().equals(event.getMember())) {
                     if (game.getFields().containsKey(number)) {
@@ -70,7 +77,7 @@ public class TicTacToe extends ListenerAdapter {
                             t.schedule(new TimerTask() {
                                 @Override
                                 public void run() {
-                                    game.removeFromMongoDB();
+                                    ticTacToeGameManager.removeFromMongoDB(game);
                                     event.getChannel().delete().queue();
                                 }
                             }, 30000);
@@ -90,10 +97,10 @@ public class TicTacToe extends ListenerAdapter {
         }
     }
 
-    public static void startGame(Member player1, Member player2, ThreadChannel channel) {
+    public void startGame(Member player1, Member player2, ThreadChannel channel) {
         List<Message> messages = channel.getHistory().getRetrievedHistory();
         channel.purgeMessages(messages);
-        File file = new File(Roonie.PATH + File.separator + "media" + File.separator + "tictactoe" + File.separator + "tictactoe_empty.png");
+        File file = new File(properties.getPath() + File.separator + "media" + File.separator + "tictactoe" + File.separator + "tictactoe_empty.png");
 
         channel.sendTyping().queue();
         channel.sendFiles(FileUpload.fromData(file)).setComponents(ActionRow.of(StringSelectMenu.create("minigames.tictatoe")
@@ -111,7 +118,7 @@ public class TicTacToe extends ListenerAdapter {
     }
 
     public String getSymbol(Member member) {
-        TicTacToeGame game = TicTacToeGame.getFromMember(member);
+        TicTacToeGame game = ticTacToeGameManager.getFromMember(member);
         if (member.equals(game.getPlayer1())) {
             return "cross";
         } else if (member.equals(game.getPlayer2())) {
@@ -122,7 +129,7 @@ public class TicTacToe extends ListenerAdapter {
 
     public Message setField(Member member, Integer number) {
 
-        TicTacToeGame game = TicTacToeGame.getFromMember(member);
+        TicTacToeGame game = ticTacToeGameManager.getFromMember(member);
         game.switchTurn();
         game.getFields().put(number, getSymbol(member));
 
@@ -131,9 +138,9 @@ public class TicTacToe extends ListenerAdapter {
         BufferedImage circle = null;
 
         try {
-            backgroundImage = ImageIO.read(new File(Roonie.PATH + File.separator + "media" + File.separator + "tictactoe" + File.separator + "tictactoe_empty.png"));
-            cross = ImageIO.read(new File(Roonie.PATH + File.separator + "media" + File.separator + "tictactoe" + File.separator + "tictactoe_cross.png"));
-            circle = ImageIO.read(new File(Roonie.PATH + File.separator + "media" + File.separator + "tictactoe" + File.separator + "tictactoe_circle.png"));
+            backgroundImage = ImageIO.read(new File(properties.getPath() + File.separator + "media" + File.separator + "tictactoe" + File.separator + "tictactoe_empty.png"));
+            cross = ImageIO.read(new File(properties.getPath() + File.separator + "media" + File.separator + "tictactoe" + File.separator + "tictactoe_cross.png"));
+            circle = ImageIO.read(new File(properties.getPath() + File.separator + "media" + File.separator + "tictactoe" + File.separator + "tictactoe_circle.png"));
         } catch (IOException exception) {
             exception.printStackTrace();
         }
@@ -184,12 +191,12 @@ public class TicTacToe extends ListenerAdapter {
         g.dispose();
 
         try {
-            ImageIO.write(backgroundImage, "png", new File(Roonie.PATH + File.separator + "media" + File.separator + "cache" + File.separator + "tictactoe.png"));
+            ImageIO.write(backgroundImage, "png", new File(properties.getPath() + File.separator + "media" + File.separator + "cache" + File.separator + "tictactoe.png"));
         } catch (IOException exception) {
             exception.printStackTrace();
         }
 
-        File tempFile = new File(Roonie.PATH + File.separator + "media" + File.separator + "cache" + File.separator + "tictactoe.png");
+        File tempFile = new File(properties.getPath() + File.separator + "media" + File.separator + "cache" + File.separator + "tictactoe.png");
         ThreadChannel channel = game.getChannel();
 
         Member current = game.getMemberTurn();
@@ -212,7 +219,7 @@ public class TicTacToe extends ListenerAdapter {
 
         String symbol = getSymbol(member);
         game.getFields().put(number, symbol);
-        game.insertToMongoDB();
+        ticTacToeGameManager.insertToMongoDB(game);
         return message;
     }
 
@@ -243,7 +250,7 @@ public class TicTacToe extends ListenerAdapter {
 
         if (checker) {
             game.setStatus("ending");
-            game.insertToMongoDB();
+            ticTacToeGameManager.insertToMongoDB(game);
         }
         return checker;
     }

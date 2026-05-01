@@ -1,18 +1,24 @@
 package de.splayfer.roonie.modules.response;
 
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.springframework.stereotype.Component;
 
+@Component
+@RequiredArgsConstructor
 public class ResponseListener extends ListenerAdapter {
+
+    private final ResponseManager responseManager;
 
     public void onMessageReceived(MessageReceivedEvent event) {
         if (!event.getAuthor().isBot()) {
             String message = event.getMessage().getContentStripped().trim();
-            if (Response.existsResponse(message)) {
-                Response response = Response.getResponse(message);
+            if (responseManager.existsResponse(message)) {
+                Response response = responseManager.getResponse(message);
                 switch (response.getType()) {
                     case "msg":
                     case "pic":

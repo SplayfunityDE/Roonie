@@ -4,7 +4,9 @@ import de.splayfer.roonie.utils.DefaultMessage;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BannerCommand extends ListenerAdapter {
 
     public void onSlashCommandInteraction (SlashCommandInteractionEvent event) {

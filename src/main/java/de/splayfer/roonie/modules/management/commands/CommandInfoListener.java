@@ -5,7 +5,9 @@ import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CommandInfoListener extends ListenerAdapter {
 
     public void onStringSelectInteraction (StringSelectInteractionEvent selectionMenuEvent) {

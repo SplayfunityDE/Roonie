@@ -9,9 +9,11 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+@Component
 public class DailyCommand extends ListenerAdapter {
 
     protected static List<Member> coolDownList = new ArrayList<>();

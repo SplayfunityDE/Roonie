@@ -1,16 +1,23 @@
 package de.splayfer.roonie.modules.poll;
 
 import de.splayfer.roonie.Roonie;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.springframework.stereotype.Component;
 
+@Component
+@RequiredArgsConstructor
 public class PollEnterListener extends ListenerAdapter {
+
+    private final Roonie roonie;
+    private final PollManager pollManager;
 
     public void onButtonInteraction(ButtonInteractionEvent event) {
         if (event.isFromGuild()) {
-            if (event.getGuild().equals(Roonie.mainGuild)) {
+            if (event.getGuild().equals(roonie.getMainGuild())) {
                 if (Poll.isPoll(event.getChannel(), event.getMessage())) {
-                    Poll poll = Poll.getFromMongoBD(event.getChannel(), event.getMessage());
+                    Poll poll = pollManager.getFromMongoBD(event.getChannel(), event.getMessage());
                     if (poll.hasVoted(event.getMember())) {
                         if (poll.hasClicked(event.getMember(), event.getButton().getCustomId()))
                             poll.updateVote(event.getMember(), event.getButton().getCustomId(), VoteAction.UNVOTE);

@@ -1,19 +1,25 @@
 package de.splayfer.roonie.modules.giveaway;
 
 import de.splayfer.roonie.utils.DefaultMessage;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
+@Component
+@RequiredArgsConstructor
 public class GiveawayEnterListener extends ListenerAdapter {
+
+    private final GiveawayManager giveawayManager;
 
     public void onButtonInteraction (ButtonInteractionEvent event) {
         if (Objects.requireNonNull(event.getButton().getCustomId()).equals("giveaway.enter")) {
             if (Giveaway.isGiveaway(event.getMessage())) {
-                Giveaway giveaway = Giveaway.getFromMessage(event.getMessage());
+                Giveaway giveaway = giveawayManager.getFromMessage(event.getMessage());
                 if (giveaway.checkRequirement(event.getMember())) {
                     if (!giveaway.getEntrys().contains(event.getMember().getIdLong())) {
                         giveaway.addEntry(event.getMember());

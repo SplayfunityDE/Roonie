@@ -3,6 +3,7 @@ package de.splayfer.roonie.modules.response;
 import com.vdurmont.emoji.EmojiParser;
 import de.splayfer.roonie.utils.DefaultMessage;
 import de.splayfer.roonie.utils.enums.Embeds;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.label.Label;
@@ -19,13 +20,18 @@ import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionE
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.modals.Modal;
+import org.springframework.stereotype.Component;
 
 import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+@Component
+@RequiredArgsConstructor
 public class ResponseAddCommand extends ListenerAdapter {
+
+    private final ResponseManager responseManager;
 
     HashMap<String, String> commandList = new HashMap<>();
 
@@ -113,7 +119,7 @@ public class ResponseAddCommand extends ListenerAdapter {
 
     public void onModalInteraction (ModalInteractionEvent event) {
         if (event.getModalId().startsWith("response.")) {
-            Response.create(event.getModalId().substring(12), event.getUser(), event.getModalId().substring(9, 12), event.getValue("body").getAsString());
+            responseManager.create(event.getModalId().substring(12), event.getUser(), event.getModalId().substring(9, 12), event.getValue("body").getAsString());
             event.replyEmbeds(DefaultMessage.success("Response erfolgreich hinzugefügt", "Du hast die Repsonse erfolgreich hinzugefügt!", new MessageEmbed.Field("<:text:886623802954498069> Ausgewählter Begriff", event.getModalId().substring(12), true), new MessageEmbed.Field("<:list:1002591375960842300> Reaktionsart", "**`" + event.getModalId().substring(9, 12) + "`**", true))).setEphemeral(true).queue();
         }
     }
@@ -129,7 +135,7 @@ public class ResponseAddCommand extends ListenerAdapter {
                 if (!(emojis.isEmpty() && rawEmotes.isEmpty())) {
                     rawEmotes.forEach(e -> emotes.add(e.getId()));
                     emotes.addAll(emojis);
-                    Response.create(commandList.get(event.getMember().getId()), event.getAuthor(), "reaction", emotes.get(0));
+                    responseManager.create(commandList.get(event.getMember().getId()), event.getAuthor(), "reaction", emotes.get(0));
                     event.getChannel().sendMessageEmbeds(DefaultMessage.success("Response erfolgreich hinzugefügt", "Du hast die Repsonse erfolgreich hinzugefüg!", new MessageEmbed.Field("<:text:886623802954498069> Ausgewählter Begriff", commandList.get(event.getMember().getId()), false))).queue();
                     commandList.remove(event.getMember().getId());
                 }

@@ -1,9 +1,9 @@
 package de.splayfer.roonie.general;
 
 import de.splayfer.roonie.Roonie;
-import de.splayfer.roonie.general.schedule.BotCounter;
 import de.splayfer.roonie.utils.DefaultMessage;
 import de.splayfer.roonie.utils.enums.Channels;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
@@ -11,11 +11,16 @@ import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
+@RequiredArgsConstructor
 public class WelcomeListener extends ListenerAdapter {
+
+    private final Roonie roonie;
 
     public void onGuildMemberJoin (GuildMemberJoinEvent event) {
         if (!event.getUser().isBot()) {
@@ -41,14 +46,13 @@ public class WelcomeListener extends ListenerAdapter {
 
             List<Button> buttons = new ArrayList<>();
             buttons.add(Button.primary("welcome.visit", "Schau dich jetzt um!").withUrl("https://discord.gg/V2Vc5hpRkH").withEmoji(Emoji.fromCustom("chat", Long.parseLong("880875728915275786"), true)));
-            buttons.add(Button.secondary("welcome.question", "Stelle eine Frage!").withUrl(Channels.TICKETPANEL.getGuildChannel(Roonie.mainGuild).getJumpUrl()).withEmoji(Emoji.fromFormatted("❓")));
+            buttons.add(Button.secondary("welcome.question", "Stelle eine Frage!").withUrl(Channels.TICKETPANEL.getGuildChannel(roonie.getMainGuild()).getJumpUrl()).withEmoji(Emoji.fromFormatted("❓")));
             buttons.add(Button.success("welcome.features", "Schau dir unsere Features an!").withEmoji(Emoji.fromCustom("level", 909085962934562896L, false)));
             try {
                 event.getUser().openPrivateChannel().complete().sendMessageEmbeds(bannerEmbed.build(), mainEmbed.build()).setComponents(ActionRow.of(buttons)).queue();
             } catch (Exception e) {
             }
-        } else
-            BotCounter.botCounterUpdate();
+        }
     }
 
     public void onButtonInteraction (ButtonInteractionEvent event) {

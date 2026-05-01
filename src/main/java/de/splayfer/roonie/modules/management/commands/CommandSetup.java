@@ -9,8 +9,10 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.springframework.stereotype.Component;
 
-public class SetupCommand extends ListenerAdapter {
+@Component
+public class CommandSetup extends ListenerAdapter {
 
     public static void setup(SlashCommandInteractionEvent event) {
         if (event.isFromGuild()) {

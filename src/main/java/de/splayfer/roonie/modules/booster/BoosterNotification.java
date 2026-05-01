@@ -2,8 +2,10 @@ package de.splayfer.roonie.modules.booster;
 
 import de.splayfer.roonie.Roonie;
 import de.splayfer.roonie.modules.response.Response;
+import de.splayfer.roonie.modules.response.ResponseManager;
 import de.splayfer.roonie.utils.DefaultMessage;
 import de.splayfer.roonie.utils.enums.Embeds;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
@@ -20,14 +22,20 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.modals.Modal;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
+@RequiredArgsConstructor
 public class BoosterNotification extends ListenerAdapter {
 
+    private final Roonie roonie;
+    private final ResponseManager responseManager;
+
     public void onGuildMemberRoleAdd (GuildMemberRoleAddEvent event) {
-        if (event.getGuild().equals(Roonie.mainGuild)) {
+        if (event.getGuild().equals(roonie.getMainGuild())) {
             if (event.getRoles().get(0).equals(event.getGuild().getBoostRole())) {
                 EmbedBuilder message = new EmbedBuilder();
                 message.setColor(0x28346d);
@@ -47,7 +55,7 @@ public class BoosterNotification extends ListenerAdapter {
     }
 
     public void onGuildMemberRoleRemove (GuildMemberRoleRemoveEvent event) {
-        if (event.getGuild().equals(Roonie.mainGuild)) {
+        if (event.getGuild().equals(roonie.getMainGuild())) {
             if (event.getRoles().get(0).equals(event.getGuild().getBoostRole())) {
 
                 EmbedBuilder message = new EmbedBuilder();
@@ -77,8 +85,8 @@ public class BoosterNotification extends ListenerAdapter {
                 case "boost.claim.command.modal":
                     String command = event.getValue("command").getAsString();
                     String reaction = event.getValue("reaction").getAsString();
-                    if (!Response.existsResponse(command)) {
-                        Response.create(command, event.getUser(), "msg", reaction);
+                    if (!responseManager.existsResponse(command)) {
+                        responseManager.create(command, event.getUser(), "msg", reaction);
                         event.replyEmbeds(DefaultMessage.success("Response erfolgreich hinzugefügt", "Du hast die Resposne erfolgreich hinzugefügt!", new MessageEmbed.Field("<:text:886623802954498069> TextCommand", command, true), new MessageEmbed.Field("<:text:886623802954498069> Antwort des Bots", reaction, true))).setEphemeral(true).queue();
                     } else
                         event.replyEmbeds(DefaultMessage.error("Command bereits vergeben", "Der Command " + command + " wurde bereits von einem anderem Nutzer/Teammitglied vergeben!")).setEphemeral(true).queue();
@@ -164,7 +172,7 @@ public class BoosterNotification extends ListenerAdapter {
                     event.replyEmbeds(Embeds.BANNER_BOOSTER_PERKS_THREADS, message.build()).setEphemeral(true).queue();
                     break;
                 case "command":
-                    if (!Response.existsCreator(event.getUser().getIdLong())) {
+                    if (!responseManager.existsCreator(event.getUser().getIdLong())) {
                         message = new EmbedBuilder();
                         message.setColor(0xff73fa);
                         message.setTitle("Richte deinen Command ein");

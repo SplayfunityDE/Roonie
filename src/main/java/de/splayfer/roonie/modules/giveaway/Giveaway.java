@@ -1,23 +1,18 @@
 package de.splayfer.roonie.modules.giveaway;
 
 import de.splayfer.roonie.MongoDBDatabase;
-import de.splayfer.roonie.Roonie;
 import de.splayfer.roonie.modules.level.LevelManager;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
-import org.bson.Document;
 
 import java.util.*;
 
 public class Giveaway {
 
     static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
-
-    private static HashMap<Member, Giveaway> giveaways = new HashMap<>();
 
     @Getter
     @Setter
@@ -79,7 +74,7 @@ public class Giveaway {
 
     public static Giveaway create(Member member) {
         Giveaway giveaway = new Giveaway(null, null, null, null, null, null, null, null);
-        giveaways.put(member, giveaway);
+        GiveawayManager.giveaways.put(member, giveaway);
         return giveaway;
     }
 
@@ -97,59 +92,23 @@ public class Giveaway {
     }
 
     public int getStep() {
-        int step = 1;
-        for (Object t : keySet()) {
-            if (t != null) {
-                step++;
-            } else {
-                break;
-            }
-        }
-        return step;
+        return 0;
     }
 
     public static int getStep(Member member) {
-        return giveaways.get(member).getStep();
+        return GiveawayManager.giveaways.get(member).getStep();
     }
 
     public static Giveaway getFromMember(Member member) {
-        return giveaways.get(member);
+        return GiveawayManager.giveaways.get(member);
     }
 
     public static boolean existsGiveaway(Member member) {
-        return giveaways.containsKey(member);
-    }
-
-    public void insertToMongoDB() {
-        if (entrys == null)
-            entrys = new ArrayList<>();
-        mongoDB.insert("giveaway", new Document()
-                .append("channel", channel.getIdLong())
-                .append("prize", prize)
-                .append("duration", duration)
-                .append("requirement", requirement)
-                .append("amount", amount)
-                .append("picture", picture)
-                .append("message", message.getIdLong())
-                .append("entrys", entrys));
-        for (Member m : giveaways.keySet())
-            if (giveaways.get(m).equals(this))
-                giveaways.remove(m);
-    }
-
-    public void removeFromMongoDB() {
-        mongoDB.drop("giveaway", "message", message.getIdLong());
-        for (Member m : giveaways.keySet())
-            if (giveaways.get(m).equals(Giveaway.getFromMessage(message)))
-                giveaways.remove(m);
+        return GiveawayManager.giveaways.containsKey(member);
     }
 
     public static boolean isGiveaway(Message message) {
         return mongoDB.exists("giveaway", "message", message.getIdLong());
-    }
-
-    public static Giveaway getFromMessage(Message message) {
-        return getFromDocument(Objects.requireNonNull(mongoDB.find("giveaway", "message", message.getIdLong()).first()));
     }
 
     public void addEntry(Member member) {
@@ -160,22 +119,6 @@ public class Giveaway {
     public void removeEntry(Member member) {
         entrys.remove(member.getIdLong());
         mongoDB.updateLine("giveaway", "message", message.getIdLong(), "entrys", entrys);
-    }
-
-    public static List<Giveaway> getAllGiveaways() {
-        List<Giveaway> gwList = new ArrayList<>();
-        mongoDB.findAll("giveaway").forEach(document -> gwList.add(getFromDocument(document)));
-        return gwList;
-    }
-
-    public static Giveaway getFromDocument(Document document) {
-        TextChannel channel = Roonie.mainGuild.getTextChannelById(document.getLong("channel"));
-        assert channel != null;
-        return new Giveaway(channel, document.getString("prize"), document.getLong("duration"), document.getList("requirement", String.class), document.getInteger("amount"), document.getString("picture"), channel.getHistory().getMessageById(document.getLong("message")), document.getList("entrys", Long.class));
-    }
-
-    public static Giveaway findGiveaway(Message message) {
-        return getFromDocument(mongoDB.find("giveaway", new Document("message", message.getIdLong())).first());
     }
 
     public boolean checkRequirement(Member member) {

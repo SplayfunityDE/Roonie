@@ -1,6 +1,8 @@
 package de.splayfer.roonie.modules.library;
 
 import de.splayfer.roonie.Roonie;
+import de.splayfer.roonie.utils.Properties;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.selections.StringSelectMenu;
@@ -10,6 +12,7 @@ import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.utils.FileUpload;
+import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -23,9 +26,11 @@ import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
+@RequiredArgsConstructor
 public class BannerListener extends ListenerAdapter {
 
-    protected File cache = new File(Roonie.PATH + File.separator + "media" + File.separator + "cache");
+    private final Properties properties;
 
     public void onStringSelectInteraction (StringSelectInteractionEvent event) {
         if (event.getSelectMenu().getCustomId().equals("serverbanner")) {
@@ -173,7 +178,7 @@ public class BannerListener extends ListenerAdapter {
 
                                 try {
 
-                                    archive = Font.createFont(Font.TRUETYPE_FONT, new File(Roonie.PATH + File.separator + "media" + File.separator + "fonts" + File.separator + "Archive.otf"));
+                                    archive = Font.createFont(Font.TRUETYPE_FONT, new File(properties.getPath() + File.separator + "media" + File.separator + "fonts" + File.separator + "Archive.otf"));
 
                                 } catch (FontFormatException | IOException e) {
                                     e.printStackTrace();
@@ -191,6 +196,8 @@ public class BannerListener extends ListenerAdapter {
 
                                 g.dispose();
 
+                                File cache = new File(properties.getPath() + File.separator + "media" + File.separator + "cache");
+
                                 try {
 
                                     ImageIO.write(container, "png", new File(cache.getAbsolutePath() + File.separator + "bannerCache.png"));
@@ -199,7 +206,7 @@ public class BannerListener extends ListenerAdapter {
                                 }
                                 File tempFile = new File(cache.getAbsolutePath() + File.separator + "bannerCache.png");
 
-                                Message m = Roonie.shardMan.getTextChannelById("906251556637249547").sendFiles(FileUpload.fromData(tempFile)).complete();
+                                Message m = event.getJDA().getTextChannelById("906251556637249547").sendFiles(FileUpload.fromData(tempFile)).complete();
 
                                 String finalLink = m.getAttachments().get(0).getUrl();
 

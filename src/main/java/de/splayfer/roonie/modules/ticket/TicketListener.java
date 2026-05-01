@@ -1,8 +1,8 @@
 package de.splayfer.roonie.modules.ticket;
 
-import de.splayfer.roonie.Roonie;
 import de.splayfer.roonie.utils.DefaultMessage;
 import de.splayfer.roonie.utils.enums.Roles;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
@@ -20,10 +20,15 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.modals.Modal;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+@Component
+@RequiredArgsConstructor
 public class TicketListener extends ListenerAdapter {
+
+    private final TicketManager ticketManager;
 
     HashMap<Long, Message> messageCache = new HashMap<>();
 
@@ -41,9 +46,9 @@ public class TicketListener extends ListenerAdapter {
                     type = 3;
                     break;
             }
-            Ticket existTicket = Ticket.fromUser(event.getMember());
+            Ticket existTicket = ticketManager.fromUser(event.getMember());
             if (existTicket == null)
-                event.replyEmbeds(DefaultMessage.success("Ticket erfolgreich erstellt", "Dein Ticket wurde erfolgreich in dem Kanal " + Ticket.create(event.getMember(), type).getChannel().getAsMention() + " erstellt!")).setEphemeral(true).queue();
+                event.replyEmbeds(DefaultMessage.success("Ticket erfolgreich erstellt", "Dein Ticket wurde erfolgreich in dem Kanal " + ticketManager.create(event.getMember(), type).getChannel().getAsMention() + " erstellt!")).setEphemeral(true).queue();
             else {
                 if (existTicket.getChannel() != null)
                     event.replyEmbeds(DefaultMessage.error("Ticketlimit erreicht","Du hast bereits ein Ticket in " + existTicket.getChannel().getAsMention() + " erstellt!")).setEphemeral(true).queue();
@@ -59,7 +64,7 @@ public class TicketListener extends ListenerAdapter {
             Ticket ticket;
             switch (event.getButton().getCustomId().split("\\.")[1]) {
                 case "claim":
-                    ticket = Ticket.getFromPost(event.getChannelId());
+                    ticket = ticketManager.getFromPost(event.getChannelId());
                     if (ticket.getSupporter() == null) {
                         ticket.getChannel().addThreadMember(event.getMember()).queue();
                         ticket.setSupporter(event.getMember());
@@ -89,7 +94,7 @@ public class TicketListener extends ListenerAdapter {
                     }
                     break;
                 case "unclaim":
-                    ticket = Ticket.getFromPost(event.getChannelId());
+                    ticket = ticketManager.getFromPost(event.getChannelId());
                     event.getMessage().delete().queue();
                     ticket.setSupporter(null);
                     ticket.updateMongoDB();
@@ -98,14 +103,14 @@ public class TicketListener extends ListenerAdapter {
                     messageCache.remove(event.getMessageIdLong());
                     break;
                 case "close":
-                    ticket = Ticket.getFromChannel(event.getChannelId());
+                    ticket = ticketManager.getFromChannel(event.getChannelId());
                     if (ticket.getSupporter() != null)
                         if (!(event.getMember().equals(ticket.getSupporter()) || event.getMember().hasPermission(Permission.ADMINISTRATOR))) {
                             event.replyEmbeds(DefaultMessage.error("Ticket wird gerade bearbeitet", "Du kannst dieses Ticket nicht schließen, weil es gerade von " + ticket.getSupporter().getAsMention() + " bearbeitet wird!")).setEphemeral(true).queue();
                             return;
                         }
                         else
-                        if (!(Roles.TEAM_EXTENDS.hasAnyRoles(Roonie.mainGuild, event.getMember()) || event.getMember().hasPermission(Permission.ADMINISTRATOR) || event.getMember().equals(ticket.getCreator()))) {
+                        if (!(Roles.TEAM_EXTENDS.hasAnyRoles(event.getGuild(), event.getMember()) || event.getMember().hasPermission(Permission.ADMINISTRATOR) || event.getMember().equals(ticket.getCreator()))) {
                             event.replyEmbeds(DefaultMessage.error("Keine Rechte", "Du besitzt nicht die Berechtigungen, dieses Ticket zu schließen!")).setEphemeral(true).queue();
                             return;
                         }
@@ -124,10 +129,10 @@ public class TicketListener extends ListenerAdapter {
 
     public void onMessageReceived(MessageReceivedEvent event) {
         if (event.getChannel().getId().equals("908795138623537232")) {
-            if (event.getAuthor().getIdLong() == Roonie.shardMan.getSelfUser().getIdLong() && event.getMessage().getEmbeds().isEmpty())
+            if (event.getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong() && event.getMessage().getEmbeds().isEmpty())
                 event.getMessage().delete().queue();
-        } else if (event.getChannel().getType().isThread() && Ticket.getAllTicketsWithId().containsValue(event.getChannel().getId()) && Ticket.getFromChannel(event.getChannel().getId()).getSupporter() == null) {
-            Ticket ticket = Ticket.getFromChannel(event.getChannel().getId());
+        } else if (event.getChannel().getType().isThread() && ticketManager.getAllTicketsWithId().containsValue(event.getChannel().getId()) && ticketManager.getFromChannel(event.getChannel().getId()).getSupporter() == null) {
+            Ticket ticket = ticketManager.getFromChannel(event.getChannel().getId());
             if (event.getMember().equals(ticket.getCreator())) {
                 List<String> list = new ArrayList<>();
                 event.getChannel().getHistory().retrievePast(10).complete().forEach(message -> {
@@ -155,7 +160,7 @@ public class TicketListener extends ListenerAdapter {
                     else
                         reason = "`KEINER`";
                     event.deferEdit().queue();
-                    Ticket.getFromChannel(event.getChannelId()).close(reason);
+                    ticketManager.getFromChannel(event.getChannelId()).close(reason);
                     break;
             }
         }
