@@ -1,9 +1,8 @@
 package de.splayfer.roonie.modules.booster;
 
-import de.splayfer.roonie.Roonie;
-import de.splayfer.roonie.modules.response.Response;
 import de.splayfer.roonie.modules.response.ResponseManager;
 import de.splayfer.roonie.utils.DefaultMessage;
+import de.splayfer.roonie.utils.Properties;
 import de.splayfer.roonie.utils.enums.Embeds;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -24,18 +23,15 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.modals.Modal;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Component
 @RequiredArgsConstructor
 public class BoosterNotification extends ListenerAdapter {
 
-    private final Roonie roonie;
+    private final Properties properties;
     private final ResponseManager responseManager;
 
     public void onGuildMemberRoleAdd (GuildMemberRoleAddEvent event) {
-        if (event.getGuild().equals(roonie.getMainGuild())) {
+        if (event.getGuild().getId().equals(properties.getMainGuild())) {
             if (event.getRoles().get(0).equals(event.getGuild().getBoostRole())) {
                 EmbedBuilder message = new EmbedBuilder();
                 message.setColor(0x28346d);
@@ -55,7 +51,7 @@ public class BoosterNotification extends ListenerAdapter {
     }
 
     public void onGuildMemberRoleRemove (GuildMemberRoleRemoveEvent event) {
-        if (event.getGuild().equals(roonie.getMainGuild())) {
+        if (event.getGuild().getId().equals(properties.getMainGuild())) {
             if (event.getRoles().get(0).equals(event.getGuild().getBoostRole())) {
 
                 EmbedBuilder message = new EmbedBuilder();

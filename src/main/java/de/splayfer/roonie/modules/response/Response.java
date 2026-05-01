@@ -1,10 +1,7 @@
 package de.splayfer.roonie.modules.response;
 
-import de.splayfer.roonie.MongoDBDatabase;
-import de.splayfer.roonie.Roonie;
 import lombok.Getter;
 import lombok.Setter;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import org.bson.Document;
 

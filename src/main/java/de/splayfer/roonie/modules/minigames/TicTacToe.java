@@ -30,10 +30,10 @@ public class TicTacToe extends ListenerAdapter {
 
     private final Properties properties;
     private final TicTacToeGameManager ticTacToeGameManager;
+    private final MinigamesManager minigamesManager;
 
     protected static int crossAbstand = 182;
     protected static int circleAbstand = 179;
-    static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("minigames");
 
     public void onStringSelectInteraction (StringSelectInteractionEvent event) {
 
@@ -56,10 +56,10 @@ public class TicTacToe extends ListenerAdapter {
 
                             Member winner = event.getMember();
 
-                            MinigamesManager.addMatchToMember(game.getPlayer1(), "tictactoe");
-                            MinigamesManager.addMatchToMember(game.getPlayer2(), "tictactoe");
+                            minigamesManager.addMatchToMember(game.getPlayer1(), "tictactoe");
+                            minigamesManager.addMatchToMember(game.getPlayer2(), "tictactoe");
 
-                            MinigamesManager.addWinToMember(winner, "tictactoe");
+                            minigamesManager.addWinToMember(winner, "tictactoe");
 
                             EmbedBuilder mainEmbed = new EmbedBuilder();
                             mainEmbed.setColor(0xffcf55);

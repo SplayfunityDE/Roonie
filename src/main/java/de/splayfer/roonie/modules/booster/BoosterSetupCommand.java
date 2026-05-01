@@ -12,7 +12,7 @@ import java.util.*;
 
 public class BoosterSetupCommand {
 
-    public static void setup(SlashCommandInteractionEvent event) {
+    public static void setup(Config config, SlashCommandInteractionEvent event) {
 
         EmbedBuilder banner = new EmbedBuilder();
         banner.setColor(0x28346d);
@@ -36,6 +36,6 @@ public class BoosterSetupCommand {
         buttons.add(Button.secondary("boostinfo", "Erfahre mehr!").withEmoji(Emoji.fromCustom(event.getJDA().getEmojiById("906135368439570472"))));
 
         Message m = event.getChannel().sendMessageEmbeds(banner.build(), message.build()).setComponents(ActionRow.of(buttons)).complete();
-        Config.setConfigChannel("booster", event.getChannel(), m);
+        config.setConfigChannel("booster", event.getChannel(), m);
     }
 }

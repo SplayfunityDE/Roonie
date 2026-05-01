@@ -3,21 +3,26 @@ package de.splayfer.roonie;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoException;
 import com.mongodb.client.*;
-import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
-import org.bson.BsonDocument;
+import jakarta.annotation.PostConstruct;
 import org.bson.Document;
-import org.bson.conversions.Bson;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class MongoDBDatabase {
 
     private MongoDatabase mongoDatabase;
     private static MongoClient mongoClient;
 
-    public static void connect() {
+    public static MongoDBDatabase getDatabase(String name) {
+        return new MongoDBDatabase(mongoClient.getDatabase(name));
+    }
+
+    @PostConstruct
+    public void connect() {
         try {
             mongoClient = MongoClients.create("mongodb://" + System.getenv("MONGO_USERNAME") + ":" + System.getenv("MONGO_PASSWORD") + "@" + System.getenv("MONGO_HOST"));
             System.out.println("Connected to MongoDB Server");
@@ -31,8 +36,7 @@ public class MongoDBDatabase {
         mongoClient.close();
     }
 
-    public static MongoDBDatabase getDatabase(String name) {
-        return new MongoDBDatabase(mongoClient.getDatabase(name));
+    public MongoDBDatabase() {
     }
 
     public MongoDBDatabase(MongoDatabase mongoDatabase) {

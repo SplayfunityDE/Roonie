@@ -15,7 +15,7 @@ import java.util.*;
 
 public class Poll {
 
-    static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
+    MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
 
     @Getter
     @Setter
@@ -89,10 +89,6 @@ public class Poll {
         Poll poll = new Poll(null, null, null, null);
         PollManager.polls.put(member, poll);
         return poll;
-    }
-
-    public static boolean isPoll(MessageChannel channel, Message message) {
-        return mongoDB.exists("poll", new Document().append("channel", channel.getIdLong()).append("message", message.getIdLong()));
     }
 
     public boolean hasClicked(Member member, String buttonId) {

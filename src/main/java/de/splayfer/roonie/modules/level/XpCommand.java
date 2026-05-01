@@ -1,5 +1,6 @@
 package de.splayfer.roonie.modules.level;
 
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
@@ -13,7 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class XpCommand extends ListenerAdapter {
+
+    private final LevelManager levelManager;
 
     public void onSlashCommandInteraction (SlashCommandInteractionEvent event) {
 
@@ -22,24 +26,24 @@ public class XpCommand extends ListenerAdapter {
             int amount = event.getOption("anzahl").getAsInt();
             EmbedBuilder bb = new EmbedBuilder();
             EmbedBuilder mb = new EmbedBuilder();
-            int oldxp = LevelManager.getXp(member);
+            int oldxp = levelManager.getXp(member);
             switch (event.getSubcommandName()) {
                 case "add":
-                    LevelManager.addXpToUser(member, amount);
+                    levelManager.addXpToUser(member, amount);
                     mb.setTitle(":white_check_mark: **XP ERFOLGREICH HINZUGEFÜGT!**");
                     mb.setDescription("> Es wurden erfolgreich **`" + amount + "`** Xp hinzugefügt!");
                     mb.addField("<:verify:1003352830758899742> Hinzugefügt", "**" + amount + "**", true);
-                    mb.addField("<:sparkles:1003352451455402005> Insgesamt", "**" + LevelManager.getXp(member) + "**", true);
+                    mb.addField("<:sparkles:1003352451455402005> Insgesamt", "**" + levelManager.getXp(member) + "**", true);
                     break;
                 case "remove":
-                    LevelManager.removeXpFromUser(member, amount);
+                    levelManager.removeXpFromUser(member, amount);
                     mb.setTitle(":white_check_mark: **xp ERFOLGREICH ENTFERNT!**");
                     mb.setDescription("> Es wurden erfolgreich **`" + amount + "`** Xp entfernt!");
                     mb.addField("<:cross:1003357371449487440> Entfernt", "**" + amount + "**", true);
-                    mb.addField("<:sparkles:1003352451455402005> Insgesamt", "**" + LevelManager.getXp(member) + "**", true);
+                    mb.addField("<:sparkles:1003352451455402005> Insgesamt", "**" + levelManager.getXp(member) + "**", true);
                     break;
                 case "set":
-                    LevelManager.setXp(member, amount);
+                    levelManager.setXp(member, amount);
                     mb.setTitle(":white_check_mark: **XP ERFOLGREICH GESETZT!**");
                     mb.setDescription("> Die Xp wurden erfolgreich auf **`" + amount + "`** gesetzt!");
                     mb.addField("<:clock:1003358167251562608> Alte Xp", "**" + oldxp + "**", true);

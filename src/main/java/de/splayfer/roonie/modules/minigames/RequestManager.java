@@ -31,7 +31,7 @@ public class RequestManager extends ListenerAdapter {
     private final TicTacToe ticTacToe;
     private final TicTacToeGameManager ticTacToeGameManager;
 
-    static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("minigames");
+    MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("minigames");
 
     public void sendGameRequest(User user, String id) {
 

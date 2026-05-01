@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -20,10 +21,15 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Component
-@RequiredArgsConstructor
 public class LevelListener extends ListenerAdapter {
 
     private final Roonie roonie;
+    private final LevelManager levelManager;
+
+    public LevelListener(@Lazy  Roonie roonie, LevelManager levelManager) {
+        this.roonie = roonie;
+        this.levelManager = levelManager;
+    }
 
     private static List<Member> messageCoolDown = new ArrayList<>();
 
@@ -53,18 +59,18 @@ public class LevelListener extends ListenerAdapter {
 
                 Member member = event.getMember();
 
-                int level = LevelManager.getLevel(member);
-                int xp = LevelManager.getXp(member);
-                LevelManager.addXpToUser(member, xpStep);
+                int level = levelManager.getLevel(member);
+                int xp = levelManager.getXp(member);
+                levelManager.addXpToUser(member, xpStep);
                 xp += xpStep;
-                int levelstep = LevelManager.getLevelStep(level);
+                int levelstep = levelManager.getLevelStep(level);
                 if (xp >= levelstep + 1) {
 
                     //wenn neues level erreicht
                     xp = xp - (levelstep + 1);
 
-                    LevelManager.setXp(member, xp);
-                    LevelManager.addLevelToUser(member, 1);
+                    levelManager.setXp(member, xp);
+                    levelManager.addLevelToUser(member, 1);
 
                     int i = level + 1;
                     if (i >= 5) {
@@ -104,20 +110,20 @@ public class LevelListener extends ListenerAdapter {
         for (Member member: roonie.getMainGuild().getMembers()) {
             if (member.getVoiceState().inAudioChannel() && member.getVoiceState().getChannel().getType().equals(ChannelType.VOICE)) {
                 if (!(member.getVoiceState().isMuted() || member.getVoiceState().isDeafened() || member.getVoiceState().isSelfMuted())) {
-                    int voiceminutes = LevelManager.getXp(member) + 10;
-                    int level = LevelManager.getLevel(member);
+                    int voiceminutes = levelManager.getXp(member) + 10;
+                    int level = levelManager.getLevel(member);
 
                     //wenn neues level erreicht
 
-                    int levelstep = LevelManager.getLevelStep(level);
+                    int levelstep = levelManager.getLevelStep(level);
                     if (voiceminutes >= levelstep + 1) {
                         voiceminutes = voiceminutes - levelstep;
-                        LevelManager.setXp(member, voiceminutes);
-                        LevelManager.addLevelToUser(member, 1);
+                        levelManager.setXp(member, voiceminutes);
+                        levelManager.addLevelToUser(member, 1);
                         member.getVoiceState().getChannel().asVoiceChannel().sendMessage(member.getAsMention()).queue();
                         member.getVoiceState().getChannel().asVoiceChannel().sendMessage(levelUp(member)).queue();
                     } else
-                        LevelManager.addXpToUser(member, 10);
+                        levelManager.addXpToUser(member, 10);
                 }
             }
         }
@@ -128,9 +134,9 @@ public class LevelListener extends ListenerAdapter {
         embedBuilder.setColor(0xfead33);
         embedBuilder.setTitle(":star: Neues Level auf SPLΛYFUNITY erreicht!");
         embedBuilder.setDescription("**GG**! Du hast ein neues Level erreicht!\n" +
-                "<:name:878587314367000606> Neues Level: " + LevelManager.getLevel(member));
+                "<:name:878587314367000606> Neues Level: " + levelManager.getLevel(member));
         Guild guild = roonie.getMainGuild();
-        switch (LevelManager.getLevel(member)) {
+        switch (levelManager.getLevel(member)) {
             case 5:
                 guild.getManager().getGuild().addRoleToMember(member.getUser(), Roles.LVL5.getRole(guild)).queue();
                 embedBuilder.addField("Neue Vorteile", Roles.LVL5.getRole(guild).getAsMention() + " = `Level 5`\n" +

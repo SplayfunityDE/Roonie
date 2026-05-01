@@ -1,13 +1,17 @@
 package de.splayfer.roonie.modules.library;
 
 import de.splayfer.roonie.utils.DefaultMessage;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class TemplateCommand extends ListenerAdapter {
+
+    private final LibraryManager libraryManager;
 
     public void onSlashCommandInteraction (SlashCommandInteractionEvent event) {
 
@@ -17,15 +21,15 @@ public class TemplateCommand extends ListenerAdapter {
                 switch (event.getSubcommandName()) {
                     case "add":
                         String category = event.getOption("category").getAsString();
-                        if (!LibraryManager.existsTemplate(link)) {
-                            LibraryManager.addTemplate(category, link);
+                        if (!libraryManager.existsTemplate(link)) {
+                            libraryManager.addTemplate(category, link);
                             event.replyEmbeds(DefaultMessage.success("Server-Vorlage erfolgreich hinzugefügt!", "Die angegebene Server-Vorlage wurde erfolgerich in die Bibliothek hinzugefügt!", new MessageEmbed.Field("Details", ":link: Vorlage: `" + link + "`\n \uD83D\uDCC1 Kategorie: `" + category + "`", false))).setEphemeral(true).queue();
                         } else
                             event.replyEmbeds(DefaultMessage.error("Server-Vorlage existiert bereits", "Es scheint als wurde die angegebene Server-Vorlage bereits zuvor hinzugefügt...")).setEphemeral(true).queue();
                         break;
                     case "remove":
-                        if (LibraryManager.existsTemplate(link)) {
-                            LibraryManager.removeTemplate(link);
+                        if (libraryManager.existsTemplate(link)) {
+                            libraryManager.removeTemplate(link);
                             event.replyEmbeds(DefaultMessage.success("Server-Vorlage erfolgreich entfernt!", "Die angegebene Server-Vorlage wurde erfolgreich aus der Bibliothek entfernt!", new MessageEmbed.Field("Details", ":link: Vorlage: `" + link + "`", false))).setEphemeral(true).queue();
                         } else
                             event.replyEmbeds(DefaultMessage.error("Server-Vorlage nicht gefunden", "Es scheint als existiert die angegebene Server-Vorlage nicht :(")).setEphemeral(true).queue();

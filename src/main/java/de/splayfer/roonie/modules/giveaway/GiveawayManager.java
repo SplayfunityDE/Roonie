@@ -2,6 +2,7 @@ package de.splayfer.roonie.modules.giveaway;
 
 import de.splayfer.roonie.MongoDBDatabase;
 import de.splayfer.roonie.Roonie;
+import de.splayfer.roonie.modules.level.LevelManager;
 import de.splayfer.roonie.utils.SlashCommandManager;
 import de.splayfer.roonie.utils.enums.Guilds;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,8 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import org.bson.Document;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -28,14 +31,20 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Component
-@RequiredArgsConstructor
+@DependsOn({"mongoDBDatabase"})
 public class GiveawayManager implements SlashCommandManager {
 
     private final Roonie roonie;
+    private final LevelManager levelManager;
+    private final MongoDBDatabase mongoDB;
+
+    public GiveawayManager(@Lazy Roonie roonie, LevelManager levelManager) {
+        this.roonie = roonie;
+        this.levelManager = levelManager;
+        this.mongoDB = MongoDBDatabase.getDatabase("splayfunity");
+    }
 
     public static HashMap<Member, Giveaway> giveaways = new HashMap<>();
-
-    static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
 
     @Override
     public SlashCommandData[] slashCommands() {
@@ -90,6 +99,18 @@ public class GiveawayManager implements SlashCommandManager {
         for (Member m : giveaways.keySet())
             if (giveaways.get(m).equals(getFromMessage(giveaway.getMessage())))
                 giveaways.remove(m);
+    }
+
+    public boolean checkRequirement(Giveaway giveaway, Member member) {
+        return switch (giveaway.getRequirement().get(0)) {
+            case "role" -> member.getRoles().contains(member.getGuild().getRoleById(giveaway.getRequirement().get(1)));
+            case "level" -> levelManager.getLevel(member) >= Integer.parseInt(giveaway.getRequirement().get(1));
+            default -> true;
+        };
+    }
+
+    public boolean isGiveaway(Message message) {
+        return mongoDB.exists("giveaway", "message", message.getIdLong());
     }
 
     @Scheduled(initialDelay = 5, fixedDelay = 30, timeUnit = TimeUnit.MINUTES)

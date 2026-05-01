@@ -1,13 +1,17 @@
 package de.splayfer.roonie.modules.library;
 
 import de.splayfer.roonie.utils.DefaultMessage;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class BannerCommand extends ListenerAdapter {
+
+    private final LibraryManager libraryManager;
 
     public void onSlashCommandInteraction (SlashCommandInteractionEvent event) {
 
@@ -17,15 +21,15 @@ public class BannerCommand extends ListenerAdapter {
                 switch (event.getSubcommandName()) {
                     case "add":
                         String category = event.getOption("category").getAsString();
-                        if (!LibraryManager.existsBanner(link)) {
-                            LibraryManager.addBanner(category, link);
+                        if (!libraryManager.existsBanner(link)) {
+                            libraryManager.addBanner(category, link);
                             event.replyEmbeds(DefaultMessage.success("Banner erfolgreich hinzugefügt!", "Der angegeben Banner wurde erfolgerich in die Bibliothek hinzugefügt!", new MessageEmbed.Field("Details", ":link: Banner: `" + link + "`\n \uD83D\uDCC1 Kategorie: `" + category + "`", false))).setEphemeral(true).queue();
                         } else
                             event.replyEmbeds(DefaultMessage.error("Banner existiert bereits", "Es scheint als wurde der angegebene Banner bereits zuvor hinzugefügt...")).setEphemeral(true).queue();
                         break;
                     case "remove":
-                        if (LibraryManager.existsBanner(link)) {
-                            LibraryManager.removeBanner(link);
+                        if (libraryManager.existsBanner(link)) {
+                            libraryManager.removeBanner(link);
                             event.replyEmbeds(DefaultMessage.success("Banner erfolgreich entfernt!", "Der angegeben Banner wurde erfolgreich aus der Bibliothek entfernt!", new MessageEmbed.Field("Details", ":link: Banner: `" + link + "`", false))).setEphemeral(true).queue();
                         } else
                             event.replyEmbeds(DefaultMessage.error("Banner nicht gefunden", "Es scheint als existiert dein angegebener Banner nicht :(")).setEphemeral(true).queue();

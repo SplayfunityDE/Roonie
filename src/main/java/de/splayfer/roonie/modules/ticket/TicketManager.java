@@ -29,7 +29,7 @@ public class TicketManager {
         put(3, "👮‍♂️");
     }};
 
-    static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
+    MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
 
     public Ticket create(Member creator, int type) {
         ThreadChannel threadChannel;

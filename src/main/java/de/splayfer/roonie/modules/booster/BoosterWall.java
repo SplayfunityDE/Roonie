@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.utils.FileUpload;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -29,18 +30,25 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Component
-@RequiredArgsConstructor
 public class BoosterWall extends ListenerAdapter {
 
     private final Roonie roonie;
     private final Properties properties;
     private final ConfigManager configManager;
+    private final Config config;
+
+    public BoosterWall(@Lazy Roonie roonie, Properties properties, ConfigManager configManager, Config config) {
+        this.roonie = roonie;
+        this.properties = properties;
+        this.configManager = configManager;
+        this.config = config;
+    }
 
     protected static BufferedImage background;
 
     @Scheduled(initialDelay = 5, fixedDelay = 30, timeUnit = TimeUnit.MINUTES)
     public void updateBoosterWall() {
-        if (Config.existsConfig("booster")) {
+        if (config.existsConfig("booster")) {
             List<Member> boosterList;
             if (roonie.getMainGuild().getBoosters().size() > 40)
                 boosterList = roonie.getMainGuild().getBoosters().subList(0, 15);
@@ -153,7 +161,7 @@ public class BoosterWall extends ListenerAdapter {
         String picUrl = m.getAttachments().get(0).getUrl();
         m.delete().queueAfter(10, TimeUnit.SECONDS);
          */
-            Message msg = configManager.getConfigChannel("booster").retrieveMessageById(Config.getConfigMessageId("booster")).complete();
+            Message msg = configManager.getConfigChannel("booster").retrieveMessageById(config.getConfigMessageId("booster")).complete();
 
             EmbedBuilder message = new EmbedBuilder();
             message.setColor(0x28346d);

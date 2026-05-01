@@ -18,7 +18,7 @@ public class PlayCommand extends ListenerAdapter {
     private final Roonie roonie;
     private final PlayerManager playerManager;
 
-    static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
+    MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
 
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (event.getName().equals("play")) {

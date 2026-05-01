@@ -1,7 +1,6 @@
 package de.splayfer.roonie.modules.giveaway;
 
 import de.splayfer.roonie.MongoDBDatabase;
-import de.splayfer.roonie.modules.level.LevelManager;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.entities.Member;
@@ -12,7 +11,7 @@ import java.util.*;
 
 public class Giveaway {
 
-    static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
+    MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
 
     @Getter
     @Setter
@@ -107,10 +106,6 @@ public class Giveaway {
         return GiveawayManager.giveaways.containsKey(member);
     }
 
-    public static boolean isGiveaway(Message message) {
-        return mongoDB.exists("giveaway", "message", message.getIdLong());
-    }
-
     public void addEntry(Member member) {
         entrys.add(member.getIdLong());
         mongoDB.updateLine("giveaway", "message", message.getIdLong(), "entrys", entrys);
@@ -119,13 +114,5 @@ public class Giveaway {
     public void removeEntry(Member member) {
         entrys.remove(member.getIdLong());
         mongoDB.updateLine("giveaway", "message", message.getIdLong(), "entrys", entrys);
-    }
-
-    public boolean checkRequirement(Member member) {
-        return switch (requirement.get(0)) {
-            case "role" -> member.getRoles().contains(member.getGuild().getRoleById(requirement.get(1)));
-            case "level" -> LevelManager.getLevel(member) >= Integer.parseInt(requirement.get(1));
-            default -> true;
-        };
     }
 }

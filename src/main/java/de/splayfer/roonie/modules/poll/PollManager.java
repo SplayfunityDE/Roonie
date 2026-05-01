@@ -25,7 +25,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PollManager implements SlashCommandManager {
 
-    private final Roonie roonie;
     MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
 
     public static HashMap<Member, Poll> polls = new HashMap<>();
@@ -60,8 +59,12 @@ public class PollManager implements SlashCommandManager {
 
     public Poll getFromMongoBD(MessageChannel channel, Message message) {
         Document document = mongoDB.find("poll", new Document().append("channel", channel.getIdLong()).append("message", message.getIdLong())).first();
-        MessageChannel msgChannel = (MessageChannel) roonie.getMainGuild().getGuildChannelById(document.getLong("channel"));
+        MessageChannel msgChannel = (MessageChannel) message.getGuild().getGuildChannelById(document.getLong("channel"));
         Message msg = msgChannel.retrieveMessageById(document.getLong("message")).complete();
         return new Poll(msgChannel, document.getString("topic"), document.getString("description"), msg, message.getComponents().get(0).asActionRow().getButtons().toArray(new Button[message.getComponents().get(0).asActionRow().getButtons().size()]));
+    }
+
+    public boolean isPoll(MessageChannel channel, Message message) {
+        return mongoDB.exists("poll", new Document().append("channel", channel.getIdLong()).append("message", message.getIdLong()));
     }
 }

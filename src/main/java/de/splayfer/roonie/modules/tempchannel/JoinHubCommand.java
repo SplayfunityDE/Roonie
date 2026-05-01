@@ -2,6 +2,7 @@
 package de.splayfer.roonie.modules.tempchannel;
 
 import de.splayfer.roonie.utils.DefaultMessage;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
@@ -10,7 +11,10 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class JoinHubCommand extends ListenerAdapter {
+
+    private final TempchannelManager tempchannelManager;
 
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (event.getName().equals("voicehub"))
@@ -18,15 +22,15 @@ public class JoinHubCommand extends ListenerAdapter {
                 VoiceChannel vc = event.getOption("kanal").getAsChannel().asVoiceChannel();
                 switch (event.getSubcommandName()) {
                     case "add":
-                        if (!TempchannelManager.existesJoinHub(vc.getIdLong())) {
-                            TempchannelManager.createJoinHub(vc, event.getMember());
+                        if (!tempchannelManager.existesJoinHub(vc.getIdLong())) {
+                            tempchannelManager.createJoinHub(vc, event.getMember());
                             event.replyEmbeds(DefaultMessage.success("VoiceHub hinzugefügt", "Ein VoiceHub mit den folgenden Details wurde erfolgreich hinzugefügt!", new MessageEmbed.Field("<:channel:1001082478804615238> Kanal", vc.getAsMention(), true))).setEphemeral(true).queue();
                         } else
                             event.replyEmbeds(DefaultMessage.error("VoiceHub existiert bereits", "Der von dir angegebene Kanal ist bereits ein Voicehub!", new MessageEmbed.Field("<:channel:1001082478804615238> Kanal", vc.getAsMention(), true))).setEphemeral(true).queue();
                         break;
                     case "remove":
-                        if (TempchannelManager.existesJoinHub(vc.getIdLong())) {
-                            TempchannelManager.removeJoinHub(vc);
+                        if (tempchannelManager.existesJoinHub(vc.getIdLong())) {
+                            tempchannelManager.removeJoinHub(vc);
                             event.replyEmbeds(DefaultMessage.success2("VoiceHub entfernt", "Ein VoiceHub mit den folgenden Details wurde erfolgreich entfernt!", new MessageEmbed.Field("<:channel:1001082478804615238> Kanal", vc.getAsMention(), true))).setEphemeral(true).queue();
                         } else
                             event.replyEmbeds(DefaultMessage.error("VoiceHub existiert nicht", "Der von dir angegebene Kanal ist noch kein ein Voicehub!", new MessageEmbed.Field("<:channel:1001082478804615238> Kanal", vc.getAsMention(), true))).setEphemeral(true).queue();

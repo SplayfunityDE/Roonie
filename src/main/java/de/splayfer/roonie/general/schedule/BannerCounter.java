@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Icon;
 import net.dv8tion.jda.api.entities.Member;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -22,11 +23,15 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 @Component
-@RequiredArgsConstructor
 public class BannerCounter {
 
     private final Roonie roonie;
     private final Properties properties;
+
+    public BannerCounter(@Lazy Roonie roonie, Properties properties) {
+        this.roonie = roonie;
+        this.properties = properties;
+    }
 
     protected static BufferedImage background;
 

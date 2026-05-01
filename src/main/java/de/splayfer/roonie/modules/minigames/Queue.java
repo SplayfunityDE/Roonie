@@ -12,7 +12,7 @@ public class Queue {
 
     private final TicTacToeGameManager ticTacToeGameManager;
 
-    static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("minigames");
+    MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("minigames");
 
     public boolean checkForGame() {
             for (Document doc : mongoDB.findAll("tictactoe"))

@@ -1,6 +1,7 @@
 package de.splayfer.roonie.modules.economy;
 
 import de.splayfer.roonie.utils.enums.Embeds;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.components.ActionComponent;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
@@ -21,7 +22,10 @@ import java.util.List;
 import java.util.Map;
 
 @Component
+@RequiredArgsConstructor
 public class MoneyCommand extends ListenerAdapter {
+
+    private final EconomyManager economyManager;
 
     private static Button[] buttons = new Button[] {
             Button.secondary("m_overview", Emoji.fromFormatted("<:list:1002591375960842300>")),
@@ -58,7 +62,7 @@ public class MoneyCommand extends ListenerAdapter {
                 other = true;
             }
 
-            int money = EconomyManager.getMoney(target);
+            int money = economyManager.getMoney(target);
 
             //building Embed
 
@@ -87,7 +91,7 @@ public class MoneyCommand extends ListenerAdapter {
 
             Member member = event.getMember();
 
-            Map<Integer, Long> list = EconomyManager.top(5);
+            Map<Integer, Long> list = economyManager.top(5);
 
             EmbedBuilder builder = new EmbedBuilder();
             builder.setColor(0xffcc4d);
@@ -105,7 +109,7 @@ public class MoneyCommand extends ListenerAdapter {
             }
             if (!list.containsValue(member.getIdLong())) {
                 name.append("\n **...** \n \n <:people:1001082477537935501> <@").append(member.getId()).append(">: ");
-                coins.append("\n **...** \n \n **").append(EconomyManager.getMoney(member)).append("**");
+                coins.append("\n **...** \n \n **").append(economyManager.getMoney(member)).append("**");
             }
             builder.addField("Name", name.toString(), true);
             builder.addField("", coins.toString(), true);
@@ -142,8 +146,8 @@ public class MoneyCommand extends ListenerAdapter {
         }
     }
 
-    public static MessageEditData getOverviewEmbed(Member m, boolean other) {
-        int money = EconomyManager.getMoney(m);
+    public MessageEditData getOverviewEmbed(Member m, boolean other) {
+        int money = economyManager.getMoney(m);
 
         MessageEditBuilder mb = new MessageEditBuilder();
 
@@ -168,8 +172,8 @@ public class MoneyCommand extends ListenerAdapter {
         return mb.build();
     }
 
-    public static MessageEditData getLeaderboardEmbed(Member m) {
-        Map<Integer, Long> list = EconomyManager.top(5);
+    public MessageEditData getLeaderboardEmbed(Member m) {
+        Map<Integer, Long> list = economyManager.top(5);
 
         MessageEditBuilder mb = new MessageEditBuilder();
         EmbedBuilder builder = new EmbedBuilder();
@@ -190,7 +194,7 @@ public class MoneyCommand extends ListenerAdapter {
 
         if (!list.containsValue(m.getIdLong())) {
             name.append("\n **...** \n \n <:people:1001082477537935501> <@").append(m.getId()).append(">: ");
-            coins.append("\n **...** \n \n **").append(EconomyManager.getMoney(m)).append("**");
+            coins.append("\n **...** \n \n **").append(economyManager.getMoney(m)).append("**");
         }
         builder.addField("Name", name.toString(), true);
         builder.addField("", coins.toString(), true);

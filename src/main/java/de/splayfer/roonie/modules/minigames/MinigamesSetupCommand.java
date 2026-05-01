@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MinigamesSetupCommand extends ListenerAdapter {
 
-    public static void setup(SlashCommandInteractionEvent event) {
+    public static void setup(Config config, SlashCommandInteractionEvent event) {
         EmbedBuilder mainEmbed = new EmbedBuilder();
         mainEmbed.setColor(0x28346d);
         mainEmbed.setThumbnail("https://cdn.discordapp.com/attachments/906251556637249547/937036898151583794/1f3b3.png");
@@ -28,6 +28,6 @@ public class MinigamesSetupCommand extends ListenerAdapter {
                 .addOption("Statistiken ansehen", "stats", "Schau dir deine aktuellen Statistiken an", Emoji.fromCustom("stats", Long.parseLong("937041708967927818"), false))
                 .build();
         event.getChannel().sendMessageEmbeds(Embeds.BANNER_MINIGAME, mainEmbed.build()).setComponents(ActionRow.of(test)).complete();
-        Config.setConfigChannel("minigames", event.getChannel());
+        config.setConfigChannel("minigames", event.getChannel());
     }
 }

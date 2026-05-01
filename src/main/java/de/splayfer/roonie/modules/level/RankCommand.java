@@ -24,6 +24,7 @@ import java.text.AttributedString;
 public class RankCommand extends ListenerAdapter {
 
     private final Properties properties;
+    private final LevelManager levelManager;
 
     protected BufferedImage backgroundImage;
     protected BufferedImage profileImage;
@@ -68,8 +69,8 @@ public class RankCommand extends ListenerAdapter {
                 exception.printStackTrace();
             }
 
-            int level = LevelManager.getLevel(member);
-            int xp = LevelManager.getXp(member);
+            int level = levelManager.getLevel(member);
+            int xp = levelManager.getXp(member);
 
             //creating level txt
 
@@ -95,13 +96,13 @@ public class RankCommand extends ListenerAdapter {
 
             //creating xpbar info
 
-            AttributedString xpbarinfo = new AttributedString(xp + " / " + LevelManager.getLevelStep(level + 1) + "XP");
+            AttributedString xpbarinfo = new AttributedString(xp + " / " + levelManager.getLevelStep(level + 1) + "XP");
             xpbarinfo.addAttribute(TextAttribute.FONT, leagueGothic.deriveFont(35f));
             xpbarinfo.addAttribute(TextAttribute.SIZE, 30);
 
             //set xp bar
 
-            int xpziel = LevelManager.getLevelStep(level + 1);
+            int xpziel = levelManager.getLevelStep(level + 1);
 
             double step = (double) xpziel / 50;
             double xpcurrent = xp / step;

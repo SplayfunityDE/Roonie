@@ -18,9 +18,9 @@ public class GiveawayEnterListener extends ListenerAdapter {
 
     public void onButtonInteraction (ButtonInteractionEvent event) {
         if (Objects.requireNonNull(event.getButton().getCustomId()).equals("giveaway.enter")) {
-            if (Giveaway.isGiveaway(event.getMessage())) {
+            if (giveawayManager.isGiveaway(event.getMessage())) {
                 Giveaway giveaway = giveawayManager.getFromMessage(event.getMessage());
-                if (giveaway.checkRequirement(event.getMember())) {
+                if (giveawayManager.checkRequirement(giveaway, event.getMember())) {
                     if (!giveaway.getEntrys().contains(event.getMember().getIdLong())) {
                         giveaway.addEntry(event.getMember());
                         event.replyEmbeds(DefaultMessage.success("Erfolgreich teilgenommen!", "Du hast erfolgreich an dem Gewinnspiel teilgenommen!", new MessageEmbed.Field("<a:wettbewerb:898566916958978078> Preis", giveaway.getPrize(), true), new MessageEmbed.Field(":clock10: Endet in", "<t:" + giveaway.getDuration() + ":R>", true))).setEphemeral(true).queue();

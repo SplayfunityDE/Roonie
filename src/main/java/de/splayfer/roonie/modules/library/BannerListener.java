@@ -31,6 +31,7 @@ import java.util.List;
 public class BannerListener extends ListenerAdapter {
 
     private final Properties properties;
+    private final LibraryManager libraryManager;
 
     public void onStringSelectInteraction (StringSelectInteractionEvent event) {
         if (event.getSelectMenu().getCustomId().equals("serverbanner")) {
@@ -139,11 +140,11 @@ public class BannerListener extends ListenerAdapter {
 
                     case "allgemein":
 
-                        if (LibraryManager.existsBannerCategory(s)) {
+                        if (libraryManager.existsBannerCategory(s)) {
 
                             int id = 1;
 
-                            for (String link : LibraryManager.getBannerByCategory(s)) {
+                            for (String link : libraryManager.getBannerByCategory(s)) {
 
                                 show = new EmbedBuilder();
                                 show.setColor(0x2e3036);
@@ -256,7 +257,7 @@ public class BannerListener extends ListenerAdapter {
 
                     case "minecraft":
 
-                        for (String link: LibraryManager.getBannerByCategory(s)) {
+                        for (String link: libraryManager.getBannerByCategory(s)) {
 
                             event.getUser().openPrivateChannel().complete().sendTyping().queue();
                             event.getUser().openPrivateChannel().complete().sendMessage(link).queue();

@@ -2,6 +2,7 @@ package de.splayfer.roonie.modules.economy;
 
 import de.splayfer.roonie.utils.DefaultMessage;
 import de.splayfer.roonie.utils.enums.Embeds;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
@@ -14,7 +15,10 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 @Component
+@RequiredArgsConstructor
 public class DailyCommand extends ListenerAdapter {
+
+    private final EconomyManager economyManager;
 
     protected static List<Member> coolDownList = new ArrayList<>();
 
@@ -27,7 +31,7 @@ public class DailyCommand extends ListenerAdapter {
                 int round = 0;
                 while (round < random)
                     round += 5;
-                int money = EconomyManager.getMoney(event.getMember());
+                int money = economyManager.getMoney(event.getMember());
 
                 EmbedBuilder main = new EmbedBuilder();
                 main.setColor(0x398f3c);
@@ -38,7 +42,7 @@ public class DailyCommand extends ListenerAdapter {
                 main.setImage("https://cdn.discordapp.com/attachments/985551183479463998/986627378417655858/auto_faqw.png");
 
                 //add money
-                EconomyManager.addMoneyToUser(event.getMember(), round);
+                economyManager.addMoneyToUser(event.getMember(), round);
                 event.replyEmbeds(Embeds.BANNER_ECONOMY, main.build()).setEphemeral(true).queue();
             } else
                 event.replyEmbeds(DefaultMessage.error("Noch nicht verfügbar", "Huch. Es scheint als ist dieser Command nur alle 24h verwendbar...")).setEphemeral(true).setComponents(ActionRow.of(Button.secondary("link", "Bruh").withEmoji(Emoji.fromCustom("kekw", 925673040728166470L, false)).withUrl("https://www.youtube.com/watch?v=mKue4WuagL8"))).queue();

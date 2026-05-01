@@ -29,6 +29,7 @@ public class GameSelector extends ListenerAdapter {
     private final TicTacToe ticTacToe;
     private final TicTacToeGameManager ticTacToeGameManager;
     private final Queue queue;
+    private final MinigamesManager minigamesManager;
 
     @Override
     public void onStringSelectInteraction (StringSelectInteractionEvent event) {
@@ -94,8 +95,8 @@ public class GameSelector extends ListenerAdapter {
                     mainEmbed.setThumbnail("https://cdn.discordapp.com/attachments/906251556637249547/938705910438715432/doc.png");
                     mainEmbed.setTitle("Statistiken von " + event.getMember().getEffectiveName());
                     mainEmbed.setDescription("Hier findest du deine persönlichen Statistiken zu den SPLΛYFUNITY Minigames!");
-                    mainEmbed.addField("<:tictactoe:937046989458247692> TicTacToe", "Gespielte Spiele: " + MinigamesManager.getMatches(event.getMember(), "tictactoe") + "\n" +
-                            "Gewonnene Spiele: " + MinigamesManager.getWins(event.getMember(), "tictactoe"), false);
+                    mainEmbed.addField("<:tictactoe:937046989458247692> TicTacToe", "Gespielte Spiele: " + minigamesManager.getMatches(event.getMember(), "tictactoe") + "\n" +
+                            "Gewonnene Spiele: " + minigamesManager.getWins(event.getMember(), "tictactoe"), false);
                     mainEmbed.setImage("https://cdn.discordapp.com/attachments/906251556637249547/925055440436477982/auto_faqw.png");
 
                     event.editSelectMenu(StringSelectMenu.create("minigames.topic")

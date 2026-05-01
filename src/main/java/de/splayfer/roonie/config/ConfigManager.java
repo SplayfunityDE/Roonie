@@ -11,14 +11,19 @@ import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 public class ConfigManager implements SlashCommandManager {
 
     private final Roonie roonie;
-    MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
+    private final MongoDBDatabase mongoDB;
+
+    public ConfigManager(@Lazy Roonie roonie) {
+        this.roonie = roonie;
+        this.mongoDB = MongoDBDatabase.getDatabase("splayfunity");
+    }
 
     @Override
     public SlashCommandData[] slashCommands() {

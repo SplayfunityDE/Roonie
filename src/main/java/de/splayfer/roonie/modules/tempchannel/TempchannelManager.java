@@ -16,17 +16,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class TempchannelManager implements SlashCommandManager {
 
-    static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
+    MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
 
-    public static void createJoinHub(VoiceChannel channel, Member creator) {
+    public void createJoinHub(VoiceChannel channel, Member creator) {
         mongoDB.insert("voicehubs", new Document().append("channel", channel.getIdLong()).append("creator", creator.getIdLong()));
     }
 
-    public static void removeJoinHub(VoiceChannel channel) {
+    public void removeJoinHub(VoiceChannel channel) {
         mongoDB.drop("voicehubs", "channel", channel.getIdLong());
     }
 
-    public static boolean existesJoinHub(long channelId) {
+    public boolean existesJoinHub(long channelId) {
         return mongoDB.exists("voicehubs", "channel", channelId);
     }
 

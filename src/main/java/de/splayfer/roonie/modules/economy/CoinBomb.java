@@ -1,5 +1,6 @@
 package de.splayfer.roonie.modules.economy;
 
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
@@ -14,7 +15,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 @Component
+@RequiredArgsConstructor
 public class CoinBomb extends ListenerAdapter {
+
+    private final EconomyManager economyManager;
 
     private static boolean coinbomb = false;
     private static MessageChannel coinBombchannel = null;
@@ -94,7 +98,7 @@ public class CoinBomb extends ListenerAdapter {
         if (!event.getUser().isBot())
             if (checkCoinBombReaction(event)) {
                 event.getReaction().clearReactions().queue();
-                EconomyManager.addMoneyToUser(event.getMember(), 500);
+                economyManager.addMoneyToUser(event.getMember(), 500);
             }
     }
 }

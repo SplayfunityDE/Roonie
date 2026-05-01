@@ -18,7 +18,7 @@ import java.util.List;
 @Component
 public class LibraryManager implements SlashCommandManager {
 
-    static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
+    MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
 
     @Override
     public SlashCommandData[] slashCommands() {
@@ -42,49 +42,49 @@ public class LibraryManager implements SlashCommandManager {
         };
     }
 
-    public static void addTemplate(String category, String url) {
+    public void addTemplate(String category, String url) {
         mongoDB.insert("templates", new Document()
                 .append("category", category)
                 .append("url", url));
     }
 
-    public static void removeTemplate(String url) {
+    public void removeTemplate(String url) {
         mongoDB.drop("templates", "url", url);
 
     }
 
-    public static List<String> getTemplatesByCategory(String category) {
+    public List<String> getTemplatesByCategory(String category) {
         List<String> list = new ArrayList<>();
         mongoDB.find("templates", "category", category).forEach(document -> list.add(document.getString("url")));
         return list;
     }
 
-    public static boolean existsTemplate(String message) {
+    public boolean existsTemplate(String message) {
         return mongoDB.exists("templates", "url", message);
     }
 
 
-    public static void addBanner(String category, String url) {
+    public void addBanner(String category, String url) {
         mongoDB.insert("banner", new Document()
                 .append("category", category)
                 .append("url", url));
     }
 
-    public static void removeBanner(String url) {
+    public void removeBanner(String url) {
         mongoDB.drop("banner", "url", url);
     }
 
-    public static List<String> getBannerByCategory(String category) {
+    public List<String> getBannerByCategory(String category) {
         List<String> list = new ArrayList<>();
         mongoDB.find("banner", "category", category).forEach(document -> list.add(document.getString("url")));
         return list;
     }
 
-    public static boolean existsBanner(String message) {
+    public boolean existsBanner(String message) {
         return mongoDB.exists("banner", "url", message);
     }
 
-    public static boolean existsBannerCategory (String category) {
+    public boolean existsBannerCategory (String category) {
         return mongoDB.exists("banner", "category", category);
     }
 }

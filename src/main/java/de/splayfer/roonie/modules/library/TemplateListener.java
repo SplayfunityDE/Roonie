@@ -1,6 +1,7 @@
 package de.splayfer.roonie.modules.library;
 
 import de.splayfer.roonie.utils.DefaultMessage;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.selections.SelectOption;
 import net.dv8tion.jda.api.entities.Member;
@@ -18,7 +19,10 @@ import java.util.HashMap;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class TemplateListener extends ListenerAdapter {
+
+    private final LibraryManager libraryManager;
 
     HashMap<String, String> initCategories() {
         return new HashMap<>() {{
@@ -49,7 +53,7 @@ public class TemplateListener extends ListenerAdapter {
 
     private Boolean sendTemplate(SelectOption option, Member target) {
 
-        List<String> templates = LibraryManager.getTemplatesByCategory(option.getValue());
+        List<String> templates = libraryManager.getTemplatesByCategory(option.getValue());
         StringBuilder categoryString = new StringBuilder();
         if (option.getEmoji() != null) {
             if (isCustom(option.getEmoji())) {

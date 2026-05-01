@@ -1,5 +1,6 @@
 package de.splayfer.roonie.modules.tempchannel;
 
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -11,13 +12,16 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class ChannelListener extends ListenerAdapter {
+
+    private final TempchannelManager tempchannelManager;
 
     @Override
     public void onGuildVoiceUpdate(GuildVoiceUpdateEvent event) {
         if (event.getVoiceState().inAudioChannel() && event.getVoiceState().getChannel().getType().equals(ChannelType.VOICE)) {
 
-            if (TempchannelManager.existesJoinHub(event.getChannelJoined().getIdLong())) {
+            if (tempchannelManager.existesJoinHub(event.getChannelJoined().getIdLong())) {
                 createNewChannel(event.getGuild(), event.getMember());
                 return;
             }

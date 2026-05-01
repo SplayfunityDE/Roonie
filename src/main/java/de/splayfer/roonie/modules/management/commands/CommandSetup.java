@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CommandSetup extends ListenerAdapter {
 
-    public static void setup(SlashCommandInteractionEvent event) {
+    public static void setup(Config config, SlashCommandInteractionEvent event) {
         if (event.isFromGuild()) {
 
             EmbedBuilder commandEmbed = new EmbedBuilder();
@@ -36,7 +36,7 @@ public class CommandSetup extends ListenerAdapter {
                     .addOption("Sonstige", "sonstige", "Klicke hier, um diese Commands anzeigen zu lassen!", Emoji.fromFormatted("\uD83D\uDDD2"))
                     .build())).complete();
 
-            Config.setConfigChannel("commands", event.getChannel(), commandMessage);
+            config.setConfigChannel("commands", event.getChannel(), commandMessage);
         }
     }
 }

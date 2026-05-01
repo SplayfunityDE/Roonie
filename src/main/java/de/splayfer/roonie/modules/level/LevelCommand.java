@@ -1,5 +1,6 @@
 package de.splayfer.roonie.modules.level;
 
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
@@ -14,7 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class LevelCommand extends ListenerAdapter {
+
+    private final LevelManager levelManager;
 
     public void onSlashCommandInteraction (SlashCommandInteractionEvent event) {
 
@@ -23,25 +27,25 @@ public class LevelCommand extends ListenerAdapter {
             int amount = event.getOption("anzahl").getAsInt();
             EmbedBuilder bb = new EmbedBuilder();
             EmbedBuilder mb = new EmbedBuilder();
-            int oldvalue = LevelManager.getLevel(member);
+            int oldvalue = levelManager.getLevel(member);
             switch (event.getSubcommandName()) {
 
                 case "add":
-                    LevelManager.addLevelToUser(member, amount);
+                    levelManager.addLevelToUser(member, amount);
                     mb.setTitle(":white_check_mark: **LEVEL ERFOLGREICH HINZUGEFÜGT!**");
                     mb.setDescription("> Es wurden erfolgreich **`" + amount + "`** Level hinzugefügt!");
                     mb.addField("<:verify:1003352830758899742> Hinzugefügt", "**" + amount + "**", true);
-                    mb.addField("<:sparkles:1003352451455402005> Insgesamt", "**" + LevelManager.getLevel(member) + "**", true);
+                    mb.addField("<:sparkles:1003352451455402005> Insgesamt", "**" + levelManager.getLevel(member) + "**", true);
                     break;
                 case "remove":
-                    LevelManager.removeLevelFromUser(member, amount);
+                    levelManager.removeLevelFromUser(member, amount);
                     mb.setTitle(":white_check_mark: **LEVEL ERFOLGREICH ENTFERNT!**");
                     mb.setDescription("> Es wurden erfolgreich **`" + amount + "`** Level entfernt!");
                     mb.addField("<:cross:1003357371449487440> Entfernt", "**" + amount + "**", true);
-                    mb.addField("<:sparkles:1003352451455402005> Insgesamt", "**" + LevelManager.getLevel(member) + "**", true);
+                    mb.addField("<:sparkles:1003352451455402005> Insgesamt", "**" + levelManager.getLevel(member) + "**", true);
                     break;
                 case "set":
-                    LevelManager.setLevel(member, amount);
+                    levelManager.setLevel(member, amount);
                     mb.setTitle(":white_check_mark: **LEVEL ERFOLGREICH GESETZT!**");
                     mb.setDescription("> Die Level wurden erfolgreich auf **`" + amount + "`** gesetzt!");
                     mb.addField("<:clock:1003358167251562608> Alte Level", "**" + oldvalue + "**", true);
@@ -79,15 +83,15 @@ public class LevelCommand extends ListenerAdapter {
 
             switch (args[1]) {
                 case "add":
-                    LevelManager.removeLevelFromUser(member, amount);
+                    levelManager.removeLevelFromUser(member, amount);
                     mb.setDescription("> Die von dir hinzugefügten Level (" + amount + ") wurde erfolgreich wieder entfernt!");
                     break;
                 case "remove":
-                    LevelManager.addLevelToUser(member, amount);
+                    levelManager.addLevelToUser(member, amount);
                     mb.setDescription("> Die von dir entfernten Level (" + amount + ") wurde erfolgreich wieder hinzugefügt!");
                     break;
                 case "set":
-                    LevelManager.setLevel(member, Integer.parseInt(args[4]));
+                    levelManager.setLevel(member, Integer.parseInt(args[4]));
                     mb.setDescription("> Die von dir gesetzten Level (" + amount + ") wurde erfolgreich wieder auf **`" + Integer.parseInt(args[4]) + "`** zurückgesetzt!");
                     break;
             }

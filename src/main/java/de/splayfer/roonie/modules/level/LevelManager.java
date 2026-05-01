@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LevelManager extends ListenerAdapter implements SlashCommandManager {
 
-    static MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
+    MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
 
     @Override
     public SlashCommandData[] slashCommands() {
@@ -50,7 +50,7 @@ public class LevelManager extends ListenerAdapter implements SlashCommandManager
         };
     }
 
-    public static void addXpToUser(Member member, int amount) {
+    public void addXpToUser(Member member, int amount) {
         insertUser(member);
         while (amount >= getLevelStep(getLevel(member))) {
             amount -= getLevelStep(getLevel(member));
@@ -59,52 +59,52 @@ public class LevelManager extends ListenerAdapter implements SlashCommandManager
         mongoDB.updateLine("level", new Document("guildMember", member.getIdLong()), "xp", getXp(member) + amount);
     }
 
-    public static void removeXpFromUser(Member member, int amount) {
+    public void removeXpFromUser(Member member, int amount) {
         insertUser(member);
         if (amount > getXp(member))
             amount = getXp(member);
         mongoDB.updateLine("level", new Document("guildMember", member.getIdLong()), "xp", getXp(member) - amount);
     }
 
-    public static void setXp(Member member, int amount) {
+    public void setXp(Member member, int amount) {
         insertUser(member);
         mongoDB.updateLine("level", new Document("guildMember", member.getIdLong()), "xp", amount);
     }
 
-    public static void addLevelToUser(Member member, int amount) {
+    public void addLevelToUser(Member member, int amount) {
         insertUser(member);
         mongoDB.updateLine("level", new Document("guildMember", member.getIdLong()), "level", getLevel(member) + amount);
     }
 
-    public static void removeLevelFromUser(Member member, int amount) {
+    public void removeLevelFromUser(Member member, int amount) {
         insertUser(member);
         if (amount > getLevel(member))
             amount = getLevel(member);
         mongoDB.updateLine("level", new Document("guildMember", member.getIdLong()), "level", getLevel(member) - amount);
     }
 
-    public static void setLevel(Member member, int amount) {
+    public void setLevel(Member member, int amount) {
         insertUser(member);
         mongoDB.updateLine("level", new Document("guildMember", member.getIdLong()), "level", amount);
     }
 
-    public static int getLevel(Member member) {
+    public int getLevel(Member member) {
         if (existsUser(member))
             return mongoDB.find("level", "guildMember", member.getIdLong()).first().getInteger("level");
         else
             return 0;
     }
 
-    public static int getXp(Member member) {
+    public int getXp(Member member) {
         insertUser(member);
         return mongoDB.find("level", "guildMember", member.getIdLong()).first().getInteger("xp");
     }
 
-    public static boolean existsUser(Member member){
+    public boolean existsUser(Member member){
         return mongoDB.exists("level", "guildMember", member.getIdLong());
     }
 
-    public static void insertUser(Member member) {
+    public void insertUser(Member member) {
         if (!existsUser(member))
             mongoDB.insert("level", new Document()
                     .append("guildMember", member.getIdLong())
@@ -112,7 +112,7 @@ public class LevelManager extends ListenerAdapter implements SlashCommandManager
                     .append("xp", 0));
     }
 
-    public static int getLevelStep(int level) {
+    public int getLevelStep(int level) {
         return mongoDB.find("levelsteps", "level", level).first().getInteger("xp");
     }
 }

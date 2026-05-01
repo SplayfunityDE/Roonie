@@ -4,14 +4,6 @@ import club.minnced.discord.jdave.interop.JDaveSessionFactory;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
-import de.splayfer.roonie.general.schedule.BannerCounter;
-import de.splayfer.roonie.general.schedule.BotCounter;
-import de.splayfer.roonie.general.schedule.MessageCounter;
-import de.splayfer.roonie.modules.booster.BoosterWall;
-import de.splayfer.roonie.modules.giveaway.GiveawayManager;
-import de.splayfer.roonie.modules.level.LevelListener;
-import de.splayfer.roonie.modules.management.commands.AutoDeleteListener;
-import de.splayfer.roonie.modules.ticket.TicketRestoreListener;
 import de.splayfer.roonie.utils.Properties;
 import de.splayfer.roonie.utils.SlashCommandManager;
 import dev.lavalink.youtube.YoutubeAudioSourceManager;
@@ -42,9 +34,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -84,7 +73,6 @@ public class Roonie {
     @PostConstruct
     public void startJDA() throws IOException, InterruptedException {
 
-        MongoDBDatabase.connect();
         builder = JDABuilder.createDefault(properties.getToken())
                 .setActivity(Activity.streaming("🌀SPLΛYFUNITY🌀", "https://twitch.tv/splayfer"))
                 .setStatus(OnlineStatus.ONLINE)
