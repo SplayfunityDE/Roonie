@@ -12,7 +12,7 @@ public class MessageCounter {
 
     protected static TextChannel mainChat;
 
-    @Scheduled(initialDelay = 5, fixedRate = 30, timeUnit = TimeUnit.MINUTES)
+    @Scheduled(initialDelay = 1, fixedRate = 30, timeUnit = TimeUnit.MINUTES)
     public void chatCounterUpdate() {
         CompletableFuture.supplyAsync(() -> mainChat.getHistory().getRetrievedHistory().size()).thenAccept(count -> {
             mainChat.getManager().setTopic("Öffentlicher <a:chat:879356542791598160> Chat von SPLΛYFUNITY. Aktuell gesendete Nachrichten: ** " + count + "**").queue();

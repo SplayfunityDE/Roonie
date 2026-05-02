@@ -9,20 +9,25 @@ import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.managers.AudioManager;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 public class PlayCommand extends ListenerAdapter {
 
     private final Roonie roonie;
     private final PlayerManager playerManager;
+    private final MongoDBDatabase mongoDB;
 
-    MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
+    public PlayCommand(@Lazy Roonie roonie, PlayerManager playerManager) {
+        this.roonie = roonie;
+        this.playerManager = playerManager;
+        this.mongoDB = MongoDBDatabase.getDatabase("splayfunity");
+    }
 
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (event.getName().equals("play")) {
-            if (event.getMember().getVoiceState().inAudioChannel() && !roonie.getMainGuild().getAudioManager().isConnected()) {
+            if (event.getMember().getVoiceState().inAudioChannel() && !event.getGuild().getAudioManager().isConnected()) {
                 if (!mongoDB.find("config", "identifier", "radio").first().getLong("channel").equals(event.getChannelIdLong())) {
                     MusicController controller = playerManager.getController(event.getGuild().getIdLong());
                     AudioManager manager = event.getGuild().getAudioManager();

@@ -46,7 +46,7 @@ public class BoosterWall extends ListenerAdapter {
 
     protected static BufferedImage background;
 
-    @Scheduled(initialDelay = 5, fixedDelay = 30, timeUnit = TimeUnit.MINUTES)
+    @Scheduled(initialDelay = 1, fixedDelay = 30, timeUnit = TimeUnit.MINUTES)
     public void updateBoosterWall() {
         if (config.existsConfig("booster")) {
             List<Member> boosterList;

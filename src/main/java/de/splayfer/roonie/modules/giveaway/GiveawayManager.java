@@ -113,7 +113,7 @@ public class GiveawayManager implements SlashCommandManager {
         return mongoDB.exists("giveaway", "message", message.getIdLong());
     }
 
-    @Scheduled(initialDelay = 5, fixedDelay = 30, timeUnit = TimeUnit.MINUTES)
+    @Scheduled(initialDelay = 1, fixedDelay = 30, timeUnit = TimeUnit.MINUTES)
     public void checkGiveaways() {
         for (Giveaway giveaway : getAllGiveaways()) {
             if (LocalDateTime.now().isAfter(LocalDateTime.ofEpochSecond(giveaway.getDuration(), 0, ZoneOffset.UTC))) {

@@ -13,16 +13,19 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import org.bson.Document;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 public class ResponseManager implements SlashCommandManager {
 
     private final Roonie roonie;
+    private final MongoDBDatabase mongoDB;
 
-    MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("splayfunity");
-
+    public ResponseManager(@Lazy Roonie roonie) {
+        this.roonie = roonie;
+        this.mongoDB = MongoDBDatabase.getDatabase("splayfunity");
+    }
     @Override
     public SlashCommandData[] slashCommands() {
         return new SlashCommandData[]{

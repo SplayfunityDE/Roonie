@@ -4,14 +4,19 @@ import de.splayfer.roonie.Roonie;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 public class LeaveListener extends ListenerAdapter {
 
     private final Roonie roonie;
     private final PlayerManager playerManager;
+
+    public LeaveListener(@Lazy Roonie roonie, PlayerManager playerManager) {
+        this.roonie = roonie;
+        this.playerManager = playerManager;
+    }
 
     @Override
     public void onGuildVoiceUpdate(GuildVoiceUpdateEvent event) {

@@ -1,6 +1,7 @@
 package de.splayfer.roonie.modules.music;
 
 import de.splayfer.roonie.Roonie;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,7 +13,7 @@ public class PlayerManager {
 
     public ConcurrentHashMap<Long, MusicController> controller;
 
-    public PlayerManager(Roonie roonie) {
+    public PlayerManager(@Lazy Roonie roonie) {
         this.controller = new ConcurrentHashMap<>();
         this.roonie = roonie;
     }

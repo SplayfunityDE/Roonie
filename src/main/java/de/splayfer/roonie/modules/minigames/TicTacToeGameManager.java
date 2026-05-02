@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import org.bson.Document;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -15,11 +16,15 @@ import java.util.HashMap;
 import java.util.List;
 
 @Component
-@RequiredArgsConstructor
 public class TicTacToeGameManager {
 
     private final Roonie roonie;
-    MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("minigames");
+    private final MongoDBDatabase mongoDB;
+
+    public TicTacToeGameManager(@Lazy Roonie roonie) {
+        this.roonie = roonie;
+        this.mongoDB = MongoDBDatabase.getDatabase("minigames");
+    }
 
     public TicTacToeGame getFromDocument(Document document) {
         HashMap<Integer, String> map = new HashMap<>();

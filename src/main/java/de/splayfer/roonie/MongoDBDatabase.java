@@ -6,13 +6,22 @@ import com.mongodb.client.*;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import org.bson.Document;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class MongoDBDatabase {
+
+    @Value("${mongo.host}")
+    private String mongo_host;
+    @Value("${mongo.username}")
+    private String mongo_username;
+    @Value("${mongo.password}")
+    private String mongo_password;
 
     private MongoDatabase mongoDatabase;
     private static MongoClient mongoClient;
@@ -24,15 +33,15 @@ public class MongoDBDatabase {
     @PostConstruct
     public void connect() {
         try {
-            mongoClient = MongoClients.create("mongodb://" + System.getenv("MONGO_USERNAME") + ":" + System.getenv("MONGO_PASSWORD") + "@" + System.getenv("MONGO_HOST"));
+            mongoClient = MongoClients.create("mongodb://" + mongo_username + ":" + mongo_password + "@" + mongo_host);
             System.out.println("Connected to MongoDB Server");
         } catch (MongoException exception) {
             System.out.println("MongoDB Connection Error: " + exception.getMessage());
         }
     }
 
+    @PreDestroy
     public void close() {
-        //optional - no inpact on performance, conncetion pool managed by MongoClient
         mongoClient.close();
     }
 

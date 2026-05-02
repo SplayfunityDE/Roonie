@@ -36,7 +36,7 @@ public class AutoDeleteListener extends ListenerAdapter {
             }
         }
     }
-    @Scheduled(initialDelay = 5, fixedDelay = 30, timeUnit = TimeUnit.MINUTES)
+    @Scheduled(initialDelay = 1, fixedDelay = 30, timeUnit = TimeUnit.MINUTES)
     public void checkCommandMessages() {
         TextChannel channel = roonie.getMainGuild().getTextChannelById(configManager.getConfigChannel("commands").getId());
         if (channel.getLatestMessageIdLong() != config.getConfigMessageId("commands")) {

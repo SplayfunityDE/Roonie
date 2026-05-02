@@ -4,11 +4,15 @@ import de.splayfer.roonie.MongoDBDatabase;
 import de.splayfer.roonie.Roonie;
 import lombok.RequiredArgsConstructor;
 import org.bson.Document;
+import org.springframework.context.annotation.Lazy;
 
-@RequiredArgsConstructor
 public class RestartChecker {
 
     private final Roonie roonie;
+
+    public RestartChecker(@Lazy Roonie roonie) {
+        this.roonie = roonie;
+    }
 
     public void checkForRemainingGames(MongoDBDatabase mongoDB) {
 

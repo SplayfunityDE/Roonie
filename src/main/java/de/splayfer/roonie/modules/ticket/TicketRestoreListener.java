@@ -1,25 +1,22 @@
 package de.splayfer.roonie.modules.ticket;
 
 import de.splayfer.roonie.Roonie;
-import de.splayfer.roonie.utils.Properties;
-import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
 @Component
-@RequiredArgsConstructor
 public class TicketRestoreListener {
 
-    private final Properties properties;
     private final Roonie roonie;
     private final TicketManager ticketManager;
 
-    @PostConstruct
+    public TicketRestoreListener(@Lazy Roonie roonie, TicketManager ticketManager) {
+        this.roonie = roonie;
+        this.ticketManager = ticketManager;
+    }
+
     public void restoreTickets() {
         HashMap<Ticket, String> list = ticketManager.getAllTicketsWithId();
         for (Ticket ticket : list.keySet()) {

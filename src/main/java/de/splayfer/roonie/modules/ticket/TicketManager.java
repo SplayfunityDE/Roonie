@@ -3,7 +3,6 @@ package de.splayfer.roonie.modules.ticket;
 import de.splayfer.roonie.MongoDBDatabase;
 import de.splayfer.roonie.Roonie;
 import de.splayfer.roonie.utils.enums.Channels;
-import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.Member;
@@ -11,6 +10,7 @@ import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import org.bson.Document;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,10 +18,13 @@ import java.util.HashMap;
 import java.util.List;
 
 @Component
-@RequiredArgsConstructor
 public class TicketManager {
 
     private final Roonie roonie;
+
+    public TicketManager(@Lazy Roonie roonie) {
+        this.roonie = roonie;
+    }
 
     public static HashMap<Integer, String> typeSymbol = new HashMap<>(){{
         put(1, "\uD83D\uDCAC");

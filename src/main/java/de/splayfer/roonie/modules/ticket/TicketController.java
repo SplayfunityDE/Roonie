@@ -1,18 +1,22 @@
 package de.splayfer.roonie.modules.ticket;
 
 import de.splayfer.roonie.Roonie;
-import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/ticket")
 public class TicketController {
 
     private final Roonie roonie;
     private final TicketManager ticketManager;
+
+    public TicketController(@Lazy Roonie roonie, TicketManager ticketManager) {
+        this.roonie = roonie;
+        this.ticketManager = ticketManager;
+    }
 
     @DeleteMapping("/{id}")
     public void closeTicket(@PathVariable String id, @RequestParam String reason) {

@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -105,10 +106,10 @@ public class LevelListener extends ListenerAdapter {
         return check;
     }
 
-    @Scheduled(initialDelay = 5, fixedDelay = 30, timeUnit = TimeUnit.MINUTES)
+    @Scheduled(initialDelay = 1, fixedDelay = 30, timeUnit = TimeUnit.MINUTES)
     public void checkVoiceMembers() {
-        for (Member member: roonie.getMainGuild().getMembers()) {
-            if (member.getVoiceState().inAudioChannel() && member.getVoiceState().getChannel().getType().equals(ChannelType.VOICE)) {
+        for (VoiceChannel vc : roonie.getMainGuild().getVoiceChannels()) {
+            for (Member member : vc.getMembers()) {
                 if (!(member.getVoiceState().isMuted() || member.getVoiceState().isDeafened() || member.getVoiceState().isSelfMuted())) {
                     int voiceminutes = levelManager.getXp(member) + 10;
                     int level = levelManager.getLevel(member);

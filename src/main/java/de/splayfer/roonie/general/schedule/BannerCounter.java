@@ -35,7 +35,7 @@ public class BannerCounter {
 
     protected static BufferedImage background;
 
-    @Scheduled(initialDelay = 5, fixedDelay = 30, timeUnit = TimeUnit.MINUTES)
+    @Scheduled(initialDelay = 1, fixedDelay = 30, timeUnit = TimeUnit.MINUTES)
     public void updateBannerMemberCount() {
         String membercount = String.valueOf(roonie.getMainGuild().getMemberCount());
         int onlineMemberCountInt = (int) roonie.getMainGuild().getMembers().stream().filter(member -> !member.getOnlineStatus().equals(OnlineStatus.OFFLINE)).count();

@@ -10,13 +10,18 @@ import de.splayfer.roonie.Roonie;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.managers.AudioManager;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-@RequiredArgsConstructor
 public class TrackScheduler extends AudioEventAdapter {
 
     private final PlayerManager playerManager;
     private final Roonie roonie;
+
+    public TrackScheduler(PlayerManager playerManager, Roonie roonie) {
+        this.playerManager = playerManager;
+        this.roonie = roonie;
+    }
 
     @Override
     public void onPlayerPause(AudioPlayer player) {

@@ -4,12 +4,12 @@ import club.minnced.discord.jdave.interop.JDaveSessionFactory;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import de.splayfer.roonie.modules.ticket.TicketRestoreListener;
 import de.splayfer.roonie.utils.Properties;
 import de.splayfer.roonie.utils.SlashCommandManager;
 import dev.lavalink.youtube.YoutubeAudioSourceManager;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -27,6 +27,7 @@ import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -93,7 +94,7 @@ public class Roonie {
         shardMan = builder.build();
 
         //init slash commands
-        shardMan.awaitReady().updateCommands().addCommands(
+        shardMan.updateCommands().addCommands(
                 slashCommandManagers.stream()
                         .flatMap(manager -> Arrays.stream(manager.slashCommands()))
                         .collect(Collectors.toList())
@@ -104,11 +105,17 @@ public class Roonie {
 }
 
 @Component
-@RequiredArgsConstructor
 class ReadyEventClass extends ListenerAdapter implements SlashCommandManager {
 
     private final Roonie roonie;
     private final Properties properties;
+    private final TicketRestoreListener ticketRestoreListener;
+
+    public ReadyEventClass(@Lazy Roonie roonie, Properties properties, TicketRestoreListener ticketRestoreListener) {
+        this.roonie = roonie;
+        this.properties = properties;
+        this.ticketRestoreListener = ticketRestoreListener;
+    }
 
     @Override
     public void onReady(ReadyEvent event) {
@@ -120,6 +127,8 @@ class ReadyEventClass extends ListenerAdapter implements SlashCommandManager {
         roonie.setAutoRoles(
                 Arrays.stream(properties.getAutoroles()).map(role -> roonie.getMainGuild().getRoleById(role)).toArray(Role[]::new) //member-role
         );
+
+        ticketRestoreListener.restoreTickets();
     }
 
     @Override

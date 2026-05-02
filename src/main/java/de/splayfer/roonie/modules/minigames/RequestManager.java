@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.bson.Document;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -24,14 +25,19 @@ import java.util.List;
 import java.util.Objects;
 
 @Component
-@RequiredArgsConstructor
 public class RequestManager extends ListenerAdapter {
 
     private final Roonie roonie;
     private final TicTacToe ticTacToe;
     private final TicTacToeGameManager ticTacToeGameManager;
+    private final MongoDBDatabase mongoDB;
 
-    MongoDBDatabase mongoDB = MongoDBDatabase.getDatabase("minigames");
+    public RequestManager(@Lazy Roonie roonie, TicTacToe ticTacToe, TicTacToeGameManager ticTacToeGameManager) {
+        this.roonie = roonie;
+        this.ticTacToe = ticTacToe;
+        this.ticTacToeGameManager = ticTacToeGameManager;
+        this.mongoDB = MongoDBDatabase.getDatabase("minigames");
+    }
 
     public void sendGameRequest(User user, String id) {
 
